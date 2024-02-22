@@ -1,0 +1,14 @@
+
+.sub-item {
+    padding-left: 20px; /* Sesuaikan padding kiri sesuai kebutuhan */
+}
+.spaced-icon {
+    margin-right: 8px; /* Sesuaikan nilai margin sesuai kebutuhan */
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #3498db; /* Warna latar belakang biru */
+    color: #fff; /* Warna teks putih */
+    border: 1px solid #2980b9; /* Warna garis tepi biru yang lebih gelap */
+}
+

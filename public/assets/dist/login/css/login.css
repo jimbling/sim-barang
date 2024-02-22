@@ -1,0 +1,105 @@
+html,body{
+    overflow-x: hidden!important;
+    font-family: 'Source Sans Pro', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    height: 100%;
+    background: #312929;
+    font-size: 15px;
+    background-image: url(../img/pattern/pat_03.png), url(../img/login-bg.jpg);
+    background-repeat: repeat, no-repeat;
+    background-position: 0 0;
+    background-size: 5px 5px, cover;
+}
+#main_cont {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    width: 420px;
+    margin: 0 auto;
+    border-radius: 10px;
+     /* Sesuaikan angka ini dengan sejauh mana sudut dibulatkan */:;
+    -webkit-border-radius:;
+    -moz-border-radius:;
+    -ms-border-radius:;
+    -o-border-radius:;
+}
+
+.widget-user-header {
+    background-color: #B2533E;
+    /* Tambahan properti CSS lainnya */
+}
+
+.custom-shape-divider-bottom-1707292319 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1707292319 svg {
+    position: relative;
+    display: block;
+    width: calc(300% + 1.3px);
+    height: 421px;
+}
+
+.custom-shape-divider-bottom-1707292319 .shape-fill {
+    fill: #D8A0683B;
+}
+
+
+.loader {
+    position: relative;
+    width: 100px;
+    height: 16px;
+  }
+  .loader:before , .loader:after{
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 32px 0 #fff;
+    left: 0;
+    top: 0;
+    animation: ballMoveX 2s linear infinite;
+  }
+  .loader:after {
+    box-shadow: none;
+    transform: translateX(64px) scale(1);
+    z-index: 2;
+    animation: none;
+    animation: trfLoader 2s linear infinite;
+  }
+  
+  @keyframes trfLoader {
+    0% , 5%{
+      transform: translateX(64px) scale(1);
+      background: #FFF;
+    }
+    10%{
+      transform: translateX(64px) scale(1);
+      background: #ff3d00;
+    }
+    40%{
+        transform: translateX(32px) scale(1.5);
+        background: #ff3d00;
+      }
+    90%, 95% {
+      transform: translateX(0px) scale(1);
+      background: #ff3d00;
+    }
+    100% {
+      transform: translateX(0px) scale(1);
+      background: #FFF;
+    }
+  }
+  @keyframes ballMoveX {
+    0% , 10%{  transform: translateX(0) }
+    90%, 100% { transform: translateX(32px) }
+  }
+        
+

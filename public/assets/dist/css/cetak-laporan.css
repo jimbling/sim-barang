@@ -1,0 +1,161 @@
+@media print {
+  
+  @page {
+    size: A4 landscape;
+    margin: 0.8mm; /* Atur margin ke 15mm */
+  }
+  
+  th {
+    text-align: center;
+  }
+  /* Mengurangi ukuran font secara keseluruhan dalam halaman */
+  body {
+    font-family: 'Arial', sans-serif; /* Menambahkan Arial sebagai jenis font utama */
+    font-size: 0.7rem;
+    padding-top: 1px; /* Atur padding atas sesuai kebutuhan */
+    padding-bottom:1px; /* Atur padding bawah sesuai kebutuhan */
+    line-height: 0.5; /* Atur line-height sesuai kebutuhan */
+    
+   }
+  
+   /* Mengatur elemen dt untuk tidak tebal */
+  .dt-not-bold {
+    font-weight: normal;
+  }
+  
+  /* Mengatur Jarak pada teks dan underline */
+  .underlined-text {
+    text-decoration: underline;
+    text-decoration-thickness: 1px; /* Mengatur ketebalan underline */
+    text-underline-offset: 3px; /* Mengatur jarak antara teks dan underline */
+    text-decoration-skip: ink; /* Mengatur jarak antara teks dan underline */
+    margin-bottom: 2px; /* Mengatur jarak antara underline dan elemen di bawahnya */
+  }
+  
+  
+  
+  
+  /* Tabel dengan border 2px */
+  .table-border {
+    border-collapse: collapse;
+    border: 1px solid black; /* Mengatur border dengan ketebalan 2px dan warna hitam */
+  }
+  
+  /* Mengatur border pada th dan td */
+  .table-border th,
+  .table-border td {
+    border: 1px solid black; /* Mengatur border dengan ketebalan 2px dan warna hitam */
+    padding: 8px;
+    text-align: center;
+    font-weight: normal;
+    line-height: 1;
+    
+  }
+  .highlighted {
+    background-color: #660907; /* Ganti dengan warna latar yang diinginkan */
+  }
+  /* Mengatur border pada th dan td di dalam tabel */
+  .table-border table th,
+  .table-border table td {
+    border: 1px solid black; /* Mengatur border dengan ketebalan 2px dan warna hitam */
+    padding: 8px;
+    text-align: center;
+    font-weight: normal;
+    line-height: 1.5;
+  }
+  /* Memberikan background pada td dengan class tertentu */
+
+  
+  
+  
+  .gradient-line {
+    height: 3px;
+    background: linear-gradient(to right, rgb(0, 0, 0) 20%, rgb(0, 0, 0) 20%);
+  }
+  
+  
+  
+  }
+  
+  @media print {
+    .table-border,
+    .table-border th,
+    .table-border td {
+      border: 1px solid black !important;
+    }
+  
+    
+  }
+  
+
+
+
+  @media print {
+    /* Pengaturan agar konten tidak terpotong ke halaman berikutnya */
+      .table {
+      border-collapse: collapse;
+      width: 100%;
+  
+  
+  .table th, .table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+      vertical-align: middle;
+      font-weight: normal;
+  }
+  
+  .table-container {
+      overflow-x: auto;
+  }
+  
+  .thead {
+      background-color: #707070;
+      color: #000000; /* Warna teks putih */
+      font-weight: bold;
+  }
+  
+  /* Menetapkan properti break-inside pada elemen parent */
+  .table-container th:last-child,
+  .table-container td:last-child {
+      page-break-inside: avoid;
+  }
+
+  /* Tabel tanpa border */
+  .table-no-border {
+    width: 100%;
+    border: none;
+  }
+  
+  .table-no-border th,
+  .table-no-border td {
+    border: none;
+    /* Menghapus border pada sel (th dan td) */
+    padding: 8px;
+    text-align: left;
+    font-weight: normal; /* Mengatur tebal teks menjadi normal */
+  }
+  
+  .table-no-border th,
+  .table-no-border td {
+    border: none;
+    /* Menghapus border pada sel (th dan td) */
+    padding: 8px;
+    text-align: center;
+    font-weight: normal; /* Mengatur tebal teks menjadi normal */
+    line-height: 0.5; /* Mengatur spasi antar baris menjadi 1.2 kali ukuran font */
+  }
+  /* Mengatur tinggi minimal pada tag <br> */
+  table.table-no-border th br,
+  table.table-no-border td br {
+    display: block; /* Mengubah elemen <br> menjadi elemen blok */
+    content: ""; /* Menambahkan konten kosong agar tinggi berlaku */
+    height: 20px; /* Sesuaikan tinggi minimal sesuai kebutuhan */
+    border: none;
+  }
+
+
+  }
+}
+  
+  
