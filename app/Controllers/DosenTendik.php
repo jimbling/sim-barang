@@ -5,17 +5,19 @@ namespace App\Controllers;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-
+use App\Models\UserModel;
 use App\Models\DosenTendikModel;
 
 class DosenTendik extends BaseController
 {
     protected $dosentendikModel;
+    protected $userModel;
 
     public function __construct()
     {
 
         $this->dosentendikModel = new DosenTendikModel();
+        $this->userModel = new UserModel();
     }
     public function index()
     {
@@ -165,5 +167,44 @@ class DosenTendik extends BaseController
         }
 
         return redirect()->to('/data/mahasiswa')->with('error', 'Terjadi kesalahan dalam pengunggahan data.');
+    }
+
+    public function buatAkun()
+    {
+        // Ambil data yang dipilih dari form (checkbox)
+        $selectedIds = $this->request->getVar('selected_ids');
+
+        if (!empty($selectedIds)) {
+            // Instansiasi model
+            $dosenTendikModel = new DosenTendikModel();
+            $userModel = new UserModel(); // Sesuaikan dengan nama model yang digunakan untuk tabel tbl_user
+
+            // Lakukan validasi bahwa kolom user_nama harus unik
+            $selectedData = $dosenTendikModel->whereIn('id', $selectedIds)->findAll();
+            $errors = []; // Inisialisasi array untuk menyimpan pesan kesalahan
+
+            foreach ($selectedData as $data) {
+                $existingUser = $userModel->where('user_nama', $data['nik'])->first();
+                if ($existingUser) {
+                    // Tambahkan pesan kesalahan ke dalam array dengan format HTML
+                    $errorMessage = "Tidak dapat membuat Akun Login karena user dengan NIK <strong>{$data['nik']}</strong> (nama lengkap: <strong>{$data['nama_lengkap']}</strong>) sudah ada.";
+                    $errors[] = $errorMessage;
+                }
+            }
+
+            // Jika ada pesan kesalahan, kirim respons JSON dengan daftar pesan kesalahan
+            if (!empty($errors)) {
+                return $this->response->setJSON(['success' => false, 'errors' => $errors]);
+            }
+
+            // Memanggil method copyDataToUser dari model DosenTendikModel
+            $dosenTendikModel->copyDataToUser($selectedIds);
+
+            // Berikan respons sukses
+            return $this->response->setJSON(['success' => true, 'message' => 'Data berhasil disalin ke tabel user.']);
+        } else {
+            // Berikan respons jika tidak ada data yang dipilih
+            return $this->response->setJSON(['success' => false, 'message' => 'Tidak ada data yang dipilih.']);
+        }
     }
 }

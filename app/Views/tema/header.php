@@ -355,7 +355,7 @@ $level = $session->get('level');
 
 
                             <li class="nav-item menu-close">
-                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/data/mahasiswa') !== false || $_SERVER['REQUEST_URI'] == '/data/dosen_tendik' || $_SERVER['REQUEST_URI'] == 'data/pengaturan') ? 'active' : '' ?>">
+                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/data/mahasiswa') !== false || $_SERVER['REQUEST_URI'] == '/data/dosen_tendik' || $_SERVER['REQUEST_URI'] == '/data/pengaturan' || $_SERVER['REQUEST_URI'] == '/data/pengguna') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-sliders-h"></i>
                                     <p>
                                         Pengaturan
@@ -377,10 +377,16 @@ $level = $session->get('level');
                                                 Dosen dan Tendik
                                             </p>
                                         </a>
-                                        <a href="/data/pengaturan" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pengaturan') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
+                                        <a href="/data/pengaturan" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/data/pengaturan') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
                                             <i class="fas fa-school sub-item spaced-icon"></i>
                                             <p>
                                                 Setting
+                                            </p>
+                                        </a>
+                                        <a href="/data/pengguna" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/data/pengguna') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/data/pengguna') ? 'active' : '' ?>">
+                                            <i class="fas fa-users sub-item spaced-icon"></i>
+                                            <p>
+                                                Pengguna
                                             </p>
                                         </a>
                                     </li>

@@ -86,7 +86,10 @@ class PengeluaranMurni extends BaseController
 
     public function simpanPermintaan()
     {
-        Session();
+        $session = session();
+
+        // Mendapatkan data dari session
+        $userId = $session->get('id');
 
         // Mendapatkan data dari form
         $nama_pengguna = $this->request->getPost('nama_pengguna_barang');
@@ -97,7 +100,6 @@ class PengeluaranMurni extends BaseController
         $validation = [
             'nama_pengguna_barang' => 'required',
             'keperluan' => 'required',
-
         ];
 
         if (!$this->validate([
@@ -131,6 +133,7 @@ class PengeluaranMurni extends BaseController
             'nama_pengguna_barang' => $nama_pengguna,
             'tanggal_penggunaan' => $tanggalPenggunaan->format('Y-m-d'), // Sesuaikan format yang sesuai dengan basis data
             'keperluan' => $keperluan,
+            'user_id' => $userId, // Menambahkan user_id ke dalam data
         ];
 
         $pengeluaranmurniModel = new PengeluaranmurniModel();
@@ -139,6 +142,7 @@ class PengeluaranMurni extends BaseController
 
         return redirect()->to('/pengeluaran/bhp');
     }
+
 
     public function addPengeluaranTanpaPeminjaman($id)
     {

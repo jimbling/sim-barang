@@ -62,6 +62,7 @@ $routes->post('/data/mahasiswa/update/(:num)', 'Mahasiswa::edit/$1');
 $routes->post('/mahasiswa/hapus', 'Mahasiswa::delete');
 $routes->post('/mahasiswa/importData', 'Mahasiswa::importData');
 $routes->post('mahasiswa/cari', 'Mahasiswa::cari');
+$routes->post('/data/mahasiswa/akun', 'Mahasiswa::buatAkun');
 
 $routes->post('peminjaman/proses', 'Peminjaman::prosesPeminjaman');
 $routes->post('/pinjam/hapus/(:num)', 'Peminjaman::hapus/$1');
@@ -101,6 +102,7 @@ $routes->get('/data/dosen_tendik', 'DosenTendik::index');
 $routes->post('/data/dosen_tendik/tambah', 'DosenTendik::addDosenTendik');
 $routes->post('/data/dosen_tendik/hapus', 'DosenTendik::delete');
 $routes->post('/data/dosen_tendik/importData', 'DosenTendik::importData');
+$routes->post('/data/dosen_tendik/copy', 'DosenTendik::buatAkun');
 $routes->post('/data/dosen_tendik/update/(:num)', 'DosenTendik::edit/$1');
 $routes->get('/dosen_tendik/get_detail/(:num)', 'DosenTendik::get_detail/$1');
 $routes->post('/data/akun/update', 'Pengaturan::update');
@@ -130,6 +132,8 @@ $routes->get('pengeluaran/get_detail/(:num)', 'Peminjaman::get_detail/$1');
 $routes->post('pengeluaran/hapus/(:num)', 'Pengeluaran::hapusDataByPeminjaman/$1');
 
 $routes->get('/data/pengaturan', 'Pengaturan::index');
+$routes->get('/data/pengguna', 'Pengaturan::pengguna');
+$routes->post('/pengguna/hapus', 'Pengaturan::delete');
 $routes->post('/pengaturan/update', 'Pengaturan::updateData');
 $routes->get('/laporan/peminjaman', 'Laporan::laporanPeminjaman');
 $routes->get('/laporan/persediaan', 'Laporan::laporanPersediaan');

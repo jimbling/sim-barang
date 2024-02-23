@@ -104,6 +104,23 @@
                             </form>
                         </div>
                     </div>
+
+                    <div class="card card-warning card-outline shadow-lg">
+                        <div class="card-header">
+                            <strong>Buat Akun Mahasiswa</strong>
+                        </div>
+                        <div class="card-body">
+                            <p>
+                                Untuk membuat Akun Login Mahasiswa, silahkan pilih data Mahasiswa dengan Checkbox yang akan dibuatkan Akun Login, kemudian tekan tombol Buat Akun dibawah ini.
+                            </p>
+                            <div class="btn-toolbar">
+                                <td style="text-align: center;">
+                                    <button type="button" class="btn bg-indigo btn-sm" onclick="copySelectedItems()"><i class='fas fa-user-shield spaced-icon'></i>Buat Akun</button>
+                                </td>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -506,6 +523,101 @@
             }
         });
     });
+</script>
+
+<script>
+    function copySelectedItems() {
+        var selectedIds = [];
+
+        // Get all selected checkboxes
+        $('.checkbox-item:checked').each(function() {
+            selectedIds.push($(this).data('id'));
+        });
+
+        // Check if any checkbox is selected
+        if (selectedIds.length > 0) {
+            // Use SweetAlert for confirmation
+            Swal.fire({
+                title: 'Anda yakin?',
+                text: 'Data yang dipilih akan dibuatkan Akun Login!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Buat!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading(); // Show loading indicator
+                    // Send AJAX request to copy the items
+                    $.ajax({
+                        url: '/data/mahasiswa/akun', // Update with your actual controller and method
+                        method: 'POST',
+                        data: {
+                            selected_ids: selectedIds
+                        },
+
+                        success: function(response) {
+                            if (response.success) {
+                                // Hide loading indicator
+                                hideLoading();
+
+                                // Delay before showing SweetAlert
+                                setTimeout(function() {
+                                    // Jika sukses, tampilkan pesan berhasil
+                                    Swal.fire({
+                                        title: 'Berhasil!',
+                                        text: 'Akun login berhasil dibuat.',
+                                        icon: 'success',
+                                        timer: 2000, // Durasi tampilan dalam milidetik (misalnya, 5000 milidetik = 5 detik)
+                                        showConfirmButton: false, // Sembunyikan tombol OK (jika tidak diinginkan)
+                                    }).then(() => {
+                                        // Redirect to specified page
+                                        window.location.replace("/data/pengguna");
+                                    });
+                                }, 500); // Adjust delay time as needed
+                            } else {
+                                // Hide loading indicator
+                                hideLoading();
+                                // Jika terjadi kesalahan, gabungkan pesan kesalahan menjadi satu pesan dengan format HTML dan tampilkan
+                                var errorMessage = '<div style="text-align: left;">Terjadi kesalahan:<br><ul>';
+                                for (var i = 0; i < response.errors.length; i++) {
+                                    errorMessage += '<li>' + response.errors[i] + '</li>';
+                                }
+                                errorMessage += '</ul></div>';
+                                Swal.fire({
+                                    title: 'Error!',
+                                    html: errorMessage,
+                                    icon: 'error',
+                                    showCloseButton: true,
+                                    showCancelButton: false,
+                                    showConfirmButton: false
+                                });
+                            }
+                        },
+
+
+                        error: function(error) {
+                            console.error('Error:', error);
+                            // Hide loading indicator
+                            hideLoading();
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Terjadi kesalahan saat menyalin data.',
+                                icon: 'error',
+                            });
+                        }
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan',
+                text: 'Pilih setidaknya satu data mahasiswa untuk dibuatkan akun login.'
+            });
+        }
+    }
 </script>
 
 <?php echo view('tema/footer.php'); ?>

@@ -203,7 +203,7 @@
         if (window.location.pathname === '/data/dosen_tendik') {
             $('#daftarDosenTendik').DataTable({
                 "paging": true,
-                "lengthChange": false,
+                "lengthChange": true,
                 "searching": true,
                 "ordering": true,
                 "info": true,
@@ -283,6 +283,17 @@
         }
         if (window.location.pathname === '/reservasi') {
             $('#daftarReservasi').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": false,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        }
+        if (window.location.pathname === '/data/pengguna') {
+            $('#penggunaTabel').DataTable({
                 "paging": true,
                 "lengthChange": false,
                 "searching": true,

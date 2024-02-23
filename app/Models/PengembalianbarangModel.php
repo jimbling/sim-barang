@@ -9,7 +9,7 @@ class PengembalianbarangModel extends Model
     protected $table = 'tbl_riwayat_pengembalian';
     protected $primaryKey = 'id'; // Nama kolom primary key
     protected $useAutoIncrement = true; // Pastikan ini true
-    protected $allowedFields = ['id', 'peminjaman_id', 'kode_kembali', 'tanggal_kembali', 'keterangan', 'nama_barang'];
+    protected $allowedFields = ['id', 'user_id', 'peminjaman_id', 'kode_kembali', 'tanggal_kembali', 'keterangan', 'nama_barang'];
 
     public function getRiwayatPengembalianBarang()
     {

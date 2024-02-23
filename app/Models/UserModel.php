@@ -10,7 +10,12 @@ class UserModel extends Model
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $useTimestamps = true; // Sesuaikan dengan kebutuhan Anda
     protected $primaryKey = 'id';
-    protected $allowedFields = ['id', 'user_nama', 'user_password', 'level', 'full_nama', 'created_at', 'updated_at'];
+    protected $allowedFields = ['id', 'user_nama', 'user_password', 'level', 'full_nama', 'type', 'created_at', 'updated_at'];
+
+    public function getUserByType($type)
+    {
+        return $this->where('type', $type)->findAll();
+    }
 
     public function get_data($username, $password)
     {
@@ -37,8 +42,29 @@ class UserModel extends Model
 
     public function getUser()
     {
-        return $this->findAll();
+        return $this->whereNotIn('id', [1, 2])->findAll();
     }
+    public function getAdminUser()
+    {
+        return $this->whereIn('id', [1, 2])->findAll();
+    }
+
+    // public function getUser()
+    // {
+    //     // Mengambil session
+    //     $session = session();
+    //     // Mengambil user_id dari session
+    //     $userId = $session->get('id');
+
+    //     // Jika user_id ada dalam session
+    //     if ($userId) {
+    //         // Mencari data berdasarkan user_id
+    //         return $this->where('id', $userId)->findAll();
+    //     } else {
+    //         // Jika tidak ada user_id dalam session, kembalikan null atau data kosong sesuai kebutuhan
+    //         return null; // atau return [];
+    //     }
+    // }
 
     public function updateUser($akunId, $data)
     {

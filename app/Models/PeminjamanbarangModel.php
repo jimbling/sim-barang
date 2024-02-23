@@ -52,31 +52,44 @@ class PeminjamanbarangModel extends Model
 
     public function getPeminjamanBarang24Jam()
     {
+        // Dapatkan user_id dan level dari sesi
+        $session = session();
+        $userId = $session->get('id');
+        $level = $session->get('level');
+
         // Mendapatkan waktu sekarang
         $now = date('Y-m-d H:i:s');
 
         // Mendapatkan waktu 24 jam yang lalu
         $twentyFourHoursAgo = date('Y-m-d H:i:s', strtotime('-24 hours', strtotime($now)));
 
-        return $this->select('
-                    tbl_peminjaman.id as peminjaman_id, 
-                    kode_pinjam, 
-                    nama_peminjam, 
-                    nama_ruangan, 
-                    tanggal_pinjam, 
-                    keperluan, 
-                    GROUP_CONCAT(tbl_barang.id) as barang_ids,
-                    GROUP_CONCAT(CONCAT(tbl_barang.nama_barang, " - ", tbl_barang.kode_barang)) as barang_dipinjam,
-                    tbl_peminjaman_barang.barang_id,
-                    tbl_peminjaman.created_at') // Menambahkan kolom created_at
+        // Kueri untuk mendapatkan data peminjaman barang
+        $query = $this->select('
+            tbl_peminjaman.id as peminjaman_id, 
+            kode_pinjam, 
+            nama_peminjam, 
+            nama_ruangan, 
+            tanggal_pinjam, 
+            keperluan, 
+            GROUP_CONCAT(tbl_barang.id) as barang_ids,
+            GROUP_CONCAT(CONCAT(tbl_barang.nama_barang, " - ", tbl_barang.kode_barang)) as barang_dipinjam,
+            tbl_peminjaman_barang.barang_id,
+            tbl_peminjaman.created_at')
             ->join('tbl_barang', 'tbl_barang.id = tbl_peminjaman_barang.barang_id')
             ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_peminjaman_barang.peminjaman_id')
-            ->where('tbl_peminjaman.created_at >=', $twentyFourHoursAgo) // Filter hanya data yang dibuat dalam 24 jam terakhir
             ->groupBy('peminjaman_id')
-            ->orderBy('tanggal_pinjam', 'DESC')
-            ->findAll();
-    }
+            ->orderBy('tanggal_pinjam', 'DESC'); // Mengurutkan berdasarkan tanggal_pinjam secara descending
 
+        // Jika level pengguna adalah "admin", tambahkan filter untuk hanya menampilkan data yang dibuat dalam 24 jam terakhir
+        if ($level === 'admin') {
+            $query->where('tbl_peminjaman.created_at >=', $twentyFourHoursAgo); // Filter hanya data yang dibuat dalam 24 jam terakhir
+        } else {
+            // Jika bukan "admin", tambahkan filter berdasarkan user_id yang sedang login
+            $query->where('tbl_peminjaman.user_id', $userId); // Filter berdasarkan user_id
+        }
+
+        return $query->findAll();
+    }
 
 
     public function getPeminjamanBarangByPeminjamanId($peminjamanId)

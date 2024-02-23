@@ -26,7 +26,7 @@ class Pengaturan extends BaseController
         $csrfToken = csrf_hash();
 
 
-        $pengguna = $this->userModel->getUser();
+        $pengguna = $this->userModel->getAdminUser();
 
         $pengaturanModel = new PengaturanModel();
         $dataCetak = $pengaturanModel->getDataById(1);
@@ -45,6 +45,35 @@ class Pengaturan extends BaseController
         // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
         return view('pengaturan/setting_data', $data);
     }
+
+    public function pengguna()
+    {
+        $currentYear = date('Y');
+        $csrfToken = csrf_hash();
+
+        // Ambil nilai tipe pengguna dari form jika ada
+        $selectedType = $this->request->getGet('type');
+
+        // Panggil metode di model untuk mengambil data pengguna
+        if (!empty($selectedType)) {
+            // Jika tipe pengguna dipilih, ambil data pengguna berdasarkan tipe yang dipilih
+            $pengguna = $this->userModel->getUserByType($selectedType);
+        } else {
+            // Jika tidak ada tipe yang dipilih, ambil semua data pengguna
+            $pengguna = $this->userModel->getUser();
+        }
+
+        $data = [
+            'judul' => 'Setting Data | Akper "YKY" Yogyakarta',
+            'currentYear' => $currentYear,
+            'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
+            'data_pengguna' => $pengguna,
+        ];
+
+        // Kirim data pengguna ke view
+        return view('pengaturan/pengguna', $data);
+    }
+
 
     public function unduh($namaFile)
     {
@@ -147,6 +176,26 @@ class Pengaturan extends BaseController
             $pesan = "mysqldump error-php error" . $e->getMessage();
             session()->setFlashData('pesan', $pesan);
             return redirect()->to('/data/pengaturan')->with('success', 'Data siswa berhasil diubah.');
+        }
+    }
+
+    public function delete()
+    {
+        $ids = $this->request->getPost('ids');
+
+        if ($ids) {
+            $userModel = new UserModel();
+
+            foreach ($ids as $id) {
+                // Hapus item berdasarkan ID
+                $userModel->delete($id);
+            }
+
+            session()->setFlashData('pesanHapusMhs', 'Post berhasil dihapus');
+            return redirect()->to('data/mahasiswa')->with('success', 'Data pengguna berhasil disimpan.');
+        } else {
+            // Tangani jika tidak ada ID yang diberikan
+            return redirect()->back();
         }
     }
 }

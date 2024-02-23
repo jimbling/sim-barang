@@ -10,7 +10,7 @@ class PengeluaranmurniModel extends Model
     protected $primaryKey = 'id'; // Nama kolom primary key
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $useTimestamps = true; // Sesuaikan dengan kebutuhan Anda
-    protected $allowedFields = ['id', 'nama_pengguna_barang', 'tanggal_penggunaan', 'keperluan', 'created_at', 'updated_at'];
+    protected $allowedFields = ['id', 'user_id', 'nama_pengguna_barang', 'tanggal_penggunaan', 'keperluan', 'created_at', 'updated_at'];
 
 
 
@@ -22,8 +22,14 @@ class PengeluaranmurniModel extends Model
 
     public function getPengeluaranMurni()
     {
+        // Dapatkan user_id dari sesi
+        $session = session();
+        $user_id = $session->get('id');
+
         // Menggunakan orderBy untuk mengurutkan berdasarkan kolom 'created_at' (ganti dengan kolom yang sesuai)
-        return $this->orderBy('created_at', 'DESC')->findAll();
+        return $this->orderBy('created_at', 'DESC')
+            ->where('user_id', $user_id) // Filter berdasarkan user_id dari sesi
+            ->findAll();
     }
 
     public function insertPengeluaranMurni($data)
