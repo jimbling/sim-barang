@@ -1,5 +1,11 @@
 <?php echo view('tema/header.php'); ?>
-
+<style>
+    /* CSS untuk mengatur ukuran font menjadi 13px */
+    .table td,
+    .table th {
+        font-size: 13px;
+    }
+</style>
 <div class="content-wrapper">
     <div class="flash-data" data-flashdata="<?= (session()->getFlashData('pesanAddPeminjaman')); ?>"></div><!-- Page Heading -->
     <div class="content-header">
@@ -54,54 +60,7 @@
                                 </thead>
                                 <div id="alertContainer" class="mt-3"></div>
                                 <tbody>
-                                    <?php $i = 1; // Deklarasi di luar loop foreach 
-                                    ?>
-                                    <?php foreach ($data_riwayat_pinjam as $dataPinjam) : ?>
-                                        <tr class="searchable-row">
-                                            <!-- Kolom yang lain tetap seperti sebelumnya -->
-                                            <th class="text-center" scope="row" style="vertical-align: middle; font-size: 13px;"><?= $i++; ?></th>
-                                            <td style="text-align: left; vertical-align: middle; font-size: 13px;"><?= $dataPinjam['kode_pinjam']; ?></td>
-                                            <td style="text-align: left; vertical-align: middle; font-size: 13px;"><?= $dataPinjam['nama_peminjam']; ?></td>
-                                            <td width='11%' style="text-align: left; vertical-align: middle; font-size: 13px;">
-                                                <?php
-                                                $tanggal_pinjam = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pinjam'])
-                                                    ->setTimezone('Asia/Jakarta');
 
-                                                $nama_bulan = [
-                                                    'January' => 'Januari',
-                                                    'February' => 'Februari',
-                                                    'March' => 'Maret',
-                                                    'April' => 'April',
-                                                    'May' => 'Mei',
-                                                    'June' => 'Juni',
-                                                    'July' => 'Juli',
-                                                    'August' => 'Agustus',
-                                                    'September' => 'September',
-                                                    'October' => 'Oktober',
-                                                    'November' => 'November',
-                                                    'December' => 'Desember',
-                                                ];
-
-                                                $bulan = $nama_bulan[$tanggal_pinjam->format('F')];
-
-                                                echo $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y - H:i') . ' WIB';
-                                                ?>
-                                            </td>
-                                            <td style="text-align: left; vertical-align: middle; font-size: 13px;"><?= $dataPinjam['nama_ruangan']; ?></td>
-                                            <td width='15%' style="text-align: left; vertical-align: middle; font-size: 13px;"><?= $dataPinjam['keperluan']; ?></td>
-                                            <td style="text-align: left; vertical-align: middle; font-size: 13px;">
-                                                <?php
-                                                $barang_dipinjam = explode(',', $dataPinjam['barang_dipinjam']);
-                                                $no_urut_barang = 1; // Reset nomor urut pada setiap baris barang
-                                                foreach ($barang_dipinjam as $barang) {
-                                                    echo $no_urut_barang . '. ' . $barang . '<br>';
-                                                    $no_urut_barang++; // Increment nomor urut barang
-                                                }
-                                                ?>
-                                            </td>
-
-                                        </tr>
-                                    <?php endforeach; ?>
                                 </tbody>
 
                             </table>
@@ -198,5 +157,85 @@
             }
         });
     }
+</script>
+<script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var table = $('#daftarRiwayatPeminjamanTable').DataTable({
+            "processing": true,
+            "ajax": {
+                "url": "<?= base_url('peminjaman/fetchData') ?>",
+                "type": "POST",
+                "data": function(d) {
+                    d.tahun = $('#tahun').val(); // Mengirim data filter ke server
+                }
+            },
+            "columns": [{
+                    "data": "no",
+                    "className": "text-center",
+                    "orderable": false
+                },
+                {
+                    "data": "kode_pinjam"
+                },
+                {
+                    "data": "nama_peminjam"
+                },
+                {
+                    "data": "tanggal_pinjam",
+                    "render": function(data, type, row) {
+                        var tanggal = new Date(data);
+                        var bulan = {
+                            'January': 'Januari',
+                            'February': 'Februari',
+                            'March': 'Maret',
+                            'April': 'April',
+                            'May': 'Mei',
+                            'June': 'Juni',
+                            'July': 'Juli',
+                            'August': 'Agustus',
+                            'September': 'September',
+                            'October': 'Oktober',
+                            'November': 'November',
+                            'December': 'Desember',
+                        };
+                        var namaBulan = bulan[tanggal.toLocaleString('en-us', {
+                            month: 'long'
+                        })];
+                        var waktu = tanggal.getDate() + ' ' + namaBulan + ' ' + tanggal.getFullYear() + ' - ' + ('0' + tanggal.getHours()).slice(-2) + ':' + ('0' + tanggal.getMinutes()).slice(-2) + ' WIB';
+                        return waktu;
+                    }
+                },
+                {
+                    "data": "nama_ruangan"
+                },
+                {
+                    "data": "keperluan"
+                },
+                {
+                    "data": "barang_dipinjam",
+                    "className": "text-left",
+                    "render": function(data, type, row) {
+                        var barangs = data.split(',');
+                        var html = '';
+                        barangs.forEach(function(barang, index) {
+                            html += (index + 1) + '. ' + barang + '<br>';
+                        });
+                        return html;
+                    }
+                }
+            ]
+        });
+
+        // Mengatur nomor urut di kolom pertama
+        table.on('order.dt search.dt', function() {
+            table.column(0, {
+                search: 'applied',
+                order: 'applied'
+            }).nodes().each(function(cell, i) {
+                cell.innerHTML = i + 1;
+            });
+        }).draw();
+    });
 </script>
 <?php echo view('tema/footer.php'); ?>

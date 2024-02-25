@@ -72,17 +72,7 @@
 
 <script>
     $(function() {
-        if (window.location.pathname === '/barang/master') {
-            $('#dataBarangTable').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": false,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        }
+
         if (window.location.pathname === '/barang/daftar') {
             $('#daftarBarangTable').DataTable({
                 "paging": true,
@@ -94,41 +84,21 @@
                 "responsive": true,
             });
         }
-        if (window.location.pathname === '/data/mahasiswa') {
-            $('#dataMhsTable').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": false,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        }
+
         if (window.location.pathname === '/pinjam/daftar') {
 
             $('#daftarPeminjamanTable').DataTable({
                 "paging": true,
-                "lengthChange": false,
-                "searching": true,
-                "ordering": false,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        }
-        if (window.location.pathname === '/pinjam/riwayat') {
-
-            $('#daftarRiwayatPeminjamanTable').DataTable({
-                "paging": true,
                 "lengthChange": true,
                 "searching": true,
                 "ordering": false,
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
+                "serverSide": false,
             });
         }
+
         if (window.location.pathname === '/kembali/tambah') {
             $('#daftarKodePinjam').DataTable({
                 "paging": false,
@@ -141,17 +111,17 @@
             });
         }
 
-        if (window.location.pathname === '/kembali/riwayat') {
-            $('#daftarRiwayatPengembalian').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": false,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        }
+        // if (window.location.pathname === '/kembali/riwayat') {
+        //     $('#daftarRiwayatPengembalian').DataTable({
+        //         "paging": true,
+        //         "lengthChange": true,
+        //         "searching": true,
+        //         "ordering": false,
+        //         "info": true,
+        //         "autoWidth": false,
+        //         "responsive": true,
+        //     });
+        // }
         if (window.location.pathname === '/penerimaan/daftar') {
             $('#daftarPenerimaanPersediaanTable').DataTable({
                 "paging": true,
@@ -200,17 +170,6 @@
             });
         }
 
-        if (window.location.pathname === '/data/dosen_tendik') {
-            $('#daftarDosenTendik').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        }
         if (window.location.pathname === '/pengeluaran/tambahBaru') {
             $('#daftarKodePinjamPersed').DataTable({
                 "paging": true,

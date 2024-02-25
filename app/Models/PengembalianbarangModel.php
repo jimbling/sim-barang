@@ -11,22 +11,26 @@ class PengembalianbarangModel extends Model
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $allowedFields = ['id', 'user_id', 'peminjaman_id', 'kode_kembali', 'tanggal_kembali', 'keterangan', 'nama_barang'];
 
-    public function getRiwayatPengembalianBarang()
+    public function getRiwayatPengembalianBarang($year)
     {
+        // Menentukan tabel dan kolom yang akan digunakan
+        $this->select('ROW_NUMBER() OVER() AS no, tbl_riwayat_pengembalian.id as riwayat_id, tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.keperluan, kode_kembali, tanggal_kembali, keterangan, nama_barang');
+
         // Menggunakan metode join untuk menggabungkan tbl_riwayat_pengembalian dengan tbl_peminjaman
         $this->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_pengembalian.peminjaman_id');
 
-        // Memberikan alias untuk kolom id dari setiap tabel
-        $this->select('tbl_riwayat_pengembalian.id as riwayat_id, tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam,tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.keperluan, kode_kembali, tanggal_kembali, keterangan, nama_barang');
-
         // Menambahkan orderBy untuk mengurutkan berdasarkan tanggal_kembali secara descending
         $this->orderBy('tanggal_kembali', 'ASC');
+
+        // Filter berdasarkan tahun
+        $this->like('tanggal_kembali', $year, 'after');
 
         // Mengambil data yang dibutuhkan
         $result = $this->findAll();
 
         return $result;
     }
+
 
     public function insertPengembalianBarang($data)
     {

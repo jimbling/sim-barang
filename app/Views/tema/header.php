@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="../../assets/plugins/toastr/toastr.min.css">
     <link rel="stylesheet" href="../../assets/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
     <link rel="stylesheet" href="../../assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
     <style>
         #updateButton,
@@ -60,7 +60,8 @@ $level = $session->get('level');
             <ul class="navbar-nav ml-auto">
                 <ul class="navbar-nav">
                     <li class="nav-link">
-                        Selamat Datang, <?php echo $nama; ?>
+                        <div class="animate__animated animate__rubberBand">Selamat Datang, <?php echo $nama; ?></div>
+
                     </li>
                 </ul>
                 <li class="nav-item dropdown">

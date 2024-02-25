@@ -171,6 +171,12 @@ $routes->post('/pihakluar/kembalikan/(:num)', 'Pihakluar::kembalikan/$1');
 $routes->post('/pihakluar/hapus/(:num)', 'Pihakluar::hapus/$1');
 $routes->post('/pihakluar/riwayatpinjam/hapus/(:num)', 'Pihakluar::hapusriwayat/$1');
 
+$routes->post('mahasiswa/fetchData', 'Mahasiswa::getDataMahasiswa');
+$routes->post('dosentendik/fetchData', 'DosenTendik::getDataDosenTendik');
+$routes->post('peminjaman/fetchData', 'Peminjaman::getRiwayatPeminjaman');
+$routes->post('pengembalian/fetchData', 'Pengembalian::getRiwayatPengembalianBarang');
+$routes->post('barang/fetchData', 'Barang::getDataBarang');
+
 
 
 

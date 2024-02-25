@@ -95,14 +95,13 @@ class Peminjaman extends BaseController
         // Mengambil tahun-tahun unik dari tanggal_kembali di tabel
         $availableYears = $riwayatpeminjamanModel->getAvailableYears();
         // Mendapatkan data berdasarkan tahun yang dipilih
-        $dataKembali = $riwayatpeminjamanModel->getRiwayatPinjamBarangGroupByYear($selectedYear);
+
 
         $barangByStatus = $riwayatpeminjamanModel->getRiwayatPinjamBarang();
         $data = [
             'judul' => 'Daftar Pinjam | Akper "YKY" Yogyakarta',
             'currentYear' => $selectedYear,
             'selectedYear' => $selectedYear,
-            'data_riwayat_pinjam' => $dataKembali,
             'availableYears' => $availableYears,
 
         ];
@@ -110,6 +109,28 @@ class Peminjaman extends BaseController
         // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
         return view('peminjaman/pinjam_riwayat', $data);
     }
+
+    public function getRiwayatPeminjaman()
+    {
+        $requestData = $this->request->getVar();
+        $draw = isset($requestData['draw']) ? intval($requestData['draw']) : 1; // Menggunakan nilai default 1 jika 'draw' tidak ada
+        $year = $requestData['tahun'] ?? date('Y');
+
+        // Panggil metode untuk mendapatkan data riwayat peminjaman berdasarkan tahun
+        $riwayatPeminjaman = $this->riwayatpeminjamanModel->getRiwayatPeminjaman($year);
+
+        // Format data sesuai spesifikasi DataTables
+        $response = [
+            "draw" => $draw, // Menggunakan nilai 'draw' yang telah diperiksa
+            "recordsTotal" => count($riwayatPeminjaman),
+            "recordsFiltered" => count($riwayatPeminjaman), // Jumlah total data setelah filter (jika ada)
+            "data" => $riwayatPeminjaman
+        ];
+
+        // Mengembalikan data dalam format JSON
+        return $this->response->setJSON($response);
+    }
+
 
     public function addPinjam()
     {

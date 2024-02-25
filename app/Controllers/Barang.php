@@ -22,20 +22,35 @@ class Barang extends BaseController
         session();
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
-        $barangModel = new BarangModel();
-        $dataBarang = $barangModel->getBarang();
-        // Mendapatkan daftar barang yang dikelompokkan berdasarkan nama_barang
-        $groupedBarang = $barangModel->groupByNamaBarang();
+
+
         $data = [
             'judul' => 'Master Barang | Akper "YKY" Yogyakarta',
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
-            'data_barang' => $dataBarang,
-            'grupBarang' => $groupedBarang
+
         ];
 
         // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
         return view('barang-lab/master_barang', $data);
+    }
+
+    public function getDataBarang()
+    {
+        $request = $this->request;
+
+        // Your code to fetch data from the model
+        $model = new BarangModel();
+        $data = $model->getBarang();
+
+        $json_data = array(
+            "draw"            => intval($request->getPost('draw')),
+            "recordsTotal"    => count($data),
+            "recordsFiltered" => count($data),
+            "data"            => $data
+        );
+
+        return $this->response->setJSON($json_data);
     }
 
     public function addBarang()
@@ -195,6 +210,8 @@ class Barang extends BaseController
         // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
         return view('barang-lab/daftar_barang', $data);
     }
+
+
 
     public function daftarBarangRusak()
     {

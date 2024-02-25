@@ -39,6 +39,24 @@ class DosenTendik extends BaseController
         return view('pengaturan/daftar_dosen_tendik', $data);
     }
 
+    public function getDataDosenTendik()
+    {
+        $request = $this->request;
+
+        // Your code to fetch data from the model
+        $model = new DosenTendikModel();
+        $data = $model->findAll();
+
+        $json_data = array(
+            "draw"            => intval($request->getPost('draw')),
+            "recordsTotal"    => count($data),
+            "recordsFiltered" => count($data),
+            "data"            => $data
+        );
+
+        return $this->response->setJSON($json_data);
+    }
+
     public function addDosenTendik()
     {
         Session();

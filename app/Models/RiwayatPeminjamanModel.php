@@ -31,10 +31,10 @@ class RiwayatPeminjamanModel extends Model
             ->findAll();
     }
 
-    public function getRiwayatPinjamBarangGroupByYear($year)
+    public function getRiwayatPeminjaman($year)
     {
         return $this->select('
-                YEAR(tbl_peminjaman.tanggal_pinjam) AS tahun_pinjam,
+                ROW_NUMBER() OVER() AS no,
                 tbl_peminjaman.id as peminjaman_id, 
                 kode_pinjam, 
                 nama_peminjam, 

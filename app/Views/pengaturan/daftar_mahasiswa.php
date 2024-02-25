@@ -52,29 +52,13 @@
                                         <th style="text-align: center;">NIM</th>
                                         <th style="text-align: center;">Nama Lengkap</th>
                                         <th width='10%' style="text-align: center;">
-
                                             <input type="checkbox" id="select-all-checkbox">
                                         </th> <!-- Checkbox master -->
                                         <th style="text-align: center;">AKSI</th>
                                     </tr>
                                 </thead>
                                 <div id="alertContainer" class="mt-3"></div>
-                                <tbody>
-                                    <?php $i = 1; ?>
-                                    <?php foreach ($data_mahasiswa as $dataMhs) : ?>
-                                        <tr class="searchable-row">
-                                            <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;"><?= $i++; ?></th>
-                                            <td width='20%' style="text-align: center; vertical-align: middle; font-size: 14px;"><?= $dataMhs['nim']; ?></td>
-                                            <td style="text-align: center; vertical-align: middle; font-size: 14px;"><?= $dataMhs['nama_lengkap']; ?></td>
-                                            <td style="text-align: center;">
-                                                <input type="checkbox" class="checkbox-item" data-id="<?= $dataMhs['id']; ?>">
-                                            </td>
-                                            <td width='10%' style="text-align: center; vertical-align: middle;">
-                                                <button type="button" class="btn btn-info btn-xs edit-btn" data-toggle="tooltip" data-placement="left" title="Edit" onclick="openEditModal(<?= $dataMhs['id']; ?>)"><i class='fas fa-edit'></i></button>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
+                                <tbody></tbody> <!-- Remove the PHP loop here -->
                             </table>
                         </div>
                     </div>
@@ -334,25 +318,6 @@
         });
     });
 </script>
-<script>
-    function searchPosts() {
-        var keyword = $('#searchInput').val();
-
-        $.ajax({
-            url: $('#searchInput').data('url'),
-            type: 'POST',
-            data: {
-                keyword: keyword
-            },
-            dataType: 'json',
-            success: function(data) {
-                // Perbarui tabel dengan hasil pencarian
-                $('#dataMhsTable tbody').html(data);
-            }
-        });
-    }
-</script>
-
 
 <!-- Fungsi Hapus Barang -->
 <script>
@@ -619,5 +584,52 @@
         }
     }
 </script>
+<script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#dataMhsTable').DataTable({
+            "ajax": {
+                "url": "<?php echo base_url('mahasiswa/fetchData'); ?>",
+                "type": "POST"
+            },
+            "columns": [{
+                    "data": "id"
+                },
+                {
+                    "data": "nim"
+                },
+                {
+                    "data": "nama_lengkap"
+                },
+                {
+                    "data": null,
+                    "render": function(data, type, row) {
+                        return '<input type="checkbox" class="checkbox-item" data-id="' + row.id + '">';
+                    },
+                    "className": "text-center"
+                },
+                {
+                    "data": null,
+                    "render": function(data, type, row) {
+                        return '<button type="button" class="btn btn-info btn-xs edit-btn" data-toggle="tooltip" data-placement="left" title="Edit" onclick="openEditModal(' + row.id + ')"><i class="fas fa-edit"></i></button>';
+                    },
+                    "className": "text-center",
+                    "orderable": false // Non-sortable column
+                }
+            ],
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "processing": true,
+
+        });
+
+    });
+</script>
+
 
 <?php echo view('tema/footer.php'); ?>

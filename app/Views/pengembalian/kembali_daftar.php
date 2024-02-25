@@ -1,5 +1,11 @@
 <?php echo view('tema/header.php'); ?>
-
+<style>
+    /* CSS untuk mengatur ukuran font menjadi 13px */
+    .table td,
+    .table th {
+        font-size: 13px;
+    }
+</style>
 <div class="content-wrapper">
     <div class="flash-data" data-flashdata="<?= (session()->getFlashData('pesanAddPengembalian')); ?>"></div><!-- Page Heading -->
     <div class="content-header">
@@ -74,82 +80,7 @@
                                 </thead>
                                 <div id="alertContainer" class="mt-3"></div>
                                 <tbody>
-                                    <?php $i = 1; // Deklarasi di luar loop foreach 
-                                    ?>
-                                    <?php foreach ($data_kembali as $dataKembali) : ?>
-                                        <tr>
-                                            <!-- Kolom yang lain tetap seperti sebelumnya -->
-                                            <th class="text-center" scope="row" style="vertical-align: middle; font-size: 13px;"><?= $i++; ?></th>
-                                            <td style="text-align: left; vertical-align: middle; font-size: 13px;"><?= $dataKembali['kode_pinjam']; ?>
-                                                <?= $dataKembali['kode_kembali']; ?></td>
-                                            <td style="text-align: left; vertical-align: middle; font-size: 13px;"><?= $dataKembali['nama_peminjam']; ?></td>
-                                            <td width='11%' style="text-align: left; vertical-align: middle; font-size: 13px;">
-                                                <?php
-                                                $tanggal_pinjam = \CodeIgniter\I18n\Time::parse($dataKembali['tanggal_pinjam'])
-                                                    ->setTimezone('Asia/Jakarta');
 
-                                                $nama_bulan = [
-                                                    'January' => 'Januari',
-                                                    'February' => 'Februari',
-                                                    'March' => 'Maret',
-                                                    'April' => 'April',
-                                                    'May' => 'Mei',
-                                                    'June' => 'Juni',
-                                                    'July' => 'Juli',
-                                                    'August' => 'Agustus',
-                                                    'September' => 'September',
-                                                    'October' => 'Oktober',
-                                                    'November' => 'November',
-                                                    'December' => 'Desember',
-                                                ];
-
-                                                $bulan = $nama_bulan[$tanggal_pinjam->format('F')];
-
-                                                echo $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y - H:i') . ' WIB';
-                                                ?>
-                                            </td>
-                                            <td width='11%' style="text-align: left; vertical-align: middle; font-size: 13px;">
-                                                <?php
-                                                $tanggal_kembali = \CodeIgniter\I18n\Time::parse($dataKembali['tanggal_kembali'])
-                                                    ->setTimezone('Asia/Jakarta');
-
-                                                $nama_bulan = [
-                                                    'January' => 'Januari',
-                                                    'February' => 'Februari',
-                                                    'March' => 'Maret',
-                                                    'April' => 'April',
-                                                    'May' => 'Mei',
-                                                    'June' => 'Juni',
-                                                    'July' => 'Juli',
-                                                    'August' => 'Agustus',
-                                                    'September' => 'September',
-                                                    'October' => 'Oktober',
-                                                    'November' => 'November',
-                                                    'December' => 'Desember',
-                                                ];
-
-                                                $bulan = $nama_bulan[$tanggal_kembali->format('F')];
-
-                                                echo $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y - H:i') . ' WIB';
-                                                ?>
-                                            </td>
-                                            <td width='20%' style="text-align: left; vertical-align: middle; font-size: 13px;"><?= $dataKembali['keperluan']; ?></td>
-                                            <td style="text-align: left; vertical-align: middle; font-size: 11px;">
-                                                <?php
-                                                // Pisahkan string nama_barang berdasarkan koma
-                                                $barangArray = explode(",", $dataKembali['nama_barang']);
-
-                                                // Tampilkan setiap barang dengan nomor urut menggunakan <p>
-                                                foreach ($barangArray as $key => $barang) {
-                                                    echo '<p>' . ($key + 1) . '. ' . htmlspecialchars($barang) . '</p>';
-                                                }
-                                                ?>
-                                            </td>
-                                            <td width='5%' class="text-center" style="text-align: center; vertical-align: middle;">
-                                                <a onclick=" hapus_data('<?= $dataKembali['riwayat_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
                                 </tbody>
 
                             </table>
@@ -258,4 +189,116 @@
         });
     }
 </script>
+
+<script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var table = $('#daftarRiwayatPengembalian').DataTable({
+            "processing": true,
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "ajax": {
+                "url": "<?= base_url('pengembalian/fetchData') ?>",
+                "type": "POST",
+                "data": function(d) {
+                    d.tahun = $('#tahun').val(); // Mengirim data filter ke server
+                }
+            },
+            "columns": [{
+                    "data": "no"
+                },
+                {
+                    "data": "kode_pinjam"
+                },
+                {
+                    "data": "nama_peminjam"
+                },
+                {
+                    "data": "tanggal_pinjam",
+                    "render": function(data, type, row) {
+                        var tanggal = new Date(data);
+                        var bulan = {
+                            'January': 'Januari',
+                            'February': 'Februari',
+                            'March': 'Maret',
+                            'April': 'April',
+                            'May': 'Mei',
+                            'June': 'Juni',
+                            'July': 'Juli',
+                            'August': 'Agustus',
+                            'September': 'September',
+                            'October': 'Oktober',
+                            'November': 'November',
+                            'December': 'Desember',
+                        };
+                        var namaBulan = bulan[tanggal.toLocaleString('en-us', {
+                            month: 'long'
+                        })];
+                        var waktu = tanggal.getDate() + ' ' + namaBulan + ' ' + tanggal.getFullYear() + ' - ' + ('0' + tanggal.getHours()).slice(-2) + ':' + ('0' + tanggal.getMinutes()).slice(-2) + ' WIB';
+                        return waktu;
+                    }
+                },
+                {
+                    "data": "tanggal_kembali",
+                    "render": function(data, type, row) {
+                        var tanggal = new Date(data);
+                        var bulan = {
+                            'January': 'Januari',
+                            'February': 'Februari',
+                            'March': 'Maret',
+                            'April': 'April',
+                            'May': 'Mei',
+                            'June': 'Juni',
+                            'July': 'Juli',
+                            'August': 'Agustus',
+                            'September': 'September',
+                            'October': 'Oktober',
+                            'November': 'November',
+                            'December': 'Desember',
+                        };
+                        var namaBulan = bulan[tanggal.toLocaleString('en-us', {
+                            month: 'long'
+                        })];
+                        var waktu = tanggal.getDate() + ' ' + namaBulan + ' ' + tanggal.getFullYear() + ' - ' + ('0' + tanggal.getHours()).slice(-2) + ':' + ('0' + tanggal.getMinutes()).slice(-2) + ' WIB';
+                        return waktu;
+                    }
+                },
+                {
+                    "data": "keperluan"
+                },
+                {
+                    "data": "nama_barang",
+                    "className": "text-left",
+                    "render": function(data, type, row) {
+                        var barangs = data.split(',');
+                        var html = '';
+                        barangs.forEach(function(barang, index) {
+                            html += (index + 1) + '. ' + barang + '<br>';
+                        });
+                        return html;
+                    }
+                },
+                {
+                    "data": null,
+                    "className": "text-center",
+                    "render": function(data, type, row) {
+                        return '<a onclick="hapus_data(' + row.riwayat_id + ')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>';
+                    }
+                }
+            ],
+            "rowCallback": function(row, data, index) {
+                var pageInfo = table.page.info();
+                $('td:eq(0)', row).html(pageInfo.start + index + 1);
+            }
+        });
+
+
+    });
+</script>
+
 <?php echo view('tema/footer.php'); ?>

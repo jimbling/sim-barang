@@ -25,19 +25,35 @@ class Mahasiswa extends BaseController
 
         $currentYear = date('Y');
         $csrfToken = csrf_hash();
-        $mahasiswaModel = new MahasiswaModel();
-        $dataMhs = $mahasiswaModel->getMahasiswa();
+
 
         $data = [
             'judul' => 'Data Mahasiswa | Akper "YKY" Yogyakarta',
             'currentYear' => $currentYear,
-            'data_mahasiswa' => $dataMhs,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
 
         ];
 
         // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
         return view('pengaturan/daftar_mahasiswa', $data);
+    }
+
+    public function getDataMahasiswa()
+    {
+        $request = $this->request;
+
+        // Your code to fetch data from the model
+        $model = new MahasiswaModel();
+        $data = $model->findAll(); // Example: Fetching all data, you may apply filters, sorting, etc. here
+
+        $json_data = array(
+            "draw"            => intval($request->getPost('draw')),
+            "recordsTotal"    => count($data),
+            "recordsFiltered" => count($data),
+            "data"            => $data   // Your data array
+        );
+
+        return $this->response->setJSON($json_data);
     }
 
     public function addMhs()

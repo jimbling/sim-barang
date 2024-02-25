@@ -75,19 +75,37 @@ class Pengembalian extends BaseController
         // Mengambil tahun-tahun unik dari tanggal_kembali di tabel
         $availableYears = $pengembalianbarangModel->getAvailableYears();
 
-        // Mendapatkan data berdasarkan tahun yang dipilih
-        $dataKembali = $pengembalianbarangModel->getDataByYear($selectedYear);
 
         $data = [
             'judul' => 'Daftar Pinjam | Akper "YKY" Yogyakarta',
             'currentYear' => $selectedYear,
             'selectedYear' => $selectedYear,
-            'data_kembali' => $dataKembali,
             'availableYears' => $availableYears,
         ];
 
         // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
         return view('pengembalian/kembali_daftar', $data);
+    }
+
+    public function getRiwayatPengembalianBarang()
+    {
+        $requestData = $this->request->getVar();
+        $draw = isset($requestData['draw']) ? intval($requestData['draw']) : 1; // Menggunakan nilai default 1 jika 'draw' tidak ada
+        $year = $requestData['tahun'] ?? date('Y');
+
+        // Panggil metode untuk mendapatkan data riwayat peminjaman berdasarkan tahun
+        $riwayatPengembalian = $this->pengembalianbarangModel->getRiwayatPengembalianBarang($year);
+
+        // Format data sesuai spesifikasi DataTables
+        $response = [
+            "draw" => $draw, // Menggunakan nilai 'draw' yang telah diperiksa
+            "recordsTotal" => count($riwayatPengembalian),
+            "recordsFiltered" => count($riwayatPengembalian), // Jumlah total data setelah filter (jika ada)
+            "data" => $riwayatPengembalian
+        ];
+
+        // Mengembalikan data dalam format JSON
+        return $this->response->setJSON($response);
     }
 
 

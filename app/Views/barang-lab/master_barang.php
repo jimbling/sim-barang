@@ -1,5 +1,11 @@
 <?php echo view('tema/header.php'); ?>
-
+<style>
+    /* CSS untuk mengatur ukuran font menjadi 13px */
+    .table td,
+    .table th {
+        font-size: 13px;
+    }
+</style>
 <div class="content-wrapper">
     <div class="flash-data" data-flashdata="<?= (session()->getFlashData('pesanEditBarang')); ?>"></div><!-- Page Heading -->
     <div class="content-header">
@@ -66,25 +72,9 @@
                                         <th style="text-align: center; vertical-align: middle;">AKSI</th>
                                     </tr>
                                 </thead>
-                                <div id="alertContainer" class="mt-3"></div>
+
                                 <tbody>
-                                    <?php $i = 1; ?>
-                                    <?php foreach ($data_barang as $all_post) : ?>
-                                        <tr class="searchable-row">
-                                            <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;"><?= $i++; ?></th>
-                                            <td style="text-align: left; vertical-align: middle; font-size: 14px;"><?= $all_post['kode_barang']; ?></td>
-                                            <td style="text-align: center; vertical-align: middle; font-size: 14px;"><?= $all_post['nama_barang']; ?></td>
-                                            <td width='10%' style="text-align: center; vertical-align: middle; font-size: 14px;"><?= $all_post['jumlah_barang']; ?></td>
-                                            <td width='10%' style="text-align: center; vertical-align: middle; font-size: 14px;"><?= $all_post['kondisi_barang']; ?></td>
-                                            <td width='10%' style="text-align: center; vertical-align: middle; font-size: 14px;"><?= $all_post['disewakan']; ?></td>
-                                            <td style="text-align: center;">
-                                                <input type="checkbox" class="checkbox-item" data-id="<?= $all_post['id']; ?>">
-                                            </td>
-                                            <td width='5%' class="text-center">
-                                                <button type="button" class="btn btn-info btn-xs edit-btn" style="vertical-align: middle;" onclick="openEditModal(<?= $all_post['id']; ?>)">Edit</button>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
+
                                 </tbody>
                             </table>
                         </div>
@@ -299,43 +289,7 @@
         });
     });
 </script>
-<script>
-    function searchOnEnter(event) {
-        if (event.key === "Enter") {
-            searchPosts();
-        }
-    }
 
-    function searchPosts() {
-        var input, filter, table, tr, td, i, txtValue, found;
-        input = document.getElementById("searchInput");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("dataBarangTable"); // Gantilah dengan ID tabel sebenarnya Anda
-        tr = table.getElementsByClassName("searchable-row");
-        found = false;
-
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[1]; // Mengambil kolom ke-3 (indeks 2) untuk mencari nama_barang
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                    found = true;
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-
-        // Menampilkan notifikasi dalam alert danger di bawah head table
-        var alertContainer = document.getElementById("alertContainer");
-        if (!found) {
-            alertContainer.innerHTML = '<div class="alert alert-danger" role="alert">Barang yang dicari tidak ditemukan.</div>';
-        } else {
-            alertContainer.innerHTML = ''; // Menghapus alert jika data ditemukan
-        }
-    }
-</script>
 
 
 <!-- Fungsi Hapus Barang -->
@@ -523,5 +477,74 @@
         });
     });
 </script>
+<script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#dataBarangTable').DataTable({
+            "processing": true,
+            "ajax": {
+                "url": "<?= base_url('barang/fetchData') ?>", // Ganti dengan URL yang sesuai
+                "type": "POST"
+            },
+            "columns": [{
+                    "data": null,
+                    "className": "text-center",
+                    "orderable": false,
+                    "render": function(data, type, row, meta) {
+                        // Mengatur nomor urut di kolom pertama
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    "data": "kode_barang",
+                    "className": "text-center"
+                },
+                {
+                    "data": "nama_barang",
+                    "className": "text-center"
+                },
+                {
+                    "data": "jumlah_barang",
+                    "className": "text-center"
+                },
+                {
+                    "data": "kondisi_barang",
+                    "className": "text-center"
+                },
+                {
+                    "data": "disewakan",
+                    "className": "text-center"
+                },
+                {
+                    "data": null,
+                    "className": "text-center",
+                    "orderable": false,
+                    "render": function(data, type, row) {
+                        var checkbox = '<input type="checkbox" class="checkbox-item" data-id="' + row.id + '">';
+                        return checkbox;
+                    }
+                },
+                {
+                    "data": null,
+                    "className": "text-center",
+                    "orderable": false,
+                    "render": function(data, type, row) {
+                        var editButton = '<button type="button" class="btn btn-info btn-xs edit-btn" style="vertical-align: middle;" onclick="openEditModal(' + row.id + ')">Edit</button>';
+                        return editButton;
+                    }
+                }
+            ]
+        });
+
+        // Checkbox item
+        $('.checkbox-item').change(function() {
+            if (!$(this).prop('checked')) {
+                $('#select-all-checkbox').prop('checked', false);
+            }
+        });
+    });
+</script>
+
+
 
 <?php echo view('tema/footer.php'); ?>

@@ -61,23 +61,7 @@
                                     </tr>
                                 </thead>
                                 <div id="alertContainer" class="mt-3"></div>
-                                <tbody>
-                                    <?php $i = 1; ?>
-                                    <?php foreach ($dosen_tendik as $data_dosen_tendik) : ?>
-                                        <tr class="searchable-row">
-                                            <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;"><?= $i++; ?></th>
-                                            <td width='20%' style="text-align: center; vertical-align: middle; font-size: 14px;"><?= $data_dosen_tendik['nik']; ?></td>
-                                            <td style="text-align: left; vertical-align: middle; font-size: 14px;"><?= $data_dosen_tendik['nama_lengkap']; ?></td>
-                                            <td style="text-align: center; vertical-align: middle; font-size: 14px;"><?= $data_dosen_tendik['jabatan']; ?></td>
-                                            <td style="text-align: center;">
-                                                <input type="checkbox" class="checkbox-item" data-id="<?= $data_dosen_tendik['id']; ?>">
-                                            </td>
-                                            <td width='10%' class="text-center">
-                                                <button type="button" class="btn btn-info btn-xs edit-btn" style="vertical-align: middle;" data-toggle="tooltip" data-placement="left" title="Edit" onclick="openEditModal(<?= $data_dosen_tendik['id']; ?>)"><i class='fas fa-edit'></i></button>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
@@ -685,6 +669,59 @@
             });
         }
     }
+</script>
+
+<script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#daftarDosenTendik').DataTable({
+            "ajax": {
+                "url": "<?php echo base_url('dosentendik/fetchData'); ?>",
+                "type": "POST"
+            },
+            "columns": [{
+                    "data": "id"
+                },
+                {
+                    "data": "nik"
+                },
+                {
+                    "data": "nama_lengkap",
+                    "className": "text-left" // Mengatur tata letak rata kiri untuk kolom nama_lengkap
+                },
+                {
+                    "data": "jabatan",
+                    "render": function(data, type, row) {
+                        // Jika jabatan adalah "Tenaga Kependidikan", tampilkan "Tendik", jika tidak, tampilkan jabatan asli
+                        return data === "Tenaga Kependidikan" ? "Tendik" : data;
+                    }
+                },
+                {
+                    "data": null,
+                    "render": function(data, type, row) {
+                        return '<input type="checkbox" class="checkbox-item" data-id="' + row.id + '">';
+                    },
+                    "className": "text-center"
+                },
+                {
+                    "data": null,
+                    "render": function(data, type, row) {
+                        return '<button type="button" class="btn btn-info btn-xs edit-btn" data-toggle="tooltip" data-placement="left" title="Edit" onclick="openEditModal(' + row.id + ')"><i class="fas fa-edit"></i></button>';
+                    },
+                    "className": "text-center",
+                    "orderable": false // Non-sortable column
+                }
+            ],
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "processing": true
+        });
+    });
 </script>
 
 <?php echo view('tema/footer.php'); ?>
