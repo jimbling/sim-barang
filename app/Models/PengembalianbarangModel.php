@@ -9,26 +9,45 @@ class PengembalianbarangModel extends Model
     protected $table = 'tbl_riwayat_pengembalian';
     protected $primaryKey = 'id'; // Nama kolom primary key
     protected $useAutoIncrement = true; // Pastikan ini true
-    protected $allowedFields = ['id', 'user_id', 'peminjaman_id', 'kode_kembali', 'tanggal_kembali', 'keterangan', 'nama_barang'];
+    protected $allowedFields = ['id', 'peminjaman_id', 'kode_kembali', 'tanggal_kembali', 'keterangan', 'nama_barang'];
 
-    public function getRiwayatPengembalianBarang($year)
+    public function getRiwayatPengembalianBarang($year, $userId = null)
     {
         // Menentukan tabel dan kolom yang akan digunakan
-        $this->select('ROW_NUMBER() OVER() AS no, tbl_riwayat_pengembalian.id as riwayat_id, tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.keperluan, kode_kembali, tanggal_kembali, keterangan, nama_barang');
+        $this->select('ROW_NUMBER() OVER() AS no, tbl_riwayat_pengembalian.id as riwayat_id, tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.kode_pinjam,tbl_peminjaman.user_id, tbl_peminjaman.nama_peminjam, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.keperluan, kode_kembali, tanggal_kembali, keterangan, nama_barang');
 
         // Menggunakan metode join untuk menggabungkan tbl_riwayat_pengembalian dengan tbl_peminjaman
         $this->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_pengembalian.peminjaman_id');
 
         // Menambahkan orderBy untuk mengurutkan berdasarkan tanggal_kembali secara descending
-        $this->orderBy('tanggal_kembali', 'ASC');
+        $this->orderBy('tanggal_kembali', 'DESC');
 
         // Filter berdasarkan tahun
         $this->like('tanggal_kembali', $year, 'after');
+
+        // Jika $userId tidak null (pengguna bukan admin), filter berdasarkan user_id
+        if ($userId !== null) {
+            $this->where('tbl_peminjaman.user_id', $userId);
+        }
 
         // Mengambil data yang dibutuhkan
         $result = $this->findAll();
 
         return $result;
+    }
+
+    private function isAdmin($userId)
+    {
+        // Query ke database atau model untuk mendapatkan level pengguna berdasarkan user_id
+        $user = $this->db->table('tbl_users')->where('id', $userId)->get()->getRow();
+
+        // Jika pengguna tidak ditemukan, atau level tidak ada, maka tidak dianggap sebagai admin
+        if (!$user || !isset($user->level)) {
+            return false;
+        }
+
+        // Jika level pengguna adalah 'Admin', maka dianggap sebagai admin
+        return ($user->level == 'Admin');
     }
 
 
@@ -131,5 +150,43 @@ class PengembalianbarangModel extends Model
         }
 
         return $years;
+    }
+
+    public function getLastIdFromAngka()
+    {
+        $query = $this->db->query("SELECT id_angka FROM tbl_angka_kembali ORDER BY id_angka DESC LIMIT 1");
+        $row = $query->getRow();
+
+        if ($row) {
+            return $row->id_angka;
+        }
+
+        return 0; // Jika tabel kosong
+    }
+
+    public function generateKodeKembali()
+    {
+        // Ganti getLastId() dengan getLastIdFromAngka() untuk mengambil last ID dari tbl_angka
+        $lastId = $this->getLastIdFromAngka();
+
+        // Menghasilkan kode kembali dengan format yang sesuai
+        $nextId = $lastId + 1;
+        $kode_kembali = 'K-YKY-LAB-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+
+        return $kode_kembali;
+    }
+
+    public function updateIdAngka()
+    {
+        $angkaModel = new \App\Models\AngkakembaliModel();
+
+        // Dapatkan nilai terakhir dari tbl_angka
+        $lastIdAngka = $angkaModel->getLastIdFromAngka();
+
+        // Tambahkan 1
+        $newIdAngka = $lastIdAngka + 1;
+
+        // Update nilai pada tbl_angka
+        $angkaModel->update($lastIdAngka, ['id_angka' => $newIdAngka]);
     }
 }

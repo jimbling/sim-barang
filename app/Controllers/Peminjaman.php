@@ -218,11 +218,26 @@ class Peminjaman extends BaseController
             return redirect()->to('pinjam/form')->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        // Ambil nilai nama_peminjam dari form
+        $nama_peminjam = $this->request->getPost('nama_peminjam');
 
+        // Pisahkan nilai nim/nik dari nama
+        $nilai_terpisah = explode('-', $nama_peminjam);
+
+        // Ambil nim/nik
+        $nim_nik = $nilai_terpisah[0];
         // Ambil data dari formulir
+        // Load model UserModel
+        $userModel = new \App\Models\UserModel();
+
+        // Cari user_id berdasarkan nim/nik di kolom user_nama
+        $user_id = $userModel->getUserIDByNimNik($nim_nik);
+
+        // Jika user_id ditemukan, gunakan nilainya. Jika tidak, biarkan null.
         $dataPeminjaman = [
             'kode_pinjam' => $this->request->getPost('kode_pinjam'),
-            'nama_peminjam' => $this->request->getPost('nama_peminjam'),
+            'nama_peminjam' => $nama_peminjam,
+            'user_id' => $user_id,
             'nama_ruangan' => $this->request->getPost('nama_ruangan'),
             'nama_dosen' => $this->request->getPost('nama_dosen'),
             'tanggal_pinjam' => date('Y-m-d H:i:s'), // Mendapatkan tanggal dan waktu saat ini

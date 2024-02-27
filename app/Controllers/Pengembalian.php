@@ -89,12 +89,22 @@ class Pengembalian extends BaseController
 
     public function getRiwayatPengembalianBarang()
     {
+        // Dapatkan user_id dan role dari sesi
+        $userId = session()->get('id');
+        $userRole = session()->get('level');
+
         $requestData = $this->request->getVar();
         $draw = isset($requestData['draw']) ? intval($requestData['draw']) : 1; // Menggunakan nilai default 1 jika 'draw' tidak ada
         $year = $requestData['tahun'] ?? date('Y');
 
         // Panggil metode untuk mendapatkan data riwayat peminjaman berdasarkan tahun
-        $riwayatPengembalian = $this->pengembalianbarangModel->getRiwayatPengembalianBarang($year);
+        if ($userRole == 'Admin') {
+            // Jika pengguna adalah admin, tampilkan semua data tanpa filter user_id
+            $riwayatPengembalian = $this->pengembalianbarangModel->getRiwayatPengembalianBarang($year);
+        } else {
+            // Jika pengguna bukan admin, filter data berdasarkan user_id
+            $riwayatPengembalian = $this->pengembalianbarangModel->getRiwayatPengembalianBarang($year, $userId);
+        }
 
         // Format data sesuai spesifikasi DataTables
         $response = [
@@ -107,7 +117,6 @@ class Pengembalian extends BaseController
         // Mengembalikan data dalam format JSON
         return $this->response->setJSON($response);
     }
-
 
     public function addKembali()
     {
@@ -123,7 +132,7 @@ class Pengembalian extends BaseController
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
             'data_peminjaman' => $dataPeminjaman,
-            'kode_pinjam' => $this->peminjamanModel->generateKodePinjam(),
+            'kode_kembali' => $this->pengembalianbarangModel->generateKodeKembali(),
         ];
 
         // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
@@ -136,6 +145,7 @@ class Pengembalian extends BaseController
         $peminjamanId = $this->request->getPost('peminjaman_id');
         $keterangan = $this->request->getPost('keterangan');
         $nama_barang = $this->request->getPost('nama_barang');
+        $kode_kembali = $this->request->getPost('kode_kembali');
 
         // Dapatkan data peminjaman untuk mendapatkan nama_peminjam dan tanggal_pinjam
         $peminjamanModel = new PeminjamanModel();
@@ -154,12 +164,15 @@ class Pengembalian extends BaseController
         $data = [
             'peminjaman_id' => $peminjamanId,
             'keterangan' => $keterangan,
+            'kode_kembali' => $kode_kembali,
             'nama_barang' => $nama_barang,
             'tanggal_kembali' => date('Y-m-d H:i:s'), // Tanggal dan waktu saat ini
             'tanggal_pinjam' => $tanggal_pinjam // Tanggal pinjam dari data peminjaman
         ];
         $pengembalianbarangModel->insertPengembalianBarang($data);
 
+        // Update nilai pada tbl_angka
+        $this->pengembalianbarangModel->updateIdAngka();
         // Hapus data peminjaman yang sesuai
         $this->hapusPeminjaman($peminjamanId);
 

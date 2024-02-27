@@ -12,6 +12,21 @@ class UserModel extends Model
     protected $primaryKey = 'id';
     protected $allowedFields = ['id', 'user_nama', 'user_password', 'level', 'full_nama', 'type', 'created_at', 'updated_at'];
 
+
+    public function getUserIDByNimNik($nim_nik)
+    {
+        // Cari user berdasarkan nim/nik di kolom user_nama
+        $user = $this->where('user_nama', $nim_nik)->first();
+
+        // Jika user ditemukan, kembalikan user_id
+        if ($user) {
+            return $user['id'];
+        }
+
+        // Jika tidak ditemukan, kembalikan null
+        return null;
+    }
+
     public function getUserByType($type)
     {
         return $this->where('type', $type)->findAll();

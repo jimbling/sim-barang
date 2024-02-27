@@ -135,7 +135,14 @@ $level = $session->get('level');
                                     </p>
                                 </a>
                             </li>
-
+                            <li class="nav-item">
+                                <a href="/pengeluaran/bhp" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pengeluaran/bhp') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
+                                    <i class="far fa-list-alt nav-icon"></i>
+                                    <p>
+                                        Permintaan BHP
+                                    </p>
+                                </a>
+                            </li>
                             <li class="nav-item menu-close ">
                                 <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/kembali/riwayat' || $_SERVER['REQUEST_URI'] == '/pengeluaran/tambahBaru' || $_SERVER['REQUEST_URI'] == '/pengeluaran/daftar') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-people-carry"></i>
@@ -187,14 +194,7 @@ $level = $session->get('level');
                                 </ul>
 
                             </li>
-                            <li class="nav-item">
-                                <a href="/pengeluaran/bhp" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pengeluaran/bhp') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
-                                    <i class="far fa-list-alt nav-icon"></i>
-                                    <p>
-                                        Permintaan BHP
-                                    </p>
-                                </a>
-                            </li>
+
 
 
 

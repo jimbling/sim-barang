@@ -26,6 +26,7 @@
                             <div class="card-body">
                                 <form action="<?= base_url('pengembalian/proses') ?>" method="post">
                                     <input type="hidden" name="<?= csrf_token() ?>" value="<?= $csrfToken ?>">
+                                    <input type="hidden" name="kode_kembali" value="<?= $kode_kembali ?>">
                                     <input type="hidden" id="peminjaman_id" name="peminjaman_id" value="">
                                     <input type="hidden" id="barang_id" name="barang_id[]" value="">
                                     <div class="row">

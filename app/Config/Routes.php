@@ -67,6 +67,7 @@ $routes->post('/data/mahasiswa/akun', 'Mahasiswa::buatAkun');
 $routes->post('peminjaman/proses', 'Peminjaman::prosesPeminjaman');
 $routes->post('/pinjam/hapus/(:num)', 'Peminjaman::hapus/$1');
 $routes->get('cetak_pinjam/(:num)', 'Peminjaman::cetakPinjamPersediaan/$1');
+$routes->get('peminjaman/hps/(:num)', 'Pengembalian::hapusPeminjaman/$1');
 
 
 $routes->get('/reservasi', 'Reservasi::index');

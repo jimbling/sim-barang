@@ -34,7 +34,6 @@
                                             <div class="col-sm-4">
                                                 <strong> # Kode Pinjam: <?= $kode_pinjam ?> </strong>
                                                 <input type="hidden" name="kode_pinjam" value="<?= $kode_pinjam ?>">
-
                                             </div>
 
                                         </div>
@@ -52,6 +51,7 @@
                                                         <option value="<?= $dosenTendik['nik'] ?>-<?= $dosenTendik['nama_lengkap'] ?>"><?= $dosenTendik['nik'] ?>-<?= $dosenTendik['nama_lengkap'] ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
+
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -272,6 +272,26 @@
         });
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var selectPeminjam = document.getElementById('pinjam_nama_peminjam');
+        var hiddenInputNimNik = document.getElementById('nim_nik');
 
+        // Tambahkan event listener untuk perubahan pada elemen select
+        selectPeminjam.addEventListener('change', function() {
+            // Mendapatkan nilai yang dipilih dari opsi select
+            var selectedOption = selectPeminjam.options[selectPeminjam.selectedIndex].value;
+
+            // Pisahkan nilai menjadi array
+            var selectedValues = selectedOption.split('-');
+
+            // Ambil nim/nik (indeks ke-1) dan simpan ke dalam input hidden
+            hiddenInputNimNik.value = selectedValues[1];
+
+            // Cetak nim/nik yang dipilih ke konsol
+            console.log("NIM/NIK yang dipilih:", selectedValues[1]);
+        });
+    });
+</script>
 
 <?php echo view('tema/footer.php'); ?>

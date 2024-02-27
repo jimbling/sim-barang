@@ -69,7 +69,7 @@
                                 <thead class="thead-dark" style="font-size: 13px;">
                                     <tr>
                                         <th width='3%'>No</th>
-                                        <th style="text-align: center; font-size: 13px;">Kode</th>
+                                        <th style="text-align: center; font-size: 13px;">Kode Kembali</th>
                                         <th style="text-align: center; font-size: 13px;">Nama Peminjam</th>
                                         <th style="text-align: center; font-size: 13px;">Tanggal Pinjam</th>
                                         <th style="text-align: center; font-size: 13px;">Tanggal Kembali</th>
@@ -213,7 +213,7 @@
                     "data": "no"
                 },
                 {
-                    "data": "kode_pinjam"
+                    "data": "kode_kembali"
                 },
                 {
                     "data": "nama_peminjam"
