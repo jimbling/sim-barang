@@ -25,11 +25,17 @@ class PengeluaranmurniModel extends Model
         // Dapatkan user_id dari sesi
         $session = session();
         $user_id = $session->get('id');
+        $user_level = $session->get('level');
 
-        // Menggunakan orderBy untuk mengurutkan berdasarkan kolom 'created_at' (ganti dengan kolom yang sesuai)
-        return $this->orderBy('created_at', 'DESC')
-            ->where('user_id', $user_id) // Filter berdasarkan user_id dari sesi
-            ->findAll();
+        // Jika pengguna adalah admin, tampilkan semua data
+        if ($user_level == 'Admin') {
+            return $this->orderBy('created_at', 'DESC')->findAll();
+        } else {
+            // Filter berdasarkan user_id dari sesi
+            return $this->orderBy('created_at', 'DESC')
+                ->where('user_id', $user_id)
+                ->findAll();
+        }
     }
 
     public function insertPengeluaranMurni($data)
