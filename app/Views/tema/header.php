@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="../../assets/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
     <link rel="stylesheet" href="../../assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <style>
         #updateButton,
         #batalButton {
@@ -429,8 +429,12 @@ $level = $session->get('level');
 
 
                                     </li>
+
                                 </ul>
+
+
                             </li>
+
                     </ul>
                 <?php endif; ?>
                 </nav>

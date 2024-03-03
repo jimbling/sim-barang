@@ -144,8 +144,23 @@
                                             </label>
                                             <div class="col-12">
                                                 <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input" data-target="#reservationdatetime" name="tanggal_penggunaan" required />
+                                                    <input type="text" class="form-control datetimepicker-input" data-target="#reservationdatetime" name="tanggal_penggunaan" />
                                                     <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                                <small class="text-bold text-success"> AM: 00:00-11:59 | PM: 12:00-23:59</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+
+                                            <label for="tanggal_penggunaa" class="col-12 col-form-label">
+                                                Tanggal Pengembalian
+                                            </label>
+                                            <div class="col-12">
+                                                <div class="input-group date" id="reservationkembali" data-target-input="nearest">
+                                                    <input type="text" class="form-control datetimepicker-input" data-target="#reservationkembali" name="tanggal_pengembalian" />
+                                                    <div class="input-group-append" data-target="#reservationkembali" data-toggle="datetimepicker">
                                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                     </div>
                                                 </div>
@@ -154,7 +169,9 @@
                                         </div>
 
 
+
                                     </div>
+
 
                                     <div class="col mt-4">
                                         <!-- Pilihan Barang -->
@@ -249,6 +266,20 @@
             var keperluan = $("#pinjam_keperluan").val();
             if (keperluan === '') {
                 toastr.error('Penggunaan/Keperluan harus diisi!');
+                return; // Berhenti jika validasi gagal
+            }
+
+            // Validasi pinjam_keperluan
+            var tanggal_penggunaan = $("#reservationdatetime").val();
+            if (keperluan === '') {
+                toastr.error('Tanggal Penggunaan harus diisi!');
+                return; // Berhenti jika validasi gagal
+            }
+
+            // Validasi pinjam_keperluan
+            var tanggal_pengembalian = $("#reservationkembali").val();
+            if (keperluan === '') {
+                toastr.error('Tanggal Pengembalian harus diisi!');
                 return; // Berhenti jika validasi gagal
             }
 

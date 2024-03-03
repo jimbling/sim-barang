@@ -59,6 +59,7 @@ class Home extends BaseController
     {
         session();
         $currentYear = date('Y');
+        $csrfToken = csrf_hash();
         $peminjamanbarangModel = new PeminjamanbarangModel();
         $barangByStatus = $peminjamanbarangModel->getPeminjamanBarang();
 
@@ -94,6 +95,7 @@ class Home extends BaseController
         $data = [
             'judul' => 'SIM Barang Lab Keperawatan | Akper "YKY" Yogyakarta',
             'currentYear' => $currentYear,
+            'csrfToken' => $csrfToken,
             'data_peminjaman' => $barangByStatus,
             'data_pengeluaran' => $dataPengeluaran,
             'jumlah_peminjaman' => $dataPeminjaman,
@@ -111,24 +113,26 @@ class Home extends BaseController
 
     public function dashboard_user()
     {
-
         $currentYear = date('Y');
         $peminjamanbarangModel = new PeminjamanbarangModel();
         $barangByStatus = $peminjamanbarangModel->getPeminjamanBarang();
 
+        // Memanggil fungsi untuk menghitung jumlah peminjaman berdasarkan user_id
+        $userId = session()->get('id'); // Ambil user_id dari sesi
+        $jumlahPeminjaman = $peminjamanbarangModel->countUniquePeminjamanByDate($userId);
+
         $pengeluaranModel = new PengeluaranModel();
         $dataPengeluaran = $pengeluaranModel->getAllPengeluaran();
-
 
         $data = [
             'judul' => 'SIM Barang Lab Keperawatan | Akper "YKY" Yogyakarta',
             'currentYear' => $currentYear,
             'data_peminjaman' => $barangByStatus,
             'data_pengeluaran' =>  $dataPengeluaran,
-
+            'jumlah_peminjaman' => $jumlahPeminjaman, // Menambahkan jumlah peminjaman ke dalam array data
         ];
-
-        // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
+        dd($data);
+        // Kirim data ke view atau lakukan hal lain sesuai kebutuhan
         return view('dashboard_user', $data);
     }
 
@@ -145,5 +149,30 @@ class Home extends BaseController
 
         // Kirim data ke view atau lakukan hal lain sesuai kebutuhan
         return view('tema/header', $data);
+    }
+
+    public function update_tanggal_kembali($id)
+    {
+        if ($this->request->isAJAX()) {
+            $tanggalKembali = $this->request->getPost('tanggalKembali');
+
+            // Ubah format tanggal
+            $tanggalKembali = date('Y-m-d H:i:s', strtotime($tanggalKembali));
+
+            $peminjamanModel = new PeminjamanModel();
+            $peminjamanModel->updateTanggalKembali($id, $tanggalKembali);
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Tanggal kembali berhasil diperbarui.']);
+        } else {
+            // Handle request if not AJAX
+            return redirect()->back();
+        }
+    }
+
+    public function get_data_peminjaman($id)
+    {
+        $peminjamanModel = new PeminjamanModel();
+        $data = $peminjamanModel->find($id); // Mengambil data berdasarkan ID
+
+        return $this->response->setJSON($data); // Mengembalikan data dalam format JSON
     }
 }

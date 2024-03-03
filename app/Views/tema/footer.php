@@ -300,6 +300,19 @@
             }
         });
 
+        //Date and time picker
+        $('#reservationkembali').datetimepicker({
+            icons: {
+                time: 'far fa-clock'
+            }
+        });
+        //Date and time picker
+        $('#editTanggalKembali').datetimepicker({
+            icons: {
+                time: 'far fa-clock'
+            },
+        });
+
     })
 </script>
 <script>

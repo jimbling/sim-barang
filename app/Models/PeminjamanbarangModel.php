@@ -32,6 +32,7 @@ class PeminjamanbarangModel extends Model
                 nama_peminjam, 
                 nama_ruangan, 
                 tanggal_pinjam, 
+                tanggal_pengembalian,
                 keperluan, 
                 GROUP_CONCAT(tbl_barang.id) as barang_ids,
                 GROUP_CONCAT(CONCAT(tbl_barang.nama_barang, " - ", tbl_barang.kode_barang)) as barang_dipinjam,
@@ -49,6 +50,21 @@ class PeminjamanbarangModel extends Model
 
         return $query->findAll();
     }
+
+    public function countUniquePeminjamanByDate($userId)
+    {
+        // Kueri untuk menghitung jumlah peminjaman unik berdasarkan ID dengan kondisi tanggal_pengembalian
+        $query = $this->select('COUNT(DISTINCT tbl_peminjaman.id) as jumlah_peminjaman, tbl_peminjaman.kode_pinjam')
+            ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_peminjaman_barang.peminjaman_id')
+            ->where('tbl_peminjaman.user_id', $userId) // Filter berdasarkan user_id
+            ->where("(DATE(tbl_peminjaman.tanggal_pengembalian) = CURDATE() OR DATE(tbl_peminjaman.tanggal_pengembalian) < CURDATE())")
+            ->groupBy('tbl_peminjaman.kode_pinjam'); // Group by kode_pinjam
+
+        $results = $query->findAll(); // Ambil semua hasil dari kueri
+
+        return $results; // Kembalikan hasil
+    }
+
 
     public function getPeminjamanBarang24Jam()
     {
@@ -70,10 +86,12 @@ class PeminjamanbarangModel extends Model
             nama_peminjam, 
             nama_ruangan, 
             tanggal_pinjam, 
+            tanggal_pengembalian,
             keperluan, 
             GROUP_CONCAT(tbl_barang.id) as barang_ids,
             GROUP_CONCAT(CONCAT(tbl_barang.nama_barang, " - ", tbl_barang.kode_barang)) as barang_dipinjam,
             tbl_peminjaman_barang.barang_id,
+            tbl_peminjaman_barang.id,
             tbl_peminjaman.created_at')
             ->join('tbl_barang', 'tbl_barang.id = tbl_peminjaman_barang.barang_id')
             ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_peminjaman_barang.peminjaman_id')
@@ -100,6 +118,7 @@ class PeminjamanbarangModel extends Model
                     nama_peminjam, 
                     nama_ruangan, 
                     tanggal_pinjam, 
+                    tanggal_pengembalian,
                     nama_dosen,
                     keperluan, 
                     GROUP_CONCAT(tbl_barang.id) as barang_ids,

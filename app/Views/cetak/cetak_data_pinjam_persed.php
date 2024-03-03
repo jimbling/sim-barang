@@ -84,6 +84,38 @@
                         </td>
                     </tr>
                     <tr>
+                        <td width="30%">Tanggal Pengembalian </td>
+                        <td width="5%">:</td>
+                        <td><?php
+                            $tanggal_kembali = \CodeIgniter\I18n\Time::parse($peminjamanBarangDetails[0]['tanggal_pengembalian'])
+                                ->setTimezone('Asia/Jakarta');
+
+                            $nama_bulan = [
+                                'January' => 'Januari',
+                                'February' => 'Februari',
+                                'March' => 'Maret',
+                                'April' => 'April',
+                                'May' => 'Mei',
+                                'June' => 'Juni',
+                                'July' => 'Juli',
+                                'August' => 'Agustus',
+                                'September' => 'September',
+                                'October' => 'Oktober',
+                                'November' => 'November',
+                                'December' => 'Desember',
+                            ];
+
+                            $bulan = $nama_bulan[$tanggal_kembali->format('F')];
+
+                            // Format the date without using Carbon
+                            $formattedDate = $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y - H:i') . ' WIB';
+
+                            echo $formattedDate;
+                            ?>
+
+                        </td>
+                    </tr>
+                    <tr>
                         <td width="30%">Nama Dosen </td>
                         <td width="5%">:</td>
                         <td><?= $peminjamanBarangDetails[0]['nama_dosen']; ?></td>

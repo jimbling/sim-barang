@@ -10,7 +10,15 @@ class PeminjamanModel extends Model
     protected $primaryKey = 'id'; // Nama kolom primary key
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $useTimestamps = true; // Sesuaikan dengan kebutuhan Anda
-    protected $allowedFields = ['id', 'user_id', 'kode_pinjam', 'nama_peminjam', 'nama_ruangan', 'tanggal_pinjam', 'keperluan', 'nama_dosen', 'created_at'];
+    protected $allowedFields = ['id', 'user_id', 'kode_pinjam', 'nama_peminjam', 'nama_ruangan', 'tanggal_pinjam', 'tanggal_pengembalian', 'keperluan', 'nama_dosen', 'created_at'];
+
+    public function updateTanggalKembali($id, $tanggalKembali)
+    {
+        // Lakukan pembaruan tanggal_kembali dalam database
+        $this->where('id', $id)
+            ->set('tanggal_pengembalian', $tanggalKembali)
+            ->update();
+    }
 
     public function getByKeperluanKeyword($keyword, $year = null)
     {

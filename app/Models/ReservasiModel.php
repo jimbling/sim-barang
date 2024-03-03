@@ -10,27 +10,12 @@ class ReservasiModel extends Model
     protected $primaryKey = 'id'; // Nama kolom primary key
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $useTimestamps = true; // Sesuaikan dengan kebutuhan Anda
-    protected $allowedFields = ['id', 'user_id', 'kode_reservasi', 'nama_peminjam', 'nama_ruangan', 'tanggal_pinjam', 'tanggal_penggunaan', 'keperluan', 'nama_dosen', 'created_at', 'updated_at', 'confirmed'];
+    protected $allowedFields = ['id', 'user_id', 'kode_reservasi', 'nama_peminjam', 'nama_ruangan', 'tanggal_pinjam', 'tanggal_pengembalian', 'tanggal_penggunaan', 'keperluan', 'nama_dosen', 'created_at', 'updated_at', 'confirmed'];
 
 
 
 
-    private function kirimEmailAdmin($dataPeminjaman)
-    {
-        $email = \Config\Services::email();
 
-        $email->setTo('jimbling05@gmail.com'); // Ganti dengan email admin Anda
-        $email->setFrom('rizaakun@gmail.com', 'Administrator');
-        $email->setSubject('New Reservation Added');
-        $email->setMessage('A new reservation has been added to the database.' . json_encode($dataPeminjaman));
-
-        if ($email->send()) {
-            return true;
-        } else {
-            echo $email->printDebugger(); // Untuk debugging jika ada kesalahan
-            return false;
-        }
-    }
     public function insertReservasi($data)
     {
         // Simpan data peminjaman

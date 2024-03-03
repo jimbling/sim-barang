@@ -98,7 +98,7 @@
 
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box">
-                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-clipboard-check"></i></span>
+                    <span class="info-box-icon bg-olive elevation-1"><i class="fas fa-clipboard-check"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Peminjaman Aktif</span>
                         <h5><span class="info-box-number">
@@ -145,17 +145,18 @@
         <div class="row">
             <div class="col-lg-7">
                 <div class="card">
-                    <div class="card-header border-0 bg-danger ">
+                    <div class="card-header border-0 bg-olive ">
                         <h3 class="card-title">Data Peminjaman dan Permintaan Barang Aktif</h3>
                     </div>
                     <div class="card-body table-responsive p-0 table-sm">
                         <table class="table table-striped">
-                            <thead>
+                            <thead style="font-size: 13px;">
                                 <tr>
                                     <th>Kode Pinjam</th>
-                                    <th>Tanggal Peminjaman</th>
-                                    <th>Nama Peminjam</th>
-                                    <th>Detail</th>
+                                    <th>Tanggal Pinjam</th>
+                                    <th>Tanggal Kembali</th>
+                                    <th>Nama</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -177,7 +178,7 @@
                                 ?>
                                         <tr>
                                             <!-- Kolom yang lain tetap seperti sebelumnya -->
-                                            <td style="text-align: center; vertical-align: middle; font-size: 13px;">
+                                            <td width="25%" style="text-align: left; vertical-align: middle; font-size: 13px;">
                                                 <?= $dataPinjam['kode_pinjam']; ?>
                                                 <?php
                                                 $created_at = strtotime($dataPinjam['created_at']);
@@ -189,10 +190,10 @@
                                                 // Tampilkan badge "Baru" jika selisih waktu kurang dari 60 menit
                                                 if ($selisih_detik < 60 * 60) : // 60 detik * 60 menit = 1 jam
                                                 ?>
-                                                    <span class="badge badge-danger">BARU</span>
+                                                    <span class="badge badge-danger float-left">BARU</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td style="text-align: center; vertical-align: middle; font-size: 13px;">
+                                            <td width="20%" style="text-align: center; vertical-align: middle; font-size: 13px;">
                                                 <?php
                                                 $tanggal_pinjam = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pinjam'])
                                                     ->setTimezone('Asia/Jakarta');
@@ -217,12 +218,54 @@
                                                 echo $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y - H:i') . ' WIB';
                                                 ?>
                                             </td>
+                                            <td width="20%" style="text-align: center; vertical-align: middle; font-size: 13px;">
+                                                <?php
+                                                $tanggal_kembali = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
+
+                                                $nama_bulan = [
+                                                    'January' => 'Januari',
+                                                    'February' => 'Februari',
+                                                    'March' => 'Maret',
+                                                    'April' => 'April',
+                                                    'May' => 'Mei',
+                                                    'June' => 'Juni',
+                                                    'July' => 'Juli',
+                                                    'August' => 'Agustus',
+                                                    'September' => 'September',
+                                                    'October' => 'Oktober',
+                                                    'November' => 'November',
+                                                    'December' => 'Desember',
+                                                ];
+
+                                                $bulan = $nama_bulan[$tanggal_kembali->format('F')];
+                                                $waktu = $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y - H:i') . ' WIB';
+
+                                                // Jika tanggal pengembalian adalah hari ini atau melebihi tanggal saat ini, tambahkan badge "JATUH TEMPO"
+                                                if ($tanggal_kembali->toDateString() === date('Y-m-d') || $tanggal_kembali < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
+                                                    $waktu .= '<br><span class="badge badge-danger">JATUH TEMPO</span>';
+                                                }
+
+                                                echo $waktu;
+                                                ?>
+                                            </td>
                                             <td style="text-align: center; vertical-align: middle; font-size: 13px;"><?= $dataPinjam['nama_peminjam']; ?></td>
 
                                             <td width='10%' class="text-center" style="text-align: center; vertical-align: middle;">
                                                 <a href="<?= base_url('cetak_pinjam/' . $dataPinjam['peminjaman_id']); ?>" target="_blank">
-                                                    <i class="fas fa-print" style='color:#D24545'></i>
+                                                    <i class="fas fa-print" data-toggle="tooltip" data-placement="top" title="Cetak" style='color:#D24545'></i>
                                                 </a>
+                                                <?php
+                                                $tanggal_pengembalian = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
+
+                                                // Periksa apakah tanggal pengembalian adalah hari ini atau sudah melebihi tanggal saat ini
+                                                if ($tanggal_pengembalian->toDateString() === date('Y-m-d') || $tanggal_pengembalian < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
+                                                ?>
+                                                    <button class="btn editBtn" data-id="<?= $dataPinjam['peminjaman_id']; ?>" data-toggle="modal" data-target="#editModal">
+                                                        <i class='fas fa-retweet' style='color:#1D24CA' data-toggle="tooltip" data-placement="top" title="Perpanjang"></i>
+                                                    </button>
+                                                <?php
+                                                }
+                                                ?>
                                             </td>
 
                                         </tr>
@@ -244,11 +287,11 @@
                     </div>
                     <div class="card-body table-responsive p-0 table-sm">
                         <table class="table table-striped">
-                            <thead>
+                            <thead style="font-size: 13px;">
                                 <tr>
                                     <th>Kode Pinjam</th>
-                                    <th>Tanggal Peminjaman</th>
-                                    <th>Nama Peminjam</th>
+                                    <th>Tanggal Pinjam</th>
+                                    <th>Nama</th>
                                     <th>Detail</th>
                                 </tr>
                             </thead>
@@ -323,23 +366,58 @@
                             <a href="#" class="btn btn-tool btn-sm" id="downloadButton">
                                 <i class="fas fa-download"></i>
                             </a>
-
                         </div>
-
                     </div>
                     <div class="card-body">
                         <canvas id="grafikKeperluan" width="400" height="200"></canvas>
                     </div>
-
                 </div>
             </div>
-
         </div>
 
 
 
     </div>
 </div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Tanggal Kembali</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editId" name="editId">
+                    <div class="form-group">
+
+                        <label for="tanggal_penggunaa" class="col-12 col-form-label">
+                            Tanggal Pengembalian
+                        </label>
+                        <div class="col-12">
+                            <div class="input-group date" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#editTanggalKembali" id="editTanggalKembali" name="editTanggalKembali" />
+                                <div class="input-group-append" data-target="#editTanggalKembali" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                            <small class="text-bold text-success"> AM: 00:00-11:59 | PM: 12:00-23:59</small>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="updateTanggalKembali()">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <aside class="control-sidebar control-sidebar-dark">
 
@@ -348,6 +426,69 @@
         <p>Sidebar content</p>
     </div>
 </aside>
+<script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
+<script>
+    // Fungsi yang dipicu saat tombol edit ditekan
+    $('.editBtn').click(function() {
+        var id = $(this).data('id');
+
+        // Menggunakan AJAX untuk memuat data dari server
+        $.ajax({
+            url: '/peminjaman/get_detail/' + id, // Ganti dengan URL yang sesuai
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                // Memasukkan data ke dalam input modal
+                $('#editId').val(response.id);
+                $('#editTanggalKembali').val(response.tanggal_pengembalian);
+
+                // Set minDate for the datepicker
+                $('#editTanggalKembali').datetimepicker('minDate', moment(response.tanggal_pengembalian).add(1, 'days'));
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+    // Fungsi untuk menyimpan perubahan
+    function updateTanggalKembali() {
+        var id = $('#editId').val();
+        var tanggalKembali = $('#editTanggalKembali').val();
+
+        $.ajax({
+            url: 'update_tanggal_kembali/' + id,
+            method: 'POST',
+            data: {
+                tanggalKembali: tanggalKembali
+            },
+            success: function(response) {
+                // Tutup modal setelah berhasil disimpan
+                $('#editModal').modal('hide');
+
+                // Tampilkan SweetAlert berhasil
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Tanggal kembali berhasil diperbarui.',
+                }).then((result) => {
+                    // Lakukan reload halaman setelah SweetAlert ditutup
+                    location.reload();
+                });
+            },
+            error: function(xhr, status, error) {
+                // Tampilkan SweetAlert gagal jika terjadi error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Gagal memperbarui tanggal kembali.',
+                });
+            }
+        });
+    }
+</script>
+
+
 
 <script src="../../assets/dist/js/html2canvas.min.js"></script>
 <script>
@@ -459,5 +600,8 @@
         }
     });
 </script>
+
+
+
 
 <?php echo view('tema/footer.php'); ?>

@@ -148,6 +148,8 @@ class Reservasi extends BaseController
             'nama_dosen' => 'required',
             'keperluan' => 'required',
             'barang' => 'required',
+            'tanggal_penggunaan' => 'required',
+            'tanggal_pengembalian' => 'required',
         ];
 
         $validationMessages = [
@@ -167,6 +169,12 @@ class Reservasi extends BaseController
             'barang' => [
                 'required' => 'Pilih minimal satu barang.',
             ],
+            'tanggal_penggunaan' => [
+                'required' => 'Pilih minimal satu barang.',
+            ],
+            'tanggal_pengembalian' => [
+                'required' => 'Pilih minimal satu barang.',
+            ],
         ];
 
         if (!$this->validate($validationRules, $validationMessages)) {
@@ -174,9 +182,9 @@ class Reservasi extends BaseController
             return redirect()->to('pinjam/form')->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        // Proses input penerimaan
         try {
             $tanggalPenggunaan = new \DateTime($this->request->getPost('tanggal_penggunaan'));
+            $tanggalKembali = new \DateTime($this->request->getPost('tanggal_pengembalian'));
         } catch (\Exception $e) {
             // Tanggal tidak valid, tampilkan pesan kesalahan
             return redirect()->to(base_url('reservasi/tambah'))->withInput()->with('errorMessages', 'Format tanggal tidak valid.');
@@ -194,6 +202,7 @@ class Reservasi extends BaseController
             'nama_ruangan' => $this->request->getPost('nama_ruangan'),
             'nama_dosen' => $this->request->getPost('nama_dosen'),
             'tanggal_pinjam' => date('Y-m-d H:i:s'), // Mendapatkan tanggal dan waktu saat ini
+            'tanggal_pengembalian' => $tanggalKembali->format('Y-m-d H:i:s'),
             'tanggal_penggunaan' => $tanggalPenggunaan->format('Y-m-d H:i:s'), // Sesuaikan format yang sesuai dengan basis data
         ];
 
@@ -250,7 +259,7 @@ class Reservasi extends BaseController
 
             // Konfigurasi email
             $email->setFrom('laboran.ykylab@gmail.com', 'Sistem SIM-Barang');
-            $email->setTo('laboratoriumakperyky@gmail.com');
+            $email->setTo('jimbling05@gmail.com');
 
             $email->setSubject('Booking Alat Baru');
 
@@ -260,7 +269,9 @@ class Reservasi extends BaseController
                 . 'Nama Ruangan: ' . $reservasi['nama_ruangan'] . '<br>'
                 . 'Nama Dosen: ' . $reservasi['nama_dosen'] . '<br>'
                 . 'Keperluan: ' . $reservasi['keperluan'] . '<br>'
-                . 'Tanggal Penggunaan: ' . $reservasi['tanggal_penggunaan']);
+                . 'Tanggal Penggunaan: ' . $reservasi['tanggal_penggunaan'] . '<br>'
+                . 'Tanggal Kembali: ' . $reservasi['tanggal_pengembalian']);
+
 
             // Kirim email
             $email->send();
@@ -354,6 +365,7 @@ class Reservasi extends BaseController
             'nama_peminjam' => $reservasiData['nama_peminjam'],
             'nama_ruangan' => $reservasiData['nama_ruangan'],
             'tanggal_pinjam' => $reservasiData['tanggal_penggunaan'],
+            'tanggal_pengembalian' => $reservasiData['tanggal_pengembalian'],
             'keperluan' => $reservasiData['keperluan'],
             'nama_dosen' => $reservasiData['nama_dosen'],
             'created_at' => $reservasiData['created_at'],

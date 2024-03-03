@@ -178,6 +178,10 @@ $routes->post('peminjaman/fetchData', 'Peminjaman::getRiwayatPeminjaman');
 $routes->post('pengembalian/fetchData', 'Pengembalian::getRiwayatPengembalianBarang');
 $routes->post('barang/fetchData', 'Barang::getDataBarang');
 
+$routes->get('/peminjaman/get_detail/(:num)', 'Home::get_data_peminjaman/$1');
+$routes->post('/data/peminjaman/update/(:num)', 'Peminjaman::perpanjang/$1');
+$routes->post('update_tanggal_kembali/(:num)', 'Home::update_tanggal_kembali/$1');
+
 
 
 
