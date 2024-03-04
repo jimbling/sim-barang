@@ -16,6 +16,7 @@ use App\Models\PengaturanModel;
 use App\Models\DosenTendikModel;
 use App\Models\PihakluarDetailModel;
 use App\Models\ReservasibarangModel;
+use App\Models\NotificationModel;
 
 
 class Home extends BaseController
@@ -34,6 +35,7 @@ class Home extends BaseController
     protected $dosentendikModel;
     protected $pihakluardetailModel;
     protected $reservasibarangModel;
+    protected $notificationModel;
 
 
     public function __construct()
@@ -53,6 +55,7 @@ class Home extends BaseController
         $this->dosentendikModel = new DosenTendikModel();
         $this->pihakluardetailModel = new PihakluarDetailModel();
         $this->reservasibarangModel = new ReservasibarangModel();
+        $this->notificationModel = new NotificationModel();
     }
 
     public function adminpanel()
@@ -124,17 +127,20 @@ class Home extends BaseController
         $pengeluaranModel = new PengeluaranModel();
         $dataPengeluaran = $pengeluaranModel->getAllPengeluaran();
 
+
         $data = [
             'judul' => 'SIM Barang Lab Keperawatan | Akper "YKY" Yogyakarta',
             'currentYear' => $currentYear,
             'data_peminjaman' => $barangByStatus,
             'data_pengeluaran' =>  $dataPengeluaran,
-            'jumlah_peminjaman' => $jumlahPeminjaman, // Menambahkan jumlah peminjaman ke dalam array data
+            'jumlah_peminjaman' => $jumlahPeminjaman,
+
         ];
 
         // Kirim data ke view atau lakukan hal lain sesuai kebutuhan
         return view('dashboard_user', $data);
     }
+
 
     public function bookingBaru()
     {

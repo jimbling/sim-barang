@@ -62,7 +62,9 @@
                                         <th style="text-align: center; font-size: 13px; vertical-align: middle;">Nama Peminjam</th>
                                         <th style="text-align: center; font-size: 13px; vertical-align: middle;">Tanggal Penggunaan</th>
                                         <th style="text-align: center; font-size: 13px; vertical-align: middle;">Nama Barang</th>
-                                        <th style="text-align: center; font-size: 13px; vertical-align: middle;">AKSI</th>
+                                        <?php if ($level === 'Admin') : ?>
+                                            <th style="text-align: center; font-size: 13px; vertical-align: middle;">AKSI</th>
+                                        <?php endif; ?>
                                     </tr>
                                 </thead>
                                 <div id="alertContainer" class="mt-3"></div>
@@ -131,19 +133,16 @@
                                                 }
                                                 ?>
                                             </td>
-                                            <td class="text-center" style="text-align: center; vertical-align: middle;">
-                                                <?php if ($level === 'User') : ?>
-                                                    <a class="btn btn-xs btn-info mx-auto text-white" href="<?= base_url('cetak_reservasi/' . $dataReservasi['reservasi_id']); ?>" target="_blank">
-                                                        Cetak
-                                                    </a>
-                                                <?php elseif ($level === 'Admin') : ?>
-                                                    <a onclick=" proses_pinjam('<?= $dataReservasi['reservasi_id']; ?>')" class="btn btn-xs bg-indigo mx-auto text-white" id="button">Proses</a>
-                                                    <a class="btn btn-xs btn-info mx-auto text-white" href="<?= base_url('cetak_reservasi/' . $dataReservasi['reservasi_id']); ?>" target="_blank">
-                                                        Cetak
-                                                    </a>
-                                                    <a onclick=" hapus_data('<?= $dataReservasi['reservasi_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>
-                                                <?php endif; ?>
-                                            </td>
+                                            <?php if ($level === 'Admin') : ?>
+                                                <td class="text-center" style="text-align: center; vertical-align: middle;">
+
+                                                    <a onclick=" proses_pinjam('<?= $dataReservasi['reservasi_id']; ?>')" class="btn btn-xs bg-success mx-auto text-white" id="prosesButton">Setujui</a>
+                                                    <a onclick=" hapus_data('<?= $dataReservasi['reservasi_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="hapusButton">Tolak</a>
+                                                    <a class="btn btn-xs btn-info mx-auto text-white" href="<?= base_url('cetak_reservasi/' . $dataReservasi['reservasi_id']); ?>" target="_blank">Cetak</a>
+
+
+                                                </td>
+                                            <?php endif; ?>
 
                                         </tr>
 
@@ -200,62 +199,51 @@
 
         Swal.fire({
             title: 'Konfirmasi',
-            text: 'Anda yakin ingin menghapus data ini?',
+            text: 'Anda yakin menolak booking alat ini?',
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Ya',
-            cancelButtonText: 'Batal'
+            cancelButtonText: 'Batal',
+            allowOutsideClick: false,
         }).then((result) => {
             if (result.isConfirmed) {
-                // Check if $dataReservasi is set
-                <?php if (isset($dataReservasi) && $dataReservasi !== null) : ?>
-                    let userLevel = "<?= session()->get('level') ?>";
-
-                    if (userLevel === "User") {
-                        let currentTime = <?= time() ?>;
-                        let createdTime = <?= strtotime($dataReservasi['created_at']) ?>;
-                        let timeDifference = currentTime - createdTime;
-                        let timeLimit = 24 * 3600;
-
-                        if (timeDifference > timeLimit) {
-                            Swal.fire({
-                                title: 'Gagal!',
-                                text: 'Batas waktu 1x24 jam untuk menghapus data telah terlampaui. Silahkan hubungi Laboran',
-                                icon: 'error',
-                                timer: 3000,
-                                showConfirmButton: false,
-                            });
-                            return;
-                        }
+                Swal.fire({
+                    title: 'Masukkan alasan penolakan',
+                    input: 'textarea',
+                    inputPlaceholder: 'Masukkan alasan di sini...',
+                    inputAttributes: {
+                        'aria-label': 'Masukkan alasan penolakan'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Kirim',
+                    cancelButtonText: 'Batal',
+                    showLoaderOnConfirm: true,
+                    allowOutsideClick: false,
+                    preConfirm: (message) => {
+                        return $.ajax({
+                            type: 'POST',
+                            url: '/reservasi/hapus/' + data_id,
+                            data: {
+                                message: message
+                            },
+                            dataType: 'json'
+                        }).catch(error => {
+                            Swal.showValidationMessage(`Request failed: ${error}`);
+                        });
                     }
-
-                    showLoading();
-
-                    $.ajax({
-                        type: 'POST',
-                        url: '/reservasi/hapus/' + data_id,
-                        success: function(response) {
-                            hideLoading();
-                            Swal.fire({
-                                title: 'Berhasil!',
-                                text: 'Data berhasil dihapus.',
-                                icon: 'success',
-                                timer: 2000,
-                                showConfirmButton: false,
-                            }).then(() => {
-                                window.location.replace("/reservasi");
-                            });
-                        },
-                        error: function(xhr, status, error) {
-                            hideLoading();
-                            console.log(error);
-                        }
-                    });
-                <?php else : ?>
-                    // Handle the case where $dataReservasi is not set (no data available)
-                    console.log('No data available for dataReservasi');
-                    // Optionally, you can display a message to the user or perform other actions
-                <?php endif; ?>
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Data berhasil ditolak.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false,
+                        }).then(() => {
+                            window.location.replace("/reservasi");
+                        });
+                    }
+                });
             }
         });
     }
@@ -322,7 +310,8 @@
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Ya',
-            cancelButtonText: 'Batal'
+            cancelButtonText: 'Batal',
+            allowOutsideClick: false,
         }).then((result) => {
             if (result.isConfirmed) {
                 // Check if $dataReservasi is set

@@ -16,6 +16,7 @@ use App\Models\PengaturanModel;
 use App\Models\DosenTendikModel;
 use App\Models\ReservasiModel;
 use App\Models\ReservasibarangModel;
+use App\Models\NotificationModel;
 
 
 class Reservasi extends BaseController
@@ -34,6 +35,7 @@ class Reservasi extends BaseController
     protected $dosentendikModel;
     protected $reservasiModel;
     protected $reservasibarangModel;
+    protected $notificationModel;
 
     public function __construct()
     {
@@ -52,6 +54,7 @@ class Reservasi extends BaseController
         $this->dosentendikModel = new DosenTendikModel();
         $this->reservasiModel = new ReservasiModel();
         $this->reservasibarangModel = new ReservasibarangModel();
+        $this->notificationModel = new NotificationModel();
     }
 
     public function index()
@@ -280,29 +283,38 @@ class Reservasi extends BaseController
 
     public function hapus($reservasiId)
     {
-        // Membuat instance model
-        $reservasibarangModel = new \App\Models\ReservasibarangModel();
+        // Periksa apakah ada data yang dikirim melalui POST
+        if ($_POST) {
+            // Ambil data pesan dari POST
+            $message = $this->request->getPost('message');
 
-        // Melakukan pengecekan apakah peminjaman dengan ID tersebut ada dalam database
-        $data_reservasi = $reservasibarangModel->where('reservasi_id', $reservasiId)->findAll();
 
-        if ($data_reservasi) {
-            // Jika peminjaman ditemukan, panggil fungsi hapusByPeminjamanId untuk menghapus data terkait
-            $reservasibarangModel->hapusDataReservasi($reservasiId);
+            $reservasiModel = new ReservasiModel();
+            $reservasibarangModel = new ReservasibarangModel();
 
-            // Set pesan flash data untuk sukses
-            session()->setFlashData('pesanHapusPeminjaman', 'Data Peminjaman berhasil dihapus.');
+            // Ambil data reservasi berdasarkan ID
+            $reservasiData = $reservasiModel->find($reservasiId);
+            if (!$reservasiData) {
+                return "Reservasi dengan ID tersebut tidak ditemukan.";
+            }
 
-            // Redirect kembali ke halaman /pinjam/daftar setelah penghapusan
-            return redirect()->to('/reservasi');
+            $reservasibarangModel->hapusDaftarReservasi($reservasiId);
+
+            // Kirim notifikasi kepada pengguna bahwa reservasi telah ditolak
+            $userId = $reservasiData['user_id'];
+            $this->sendDitolak($userId, $message);
+
+
+            return $this->response->setJSON(['success' => true, 'message' => 'Reservasi berhasil ditolak']);
         } else {
-            // Jika peminjaman tidak ditemukan, set pesan flash data untuk kesalahan
-            session()->setFlashData('error', 'Data peminjaman tidak ditemukan.');
-
-            // Redirect kembali ke halaman /pinjam/daftar setelah penghapusan (opsional)
-            return redirect()->to('/reservasi');
+            // Handle jika tidak ada data yang dikirim melalui POST
+            return $this->response->setJSON(['success' => false, 'message' => 'Tidak ada data yang dikirim']);
         }
     }
+
+
+
+
 
     public function getDataBarang()
     {
@@ -393,7 +405,89 @@ class Reservasi extends BaseController
 
         // Setelah berhasil memindahkan data, hapus data dari tabel reservasi
         $reservasibarangModel->hapusDaftarReservasi($reservasiId);
+        // Kirim notifikasi kepada pengguna bahwa reservasi telah di-acc dan diproses masuk ke peminjamanModel
+        $userId = $reservasiData['user_id'];
+        $message = "Booking alat telah disetujui dan diproses masuk ke peminjaman.";
+        $this->sendNotification($userId, $message);
 
         return "Data berhasil dipindahkan untuk reservasi ID: $reservasiId.";
+    }
+
+    public function sendNotification($userId, $message)
+    {
+        $notificationModel = new NotificationModel(); // Gantilah dengan model yang sesuai
+
+        // Data notifikasi
+        $notificationData = [
+            'user_id' => $userId,
+            'message' => $message,
+            'read_status' => 0, // 0 untuk belum dibaca
+            'jenis_pesan' => 'disetujui',
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        // Simpan notifikasi ke dalam tabel
+        $notificationModel->insert($notificationData);
+    }
+
+    public function sendDitolak($userId, $message)
+    {
+        $notificationModel = new NotificationModel(); // Gantilah dengan model yang sesuai
+
+        // Data notifikasi
+        $notificationData = [
+            'user_id' => $userId,
+            'message' => $message,
+            'read_status' => 0, // 0 untuk belum dibaca
+            'jenis_pesan' => 'ditolak',
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        // Simpan notifikasi ke dalam tabel
+        $notificationModel->insert($notificationData);
+    }
+
+    public function getUserNotifications()
+    {
+        // Pastikan hanya user yang login yang dapat mengakses notifikasi mereka sendiri
+        $userId = session()->get('id');
+
+        // Buat instance dari model notifikasi
+        $notificationModel = new NotificationModel();
+
+        // Panggil method dari model untuk mendapatkan notifikasi pengguna
+        $notifications = $notificationModel->getUserNotifications($userId);
+
+        // Set tipe konten response menjadi JSON
+        $response = service('response');
+        $response->setContentType('application/json');
+
+        // Kembalikan notifikasi dalam format JSON
+        return $response->setBody(json_encode($notifications));
+    }
+
+
+
+    public function markAsRead()
+    {
+        $notificationId = $this->request->getPost('notification_id');
+
+        // Pastikan hanya user yang login yang dapat membaca notifikasi
+        $userId = session()->get('id');
+
+        // Buat instance dari model notifikasi
+        $notificationModel = new NotificationModel();
+
+        // Periksa apakah notifikasi dengan ID tertentu dimiliki oleh pengguna yang sedang login
+        $notification = $notificationModel->find($notificationId);
+        if ($notification && $notification['user_id'] == $userId) {
+            // Tandai notifikasi sebagai telah dibaca
+            $notificationModel->markAsRead($notificationId);
+            // Kembalikan respons sebagai konfirmasi
+            return $this->response->setJSON(['success' => true]);
+        } else {
+            // Tidak ada notifikasi yang sesuai atau pengguna tidak memiliki akses
+            return $this->response->setJSON(['success' => false, 'message' => 'Notifikasi tidak ditemukan atau Anda tidak memiliki izin untuk mengaksesnya.']);
+        }
     }
 }

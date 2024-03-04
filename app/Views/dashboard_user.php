@@ -184,8 +184,8 @@
                                             <td style="text-align: center; vertical-align: middle; font-size: 13px;"><?= $dataPinjam['nama_peminjam']; ?></td>
 
                                             <td width='10%' class="text-center" style="text-align: center; vertical-align: middle;">
-                                                <a href="<?= base_url('cetak_pinjam/' . $dataPinjam['peminjaman_id']); ?>" target="_blank">
-                                                    <i class="fas fa-print" data-toggle="tooltip" data-placement="top" title="Cetak" style='color:#D24545'></i>
+                                                <a href="<?= base_url('cetak_pinjam/' . $dataPinjam['peminjaman_id']); ?>" data-toggle="tooltip" data-placement="top" title="Cetak" target="_blank">
+                                                    <i class="fas fa-print " style='color:#D24545'></i>
                                                 </a>
                                                 <?php
                                                 $tanggal_pengembalian = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
@@ -304,7 +304,64 @@
         <p>Sidebar content</p>
     </div>
 </aside>
+
+
 <script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // AJAX request untuk mendapatkan notifikasi berdasarkan user_id
+        $.ajax({
+            url: "<?php echo base_url('notification/getUserNotifications'); ?>",
+            type: "POST",
+            data: {
+                user_id: <?php echo session()->get('id'); ?>
+            },
+            dataType: "json",
+            success: function(response) {
+                // Jika ada notifikasi, tampilkan dengan SweetAlert
+                if (response.length > 0) {
+                    $.each(response, function(index, notification) {
+                        // Tentukan ikon berdasarkan jenis_pesan
+                        var icon = (notification.jenis_pesan === 'disetujui') ? 'success' : 'error';
+
+                        // Tampilkan notifikasi dengan SweetAlert
+                        Swal.fire({
+                            title: (notification.jenis_pesan === 'disetujui') ? 'Booking Alat Disetujui' : 'Booking Alat Ditolak',
+                            text: notification.message,
+                            icon: icon,
+                            showCancelButton: false,
+                            confirmButtonText: 'OK',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Panggilan AJAX untuk menandai notifikasi sebagai telah dibaca
+                                $.ajax({
+                                    url: "<?php echo base_url('notification/markAsRead'); ?>",
+                                    type: "POST",
+                                    data: {
+                                        notification_id: notification.id
+                                    },
+                                    success: function(response) {
+                                        // Tindakan setelah notifikasi ditandai sebagai telah dibaca
+                                        console.log('Notifikasi ditandai sebagai telah dibaca.');
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error("Terjadi kesalahan saat menandai notifikasi sebagai telah dibaca:", error);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Terjadi kesalahan saat mengambil notifikasi:", error);
+            }
+        });
+    });
+</script>
+
 <script>
     $(document).ready(function() {
         <?php if (!empty($jumlah_peminjaman)) : ?>

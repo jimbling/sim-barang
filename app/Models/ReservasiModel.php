@@ -13,9 +13,6 @@ class ReservasiModel extends Model
     protected $allowedFields = ['id', 'user_id', 'kode_reservasi', 'nama_peminjam', 'nama_ruangan', 'tanggal_pinjam', 'tanggal_pengembalian', 'tanggal_penggunaan', 'keperluan', 'nama_dosen', 'created_at', 'updated_at', 'confirmed'];
 
 
-
-
-
     public function insertReservasi($data)
     {
         // Simpan data peminjaman

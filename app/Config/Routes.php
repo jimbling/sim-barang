@@ -181,6 +181,9 @@ $routes->post('barang/fetchData', 'Barang::getDataBarang');
 $routes->get('/peminjaman/get_detail/(:num)', 'Home::get_data_peminjaman/$1');
 $routes->post('/data/peminjaman/update/(:num)', 'Peminjaman::perpanjang/$1');
 $routes->post('update_tanggal_kembali/(:num)', 'Home::update_tanggal_kembali/$1');
+$routes->post('notification/getUserNotifications', 'Reservasi::getUserNotifications');
+$routes->post('notification/markAsRead', 'Reservasi::markAsRead');
+
 
 
 
