@@ -36,7 +36,7 @@ class AuthMiddleware implements FilterInterface
             }
 
             // Tambahan: Memeriksa apakah pengguna mencoba mengakses rute yang dimulai dengan 'cetak/', 'data/', atau 'laporan/'
-            $restrictedRoutes = ['data/', 'laporan/', 'penerimaan/', 'barang/master', '/pengaturan', 'adminpanel', 'cetak', 'cetak_invoice', 'pinjam/pihakluar', 'pinjam/pihakluar/riwayat', 'barang/disewakan', 'pinjam/tambah', 'pinjam/riwayat'];
+            $restrictedRoutes = ['data/', 'laporan/', 'penerimaan/', 'barang/master', '/pengaturan', 'adminpanel', 'cetak', 'cetak_invoice', 'pinjam/pihakluar', 'pinjam/pihakluar/riwayat', 'barang/disewakan', 'pinjam/tambah', 'pinjam/riwayat', 'cetak_pinjam'];
             foreach ($restrictedRoutes as $restrictedRoute) {
                 if (strpos($request->uri->getPath(), $restrictedRoute) === 0) {
                     return redirect()->to(self::UNAUTHORIZED_URL);

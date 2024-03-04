@@ -144,7 +144,7 @@ $level = $session->get('level');
                                 </a>
                             </li>
                             <li class="nav-item menu-close ">
-                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/kembali/riwayat' || $_SERVER['REQUEST_URI'] == '/pengeluaran/tambahBaru' || $_SERVER['REQUEST_URI'] == '/pengeluaran/daftar') ? 'active' : '' ?>">
+                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/kembali/riwayat' || $_SERVER['REQUEST_URI'] == '/pengeluaran/tambahBaru' || $_SERVER['REQUEST_URI'] == '/pengeluaran/daftar' || $_SERVER['REQUEST_URI'] == '/kembali/tambah') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-people-carry"></i>
                                     <p>
                                         Sirkulasi
@@ -220,7 +220,7 @@ $level = $session->get('level');
                                 </a>
                             </li>
                             <li class="nav-item menu-close ">
-                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/pinjam/tambah' || $_SERVER['REQUEST_URI'] == '/pinjam/pihakluar' || $_SERVER['REQUEST_URI'] == '/kembali/riwayat') ? 'active' : '' ?>">
+                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/pinjam/tambah' || $_SERVER['REQUEST_URI'] == '/pinjam/pihakluar' || $_SERVER['REQUEST_URI'] == '/kembali/riwayat' || $_SERVER['REQUEST_URI'] == '/pinjam/pihakluar/riwayat') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-people-carry"></i>
                                     <p>
                                         Sirkulasi
@@ -258,7 +258,7 @@ $level = $session->get('level');
 
 
                             <li class="nav-item menu-close">
-                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/barang/daftar') !== false || $_SERVER['REQUEST_URI'] == '/barang/master' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
+                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/barang/daftar') !== false || $_SERVER['REQUEST_URI'] == '/barang/master' || $_SERVER['REQUEST_URI'] == '/barang/rusak' || $_SERVER['REQUEST_URI'] == '/barang/disewakan') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-box"></i>
                                     <p>
                                         Barang
@@ -287,7 +287,7 @@ $level = $session->get('level');
 
 
                             <li class="nav-item menu-close">
-                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/penerimaan/daftar') !== false || $_SERVER['REQUEST_URI'] == '/barang/persediaan/master' || $_SERVER['REQUEST_URI'] == '/barang/satuan' || $_SERVER['REQUEST_URI'] == '/persediaan/opname' || $_SERVER['REQUEST_URI'] == '/pengeluaran/daftar') ? 'active' : '' ?>">
+                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/penerimaan/daftar') !== false || $_SERVER['REQUEST_URI'] == '/barang/persediaan/master' || $_SERVER['REQUEST_URI'] == '/barang/satuan' || $_SERVER['REQUEST_URI'] == '/persediaan/opname' || $_SERVER['REQUEST_URI'] == '/pengeluaran/daftar' || $_SERVER['REQUEST_URI'] == '/penerimaan/tambahBaru' || $_SERVER['REQUEST_URI'] == '/pengeluaran/tambahBaru') ? 'active' : '' ?>">
                                     <i class="nav-icon 	fas fa-warehouse"></i>
                                     <p>
                                         Persediaan

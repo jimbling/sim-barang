@@ -77,17 +77,9 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <div class="card mt-3">
+                <div class="card card-outline card-primary shadow-lg mt-3">
                     <div class="card-header border-0">
                         <h3 class="card-title">Data Peminjaman dan Permintaan Barang</h3>
-                        <div class="card-tools">
-                            <a href="#" class="btn btn-tool btn-sm">
-                                <i class="fas fa-download"></i>
-                            </a>
-                            <a href="#" class="btn btn-tool btn-sm">
-                                <i class="fas fa-bars"></i>
-                            </a>
-                        </div>
                     </div>
                     <div class="card-body table-responsive p-0 table-sm">
                         <table class="table table-striped">
@@ -234,7 +226,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Tanggal Kembali</h5>
+                <h5 class="modal-title" id="editModalLabel">Perpanjang Peminjaman</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -270,8 +262,9 @@
 
 
 <!-- Modal -->
+<!-- Modal -->
 <div class="modal fade" id="myModal" data-backdrop="static">
-    <div class="modal-dialog">
+    <div class="modal-dialog ">
         <div class="modal-content">
 
             <!-- Modal Header -->
@@ -281,17 +274,25 @@
             </div>
 
             <!-- Modal body -->
-            <div class="modal-body">
-                <p id="jumlahPeminjaman"></p>
-                <ul>
-                    <li id="kodePinjam"></li>
-                </ul>
-                <p><span class="small blockquote-footer">Silahkan untuk melakukan pengembalian pada menu Sirkulasi, atau bisa untuk diperpanjang!</span>
+            <div class="modal-body text-center">
+                <div>
+
+                </div>
+                <div>
+                    <p id="jumlahPeminjaman"></p>
+
+                    <p id="kodePinjam"></p>
+
+                    <p><span class="small blockquote-footer">Lakukan pengembalian pada menu Sirkulasi, atau bisa untuk diperpanjang! <i class='fas fa-retweet spa' style='color:#1D24CA;'></i></span></p>
+                </div>
             </div>
 
         </div>
     </div>
 </div>
+
+
+
 
 
 
@@ -311,7 +312,7 @@
             $('#myModal').modal('show');
 
             // Tampilkan jumlah peminjaman jika ada
-            $('#jumlahPeminjaman').text('Anda memiliki data peminjaman yang jatuh tempo sebanyak: <?= $jumlah_peminjaman[0]['jumlah_peminjaman'] ?>');
+            $('#jumlahPeminjaman').text('Anda memiliki peminjaman yang jatuh tempo sebanyak: <?= $jumlah_peminjaman[0]['jumlah_peminjaman'] ?>');
 
             // Tampilkan kode pinjam jika ada
             $('#kodePinjam').text('Kode Pinjam: <?= $jumlah_peminjaman[0]['kode_pinjam'] ?>');
@@ -361,7 +362,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
-                    text: 'Tanggal kembali berhasil diperbarui.',
+                    text: 'Peminjaman berhasil diperpanjang.',
                 }).then((result) => {
                     // Lakukan reload halaman setelah SweetAlert ditutup
                     location.reload();

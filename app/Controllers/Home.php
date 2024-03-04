@@ -131,7 +131,7 @@ class Home extends BaseController
             'data_pengeluaran' =>  $dataPengeluaran,
             'jumlah_peminjaman' => $jumlahPeminjaman, // Menambahkan jumlah peminjaman ke dalam array data
         ];
-        dd($data);
+
         // Kirim data ke view atau lakukan hal lain sesuai kebutuhan
         return view('dashboard_user', $data);
     }
