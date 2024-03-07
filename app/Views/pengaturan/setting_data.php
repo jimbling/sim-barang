@@ -128,7 +128,7 @@
                 <div class="col">
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 border-left-primary">
-                            <h6 class="m-0 font-weight-bold text-primary">Atur Kop Sekolah</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Atur Kop Surat</h6>
                         </div>
                         <div class="card-body">
                             <form method="post" action="/upload/kopsurat" enctype="multipart/form-data">
@@ -157,7 +157,7 @@
                         <div class="card-body">
                             <div class="container">
                                 <div class="col-sm-12">
-                                    <img src="../../assets/dist/img/<?php echo $dataCetak['kop_surat']; ?>" class="img-fluid rounded align-center" alt="Tampilan Kop Sekolah">
+                                    <img src="../../assets/dist/img/<?php echo $dataCetak['kop_surat']; ?>" class="img-fluid rounded align-center" alt="Tampilan Kop Surat">
                                 </div>
                             </div>
                         </div>

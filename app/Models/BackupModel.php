@@ -10,7 +10,7 @@ class BackupModel extends Model
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $useTimestamps = true; // Sesuaikan dengan kebutuhan Anda
-    protected $allowedFields = ['id', 'nama_file', 'created_at', 'updated_at'];
+    protected $allowedFields = ['id', 'nama_file', 'ukuran', 'created_at', 'updated_at'];
 
     public function getBackup()
     {

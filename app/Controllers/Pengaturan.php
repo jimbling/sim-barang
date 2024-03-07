@@ -156,13 +156,17 @@ class Pengaturan extends BaseController
             $dumpFile = 'database/backup/dbbackup-' . $tglSekarang . '.sql';
             $dump->start($dumpFile);
 
+            // Mengukur ukuran file yang dihasilkan dalam byte
+            $ukuranFile = filesize($dumpFile);
+
             // Menggunakan basename() untuk mendapatkan nama file tanpa folder
             $namaFileTanpaFolder = basename($dumpFile);
 
-            // Setelah backup berhasil, simpan nama file tanpa folder ke dalam database
+            // Setelah backup berhasil, simpan nama file dan ukuran file ke dalam database
             $backupModel = new BackupModel();
             $data = [
                 'nama_file' => $namaFileTanpaFolder,
+                'ukuran' => $ukuranFile, // Menyimpan ukuran file dalam byte
             ];
             $backupModel->insertBackup($data);
 
@@ -170,13 +174,14 @@ class Pengaturan extends BaseController
             session()->setFlashData('pesan', $pesan);
 
             // Kembalikan nama file sebagai response JSON
-            return $this->response->setJSON(['nama_file' => $namaFileTanpaFolder]);
+            return $this->response->setJSON(['nama_file' => $namaFileTanpaFolder, 'ukuran' => $ukuranFile]);
         } catch (\Exception $e) {
             $pesan = "mysqldump error-php error" . $e->getMessage();
             session()->setFlashData('pesan', $pesan);
             return redirect()->to('/data/pengaturan')->with('success', 'Data siswa berhasil diubah.');
         }
     }
+
 
     public function delete()
     {

@@ -27,6 +27,7 @@
                             <th>#</th>
                             <th>Nama File .sql</th>
                             <th>Tanggal Backup</th>
+                            <th>Ukuran File (KB)</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -38,6 +39,13 @@
                                 <td><?= $backup['nama_file']; ?></td>
                                 <td><?= $backup['created_at']; ?></td>
                                 <td>
+                                    <?php
+                                    // Konversi ukuran file dari byte ke kilobyte
+                                    $ukuran_kb = round($backup['ukuran'] / 1024, 2);
+                                    echo $ukuran_kb . " KB";
+                                    ?>
+                                </td>
+                                <td>
                                     <a class="btn btn-success btn-sm" href="<?= base_url('/backup/unduh/' . $backup['nama_file']); ?>" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
                                         <i class="fas fa-download"></i>
                                     </a>
@@ -47,6 +55,7 @@
 
                     </tbody>
                 </table>
+
 
             </div>
 
