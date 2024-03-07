@@ -30,8 +30,7 @@ class Pengaturan extends BaseController
 
         $pengaturanModel = new PengaturanModel();
         $dataCetak = $pengaturanModel->getDataById(1);
-        $backupModel = new BackupModel();
-        $dbBackup = $backupModel->getLatestBackups();
+
 
         $data = [
             'judul' => 'Setting Data | Akper "YKY" Yogyakarta',
@@ -39,7 +38,7 @@ class Pengaturan extends BaseController
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
             'dataCetak' => $dataCetak,
             'data_pengguna' => $pengguna,
-            'backup_db' => $dbBackup,
+
         ];
 
         // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
@@ -137,7 +136,7 @@ class Pengaturan extends BaseController
     public function updateData()
     {
         session();
-        $data = $this->request->getJSON(true); // Mengambil data dari permintaan POST dalam format JSON
+        $data = json_decode($this->request->getBody(), true); // Ambil data dari permintaan POST
 
         $id = 1; // Ganti dengan ID data yang ingin Anda perbarui
 
@@ -148,7 +147,6 @@ class Pengaturan extends BaseController
         // Berikan respons jika diperlukan
         return $this->response->setJSON(['message' => 'Data berhasil diperbaharui']);
     }
-
 
     public function backup()
     {
@@ -198,5 +196,43 @@ class Pengaturan extends BaseController
             // Tangani jika tidak ada ID yang diberikan
             return redirect()->back();
         }
+    }
+
+    public function kopsurat()
+    {
+        $model = new PengaturanModel();
+
+        if ($this->request->getMethod() === 'post') {
+            $existingData = $model->first(); // Ambil data yang sudah ada dalam database
+
+            // Ambil file yang diunggah
+            $file = $this->request->getFile('kop_surat');
+
+            // Validasi file ekstensi
+            if ($file->isValid() && !$file->hasMoved()) {
+                // Validasi ekstensi file yang diijinkan
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+                $fileExtension = $file->getClientExtension();
+
+                if (in_array($fileExtension, $allowedExtensions)) {
+                    $newName = $file->getRandomName();
+                    $newLocation = 'assets/dist/img' . DIRECTORY_SEPARATOR; // Lokasi baru
+                    $file->move($newLocation, $newName);
+
+                    // Perbarui nama file dalam database
+                    $model->update($existingData['id'], ['kop_surat' => $newName]);
+                    session()->setFlashData('pesanDataCetak', 'Data berhasil diperbaharui');
+                    return redirect()->to('/data/pengaturan'); // Redirect ke halaman sukses atau yang sesuai
+                } else {
+                    session()->setFlashData('pesanError', 'Jenis file tidak diijinkan.');
+                    return redirect()->to('/data/pengaturan'); // Redirect dengan pesan kesalahan
+                }
+            } else {
+                session()->setFlashData('pesanError', 'Terjadi kesalahan dalam pengunggahan file.');
+                return redirect()->to('/data/pengaturan'); // Redirect dengan pesan kesalahan
+            }
+        }
+
+        return view('upload_form'); // Ganti dengan nama view yang sesuai
     }
 }

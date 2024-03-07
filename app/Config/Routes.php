@@ -186,6 +186,8 @@ $routes->post('notification/markAsRead', 'Reservasi::markAsRead');
 
 $routes->get('/pesan', 'Pesan::index');
 $routes->post('/pesan/kirim', 'Pesan::send');
+$routes->get('/pemeliharaan', 'Pemeliharaan::index');
+$routes->post('upload/kopsurat', 'Pengaturan::kopsurat');
 
 
 

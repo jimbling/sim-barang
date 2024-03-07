@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <link rel="stylesheet" href="../../assets/dist/css/adminlte.min.css?v=3.2.0">
     <link rel="stylesheet" href="../../assets/dist/css/style-2.css">
+    <link rel="stylesheet" href="../../assets/dist/css/style.css">
     <link rel="stylesheet" href="../../assets/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../../assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
     <link rel="stylesheet" href="../../assets/plugins/summernote/summernote-bs4.min.css">
@@ -431,6 +432,15 @@ $level = $session->get('level');
                                     </li>
 
                                 </ul>
+                            <li class="nav-item">
+                                <a href="/pemeliharaan" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pemeliharaan') !== false || $_SERVER['REQUEST_URI'] == '/reservasi/tambah') ? 'active' : '' ?>">
+                                    <i class="nav-icon fas fa-fire" style='color:red'></i>
+                                    <p>
+                                        Pemeliharaan
+                                    </p>
+
+                                </a>
+                            </li>
 
 
                             </li>

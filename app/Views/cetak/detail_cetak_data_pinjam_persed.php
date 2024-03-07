@@ -21,7 +21,7 @@
 
 <body>
     <div class="col-sm-10">
-        <img src="../../assets/dist/img/kop-yky.png" width="450px">
+        <img src="../../assets/dist/img/<?php echo $dataPengaturan['kop_surat'] ?>" width="450px">
     </div>
     <div class="container-fluid">
         <div class="container mt-2">

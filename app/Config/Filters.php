@@ -68,6 +68,6 @@ class Filters extends BaseConfig
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
     public $filters = [
-        'auth' => ['before' => ['/dashboard', '/adminpanel', 'barang/*', 'mahasiswa/*', 'data/*', 'kembali/*', 'pinjam/*', 'pengembalian/*', 'peminjaman/*', 'cetak/*', 'penerimaan/*', 'get_detail/*', 'pengeluaran/*', 'pengaturan/*', 'laporan/*', 'cetak/mutasi/*', 'pengeluaran_murni/*', 'reservasi', 'reservasi/*']],
+        'auth' => ['before' => ['/dashboard', '/adminpanel', 'barang/*', 'mahasiswa/*', 'data/*', 'kembali/*', 'pinjam/*', 'pengembalian/*', 'peminjaman/*', 'cetak/*', 'penerimaan/*', 'get_detail/*', 'pengeluaran/*', 'pengaturan/*', 'laporan/*', 'cetak/mutasi/*', 'pengeluaran_murni/*', 'reservasi', 'reservasi/*', 'pemeliharaan']],
     ];
 }

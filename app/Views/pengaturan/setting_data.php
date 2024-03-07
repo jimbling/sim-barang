@@ -1,4 +1,5 @@
 <?php echo view('tema/header.php'); ?>
+
 <div class="content-wrapper">
     <div class="container-fluid">
         <div class="flash-data" data-flashdata="<?= (session()->getFlashData('pesanAkun')); ?>"></div><!-- Page Heading -->
@@ -124,6 +125,46 @@
                     </div>
                 </div>
 
+                <div class="col">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 border-left-primary">
+                            <h6 class="m-0 font-weight-bold text-primary">Atur Kop Sekolah</h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="/upload/kopsurat" enctype="multipart/form-data">
+                                <!-- Form fields for other data -->
+                                <div class="form-group row">
+                                    <label for="foto_siswa" class="col-sm-6 col-form-label">Upload file Kop Surat</label>
+                                    <div class="col-sm-12">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="kop_surat" id="customFile" required>
+                                            <label class="custom-file-label" for="selectedFileName" id="selectedFileName">Pilih File Foto</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-fluid mb-3">
+                                    <img id="previewImage" src="#" alt="Preview Image" style="max-width: 100%; max-height: 200px; display: none;">
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary btn-block">Simpan Kop Surat</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 border-left-primary">
+                            <h6 class="m-0 font-weight-bold text-primary">Tampilan Kop Surat</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="col-sm-12">
+                                    <img src="../../assets/dist/img/<?php echo $dataCetak['kop_surat']; ?>" class="img-fluid rounded align-center" alt="Tampilan Kop Sekolah">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
 
 
@@ -218,39 +259,7 @@
 
 
         </div>
-        <div class="card shadow card-danger card-outline">
-            <div class="card-body">
-                <table class="table table-sm table-borderless">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nama File .sql</th>
-                            <th>Tanggal Backup</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $i = 1; ?>
-                        <?php foreach ($backup_db as $backup) : ?>
-                            <tr>
-                                <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;"><?= $i++; ?></th>
-                                <td><?= $backup['nama_file']; ?></td>
-                                <td><?= $backup['created_at']; ?></td>
-                                <td>
-                                    <a class="btn btn-success btn-sm" href="<?= base_url('/backup/unduh/' . $backup['nama_file']); ?>" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
-                                        <i class="fas fa-download"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
 
-                    </tbody>
-                </table>
-                <a id="backupBtn" class="btn btn-primary" href="/backup" role="button">Buat Cadangan Database .sql</a>
-                <p><strong>Pemeliharaan :</strong> Silahkan untuk rutin melakukan backup database dan menyimpan pada tempat yang aman.
-            </div>
-
-        </div>
     </div>
 
 </div>
@@ -604,50 +613,52 @@
             });
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Include SweetAlert library -->
+<!-- KOP SURAT -->
 
 <script>
-    document.getElementById('backupBtn').addEventListener('click', function(event) {
-        event.preventDefault();
+    // Fungsi untuk menampilkan gambar previ saat gambar dipilih
+    function showPreviewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
 
-        // Tampilkan loading
-        showLoading();
+            reader.onload = function(e) {
+                $('#previewImage').attr('src', e.target.result);
+            };
 
-        // Lakukan request AJAX untuk membuat backup
-        fetch('/backup', {
-                method: 'GET',
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Sembunyikan loading
-                hideLoading();
+            reader.readAsDataURL(input.files[0]);
+        }
 
-                // Tampilkan SweetAlert dengan nama file hasil backup
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Backup Berhasil',
-                    text: 'Nama File: ' + data.nama_file,
-                }).then(() => {
-                    // Reload halaman setelah SweetAlert terkonfirmasi
-                    location.reload();
-                });
-            })
-            .catch(error => {
-                // Sembunyikan loading
-                hideLoading();
+        // Menampilkan nama file yang dipilih
+        var fileName = input.files[0].name;
+        $('#selectedFileName').text(fileName);
+    }
 
-                // Tampilkan SweetAlert dengan pesan error
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Backup Gagal',
-                    text: 'Error: ' + error.message,
-                });
-            });
+    // Memanggil fungsi showPreviewImage saat input file berubah
+    $('#customFile').change(function() {
+        showPreviewImage(this);
     });
+</script>
+<script>
+    const customFileInput = document.querySelector("#customFile");
+    const previewImage = document.querySelector("#previewImage");
 
+    customFileInput.addEventListener("change", function() {
+        if (this.files.length > 0) {
+            previewImage.style.display = "block";
+        } else {
+            previewImage.style.display = "none";
+        }
+    });
+</script>
+
+
+<script>
+    // Function to show loading
     function showLoading() {
         let timerInterval
         Swal.fire({
-            title: 'membackup database ....',
+            title: 'Memproses upload...',
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading()
@@ -659,7 +670,61 @@
         });
     }
 
+    // Function to hide loading
     function hideLoading() {
         Swal.close();
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const fileInput = document.querySelector("input[name='kop_surat']");
+        const submitButton = document.querySelector("button[type='submit']");
+        const selectedFileName = document.querySelector("#selectedFileName");
+        const previewImage = document.querySelector("#previewImage");
+
+        fileInput.addEventListener("change", function() {
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+            const fileName = this.files[0].name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (allowedExtensions.includes(fileExtension)) {
+                selectedFileName.textContent = fileName;
+                previewImage.style.display = "block";
+                previewImage.src = URL.createObjectURL(this.files[0]);
+                submitButton.disabled = false;
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Jenis File Tidak Diijinkan!",
+                    text: "Anda hanya dapat mengimpor file dengan ekstensi .jpg, .jpeg, .png, atau .svg."
+                });
+                this.value = ''; // Clear the file input
+                selectedFileName.textContent = "Pilih File Foto";
+                previewImage.style.display = "none";
+                submitButton.disabled = true;
+            }
+        });
+
+        // Prevent default form submission and show loading when file successfully uploaded
+        submitButton.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent default form submission
+            if (!fileInput.files || !fileInput.files.length) {
+                return;
+            }
+            const fileName = fileInput.files[0].name;
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (allowedExtensions.includes(fileExtension)) {
+                showLoading(); // Show loading
+                // Submit the form after some time (you can adjust the time as needed)
+                setTimeout(function() {
+                    submitButton.form.submit();
+                }, 2000); // Example: submit the form after 2 seconds (2000 milliseconds)
+            }
+        });
+    });
 </script>
+
+
+
+<!-- END KOP SURAT -->
