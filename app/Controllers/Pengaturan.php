@@ -137,7 +137,7 @@ class Pengaturan extends BaseController
     public function updateData()
     {
         session();
-        $data = json_decode($this->request->getBody(), true); // Ambil data dari permintaan POST
+        $data = $this->request->getJSON(true); // Mengambil data dari permintaan POST dalam format JSON
 
         $id = 1; // Ganti dengan ID data yang ingin Anda perbarui
 
@@ -148,6 +148,7 @@ class Pengaturan extends BaseController
         // Berikan respons jika diperlukan
         return $this->response->setJSON(['message' => 'Data berhasil diperbaharui']);
     }
+
 
     public function backup()
     {

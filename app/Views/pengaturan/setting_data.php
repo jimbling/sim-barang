@@ -61,16 +61,15 @@
 
                             <tbody>
                                 <tr>
-
                                     <td style="text-align: left;">1. Nama Kampus </td>
                                     <td>:</td>
-                                    <td><input type="text" class="form-control form-control-sm" id="nama_kampus" name="nama_kampus" value="<?php echo $dataCetak['nama_kampus']; ?>" readonly></td>
+                                    <td><input type="text" class="form-control form-control-sm" id="nama_kampus" name="nama_kampus" value="<?php echo htmlspecialchars($dataCetak['nama_kampus'], ENT_QUOTES, 'UTF-8'); ?>" readonly></td>
                                 </tr>
                                 <tr>
 
-                                    <td style="text-align: left;">2. No Kampus </td>
+                                    <td style="text-align: left;">2. Website </td>
                                     <td>:</td>
-                                    <td><input type="text" class="form-control form-control-sm" id="no_id" name="npsn" value="<?php echo $dataCetak['no_id']; ?>" readonly></td>
+                                    <td><input type="text" class="form-control form-control-sm" id="website" name="website" value="<?php echo $dataCetak['website']; ?>" readonly></td>
                                 </tr>
                                 <tr>
 
@@ -389,7 +388,7 @@
         event.preventDefault(); // Menghentikan default behavior dari tombol submit
         // Hapus atribut readonly dari elemen input yang diinginkan
         document.getElementById('nama_kampus').removeAttribute('readonly');
-        document.getElementById('no_id').removeAttribute('readonly');
+        document.getElementById('website').removeAttribute('readonly');
         document.getElementById('alamat').removeAttribute('readonly');
 
         document.getElementById('nama_direktur').removeAttribute('readonly');
@@ -421,7 +420,7 @@
     document.getElementById('batalButton').addEventListener('click', function() {
         // Tambahkan atribut readonly ke elemen input yang diinginkan
         document.getElementById('nama_kampus').setAttribute('readonly', true);
-        document.getElementById('no_id').setAttribute('readonly', true);
+        document.getElementById('website').setAttribute('readonly', true);
         document.getElementById('alamat').setAttribute('readonly', true);
 
         document.getElementById('nama_direktur').setAttribute('readonly', true);
@@ -453,7 +452,7 @@
     document.getElementById('updateButton').addEventListener('click', function() {
         // Tambahkan atribut readonly ke elemen input yang diinginkan
         document.getElementById('nama_kampus').setAttribute('readonly', true);
-        document.getElementById('no_id').setAttribute('readonly', true);
+        document.getElementById('website').setAttribute('readonly', true);
         document.getElementById('alamat').setAttribute('readonly', true);
 
         document.getElementById('nama_direktur').setAttribute('readonly', true);
@@ -487,7 +486,7 @@
     document.getElementById('updateButton').addEventListener('click', function() {
         // Ambil data dari formulir
         var nama_kampus = document.getElementById('nama_kampus').value;
-        var no_id = document.getElementById('no_id').value;
+        var website = document.getElementById('website').value;
         var alamat = document.getElementById('alamat').value;
 
         var nama_direktur = document.getElementById('nama_direktur').value;
@@ -512,7 +511,7 @@
         // Log data yang akan dikirim ke konsol
         console.log('Data yang akan dikirim:', {
             nama_kampus: nama_kampus,
-            no_id: no_id,
+            website: website,
             alamat: alamat,
 
             nama_direktur: nama_direktur,
@@ -538,7 +537,7 @@
         // Buat objek data yang akan dikirimkan melalui AJAX
         var data = {
             nama_kampus: nama_kampus,
-            no_id: no_id,
+            website: website,
             alamat: alamat,
 
             nama_direktur: nama_direktur,
@@ -648,7 +647,7 @@
     function showLoading() {
         let timerInterval
         Swal.fire({
-            title: 'Sedang membuat backup data ....',
+            title: 'membackup database ....',
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading()

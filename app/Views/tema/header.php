@@ -174,7 +174,7 @@ $level = $session->get('level');
                                 </ul>
                             </li>
                             <li class="nav-item menu-close">
-                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/barang/daftar') !== false || $_SERVER['REQUEST_URI'] == '/barang/master' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
+                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/barang/daftar') !== false || $_SERVER['REQUEST_URI'] == '/barang/master' || $_SERVER['REQUEST_URI'] == '/barang/rusak') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-box"></i>
                                     <p>
                                         Barang

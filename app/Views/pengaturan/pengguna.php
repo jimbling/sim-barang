@@ -108,7 +108,7 @@
                         <div class="form-group row">
                             <label for="editNama" class="col-sm-4 col-form-label">Nama</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="editNama" name="full_nama" value="<?= $akun['full_nama']; ?>">
+                                <input type="text" class="form-control" id="editNama" name="full_nama" value="<?= $akun['full_nama']; ?>" readonly>
                             </div>
                         </div>
 

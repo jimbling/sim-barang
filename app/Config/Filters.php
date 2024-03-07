@@ -8,6 +8,7 @@ use CodeIgniter\Filters\DebugToolbar;
 use CodeIgniter\Filters\Honeypot;
 use CodeIgniter\Filters\InvalidChars;
 use CodeIgniter\Filters\SecureHeaders;
+use App\Filters\PengaturanFilter;
 
 class Filters extends BaseConfig
 {
@@ -25,6 +26,7 @@ class Filters extends BaseConfig
         'Admin'         => \App\Filters\AdminFilter::class,
         'User'          => \App\Filters\UserFIlter::class,
         'booking'       => \App\Filters\BookingMiddleware::class,
+
     ];
 
     /**

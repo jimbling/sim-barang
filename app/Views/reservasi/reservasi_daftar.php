@@ -197,6 +197,10 @@
     function hapus_data(data_id) {
         console.log('Data ID yang akan dihapus:', data_id);
 
+        // Mendapatkan token CSRF dari cookie
+        const csrfName = '<?= csrf_token() ?>';
+        const csrfHash = '<?= csrf_hash() ?>';
+
         Swal.fire({
             title: 'Konfirmasi',
             text: 'Anda yakin menolak booking alat ini?',
@@ -220,11 +224,13 @@
                     showLoaderOnConfirm: true,
                     allowOutsideClick: false,
                     preConfirm: (message) => {
+                        // Mengirim permintaan AJAX dengan menyertakan token CSRF
                         return $.ajax({
                             type: 'POST',
                             url: '/reservasi/hapus/' + data_id,
                             data: {
-                                message: message
+                                message: message,
+                                [csrfName]: csrfHash // Menyertakan token CSRF dalam data
                             },
                             dataType: 'json'
                         }).catch(error => {
@@ -235,7 +241,7 @@
                     if (result.isConfirmed) {
                         Swal.fire({
                             title: 'Berhasil!',
-                            text: 'Data berhasil ditolak.',
+                            text: 'Booking alat berhasil ditolak.',
                             icon: 'success',
                             timer: 2000,
                             showConfirmButton: false,

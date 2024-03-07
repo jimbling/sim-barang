@@ -184,6 +184,9 @@ $routes->post('update_tanggal_kembali/(:num)', 'Home::update_tanggal_kembali/$1'
 $routes->post('notification/getUserNotifications', 'Reservasi::getUserNotifications');
 $routes->post('notification/markAsRead', 'Reservasi::markAsRead');
 
+$routes->get('/pesan', 'Pesan::index');
+$routes->post('/pesan/kirim', 'Pesan::send');
+
 
 
 

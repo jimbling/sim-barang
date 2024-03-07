@@ -1,5 +1,19 @@
+<?php
+
+use App\Services\PengaturanService;
+
+$pengaturanService = new PengaturanService();
+
+// Mendapatkan nama kampus dan website
+$data_pengaturan = $pengaturanService->getNamaKampus();
+$nama_kampus = $data_pengaturan['nama_kampus'];
+$website = $data_pengaturan['website'];
+?>
+
 <footer class="main-footer">
-    <strong>Copyright &copy; 2023-<?= $currentYear; ?> <a href="https://www.akperykyjogja.ac.id/home">Akper "YKY" Yogyakarta</a>.</strong> SIM Peminjaman Alat Laboratorium Keperawatan
+    <strong>Copyright &copy; <?= date('Y'); ?>-<?= $currentYear; ?>
+        <a href="<?= $website; ?>"><?= $nama_kampus; ?></a>.</strong>
+    SIM Peminjaman Alat Laboratorium Keperawatan
 </footer>
 
 
@@ -99,29 +113,7 @@
             });
         }
 
-        if (window.location.pathname === '/kembali/tambah') {
-            $('#daftarKodePinjam').DataTable({
-                "paging": false,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": false,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        }
 
-        // if (window.location.pathname === '/kembali/riwayat') {
-        //     $('#daftarRiwayatPengembalian').DataTable({
-        //         "paging": true,
-        //         "lengthChange": true,
-        //         "searching": true,
-        //         "ordering": false,
-        //         "info": true,
-        //         "autoWidth": false,
-        //         "responsive": true,
-        //     });
-        // }
         if (window.location.pathname === '/penerimaan/daftar') {
             $('#daftarPenerimaanPersediaanTable').DataTable({
                 "paging": true,

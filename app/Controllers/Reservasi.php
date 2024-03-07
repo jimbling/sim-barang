@@ -261,7 +261,7 @@ class Reservasi extends BaseController
             $email = \Config\Services::email();
 
             // Konfigurasi email
-            $email->setFrom('laboran.ykylab@gmail.com', 'Sistem SIM-Barang');
+            $email->setFrom('notifikasi@jimbling.my.id', 'Sistem SIM-Barang');
             $email->setTo('jimbling05@gmail.com');
 
             $email->setSubject('Booking Alat Baru');
@@ -288,22 +288,21 @@ class Reservasi extends BaseController
             // Ambil data pesan dari POST
             $message = $this->request->getPost('message');
 
-
             $reservasiModel = new ReservasiModel();
             $reservasibarangModel = new ReservasibarangModel();
 
             // Ambil data reservasi berdasarkan ID
             $reservasiData = $reservasiModel->find($reservasiId);
             if (!$reservasiData) {
-                return "Reservasi dengan ID tersebut tidak ditemukan.";
+                return $this->response->setJSON(['success' => false, 'message' => 'Reservasi dengan ID tersebut tidak ditemukan.']);
             }
-
-            $reservasibarangModel->hapusDaftarReservasi($reservasiId);
 
             // Kirim notifikasi kepada pengguna bahwa reservasi telah ditolak
             $userId = $reservasiData['user_id'];
             $this->sendDitolak($userId, $message);
 
+            // Setelah notifikasi dikirim, hapus data reservasi
+            $reservasibarangModel->hapusDataReservasi($reservasiId);
 
             return $this->response->setJSON(['success' => true, 'message' => 'Reservasi berhasil ditolak']);
         } else {
@@ -311,10 +310,6 @@ class Reservasi extends BaseController
             return $this->response->setJSON(['success' => false, 'message' => 'Tidak ada data yang dikirim']);
         }
     }
-
-
-
-
 
     public function getDataBarang()
     {

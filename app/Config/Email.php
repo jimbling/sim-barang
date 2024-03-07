@@ -28,17 +28,17 @@ class Email extends BaseConfig
     /**
      * SMTP Server Address
      */
-    public string $SMTPHost = 'smtp.googlemail.com';
+    public string $SMTPHost = 'mail.jimbling.my.id';
 
     /**
      * SMTP Username
      */
-    public string $SMTPUser = 'laboran.ykylab@gmail.com';
+    public string $SMTPUser = 'notifikasi@jimbling.my.id';
 
     /**
      * SMTP Password
      */
-    public string $SMTPPass = 'obuwxifyplupusnz';
+    public string $SMTPPass = 'aB68Jn05';
 
     /**
      * SMTP Port

@@ -82,135 +82,147 @@
                         <h3 class="card-title">Data Peminjaman dan Permintaan Barang</h3>
                     </div>
                     <div class="card-body table-responsive p-0 table-sm">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Kode Pinjam</th>
-                                    <th>Tanggal Peminjaman</th>
-                                    <th>Tanggal Pengembalian</th>
-                                    <th>Nama Peminjam</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <?php if (count($data_peminjaman) > 0) : ?>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Kode Pinjam</th>
+                                        <th>Tanggal Peminjaman</th>
+                                        <th>Tanggal Pengembalian</th>
+                                        <th>Nama Peminjam</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                                <?php
-                                // Fungsi untuk membandingkan dua data berdasarkan created_at
-                                function compareCreatedAt($a, $b)
-                                {
-                                    return strtotime($b['created_at']) - strtotime($a['created_at']);
-                                }
+                                    <?php
+                                    // Fungsi untuk membandingkan dua data berdasarkan created_at
+                                    function compareCreatedAt($a, $b)
+                                    {
+                                        return strtotime($b['created_at']) - strtotime($a['created_at']);
+                                    }
 
-                                // Menggunakan usort untuk menyortir array $data_peminjaman berdasarkan created_at
-                                usort($data_peminjaman, 'compareCreatedAt');
+                                    // Menggunakan usort untuk menyortir array $data_peminjaman berdasarkan created_at
+                                    usort($data_peminjaman, 'compareCreatedAt');
 
-                                $counter = 0; // Menambahkan variabel hitungan
+                                    $counter = 0; // Menambahkan variabel hitungan
 
-                                foreach ($data_peminjaman as $dataPinjam) :
-                                    if ($counter < 3) : // Menambahkan kondisi untuk membatasi tampilan hanya 3 data
-                                ?>
-                                        <tr>
-                                            <!-- Kolom yang lain tetap seperti sebelumnya -->
-                                            <td style="text-align: center; vertical-align: middle; font-size: 13px;">
-                                                <?= $dataPinjam['kode_pinjam']; ?>
-                                                <?php
-                                                $created_at = strtotime($dataPinjam['created_at']);
-                                                $now = time(); // Waktu saat ini dalam detik
+                                    foreach ($data_peminjaman as $dataPinjam) :
+                                        if ($counter < 3) : // Menambahkan kondisi untuk membatasi tampilan hanya 3 data
+                                    ?>
+                                            <tr>
+                                                <!-- Kolom yang lain tetap seperti sebelumnya -->
+                                                <td style="text-align: center; vertical-align: middle; font-size: 13px;">
+                                                    <?= $dataPinjam['kode_pinjam']; ?>
+                                                    <?php
+                                                    $created_at = strtotime($dataPinjam['created_at']);
+                                                    $now = time(); // Waktu saat ini dalam detik
 
-                                                // Hitung selisih waktu dalam detik
-                                                $selisih_detik = $now - $created_at;
+                                                    // Hitung selisih waktu dalam detik
+                                                    $selisih_detik = $now - $created_at;
 
-                                                // Tampilkan badge "Baru" jika selisih waktu kurang dari 60 menit
-                                                if ($selisih_detik < 60 * 60) : // 60 detik * 60 menit = 1 jam
-                                                ?>
-                                                    <span class="badge badge-danger">Baru</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td style="text-align: center; vertical-align: middle; font-size: 13px;">
-                                                <?php
-                                                $tanggal_pinjam = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pinjam'])
-                                                    ->setTimezone('Asia/Jakarta');
+                                                    // Tampilkan badge "Baru" jika selisih waktu kurang dari 60 menit
+                                                    if ($selisih_detik < 60 * 60) : // 60 detik * 60 menit = 1 jam
+                                                    ?>
+                                                        <span class="badge badge-danger">Baru</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td style="text-align: center; vertical-align: middle; font-size: 13px;">
+                                                    <?php
+                                                    $tanggal_pinjam = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pinjam'])
+                                                        ->setTimezone('Asia/Jakarta');
 
-                                                $nama_bulan = [
-                                                    'January' => 'Januari',
-                                                    'February' => 'Februari',
-                                                    'March' => 'Maret',
-                                                    'April' => 'April',
-                                                    'May' => 'Mei',
-                                                    'June' => 'Juni',
-                                                    'July' => 'Juli',
-                                                    'August' => 'Agustus',
-                                                    'September' => 'September',
-                                                    'October' => 'Oktober',
-                                                    'November' => 'November',
-                                                    'December' => 'Desember',
-                                                ];
+                                                    $nama_bulan = [
+                                                        'January' => 'Januari',
+                                                        'February' => 'Februari',
+                                                        'March' => 'Maret',
+                                                        'April' => 'April',
+                                                        'May' => 'Mei',
+                                                        'June' => 'Juni',
+                                                        'July' => 'Juli',
+                                                        'August' => 'Agustus',
+                                                        'September' => 'September',
+                                                        'October' => 'Oktober',
+                                                        'November' => 'November',
+                                                        'December' => 'Desember',
+                                                    ];
 
-                                                $bulan = $nama_bulan[$tanggal_pinjam->format('F')];
+                                                    $bulan = $nama_bulan[$tanggal_pinjam->format('F')];
 
-                                                echo $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y - H:i') . ' WIB';
-                                                ?>
-                                            </td>
-                                            <td width="20%" style="text-align: center; vertical-align: middle; font-size: 13px;">
-                                                <?php
-                                                $tanggal_kembali = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
+                                                    echo $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y - H:i') . ' WIB';
+                                                    ?>
+                                                </td>
+                                                <td width="20%" style="text-align: center; vertical-align: middle; font-size: 13px;">
+                                                    <?php
+                                                    $tanggal_kembali = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
 
-                                                $nama_bulan = [
-                                                    'January' => 'Januari',
-                                                    'February' => 'Februari',
-                                                    'March' => 'Maret',
-                                                    'April' => 'April',
-                                                    'May' => 'Mei',
-                                                    'June' => 'Juni',
-                                                    'July' => 'Juli',
-                                                    'August' => 'Agustus',
-                                                    'September' => 'September',
-                                                    'October' => 'Oktober',
-                                                    'November' => 'November',
-                                                    'December' => 'Desember',
-                                                ];
+                                                    $nama_bulan = [
+                                                        'January' => 'Januari',
+                                                        'February' => 'Februari',
+                                                        'March' => 'Maret',
+                                                        'April' => 'April',
+                                                        'May' => 'Mei',
+                                                        'June' => 'Juni',
+                                                        'July' => 'Juli',
+                                                        'August' => 'Agustus',
+                                                        'September' => 'September',
+                                                        'October' => 'Oktober',
+                                                        'November' => 'November',
+                                                        'December' => 'Desember',
+                                                    ];
 
-                                                $bulan = $nama_bulan[$tanggal_kembali->format('F')];
-                                                $waktu = $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y - H:i') . ' WIB';
+                                                    $bulan = $nama_bulan[$tanggal_kembali->format('F')];
+                                                    $waktu = $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y - H:i') . ' WIB';
 
-                                                // Jika tanggal pengembalian adalah hari ini atau sudah melebihi tanggal saat ini, tambahkan badge "JATUH TEMPO"
-                                                if ($tanggal_kembali->toDateString() === date('Y-m-d') || $tanggal_kembali < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
-                                                    $waktu .= '<br><span class="badge badge-danger">JATUH TEMPO</span>';
-                                                }
+                                                    // Jika tanggal pengembalian adalah hari ini atau sudah melebihi tanggal saat ini, tambahkan badge "JATUH TEMPO"
+                                                    if ($tanggal_kembali->toDateString() === date('Y-m-d') || $tanggal_kembali < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
+                                                        $waktu .= '<br><span class="badge badge-danger">JATUH TEMPO</span>';
+                                                    }
 
-                                                echo $waktu;
-                                                ?>
-                                            </td>
-                                            <td style="text-align: center; vertical-align: middle; font-size: 13px;"><?= $dataPinjam['nama_peminjam']; ?></td>
+                                                    echo $waktu;
+                                                    ?>
+                                                </td>
+                                                <td style="text-align: center; vertical-align: middle; font-size: 13px;"><?= $dataPinjam['nama_peminjam']; ?></td>
 
-                                            <td width='10%' class="text-center" style="text-align: center; vertical-align: middle;">
-                                                <a href="<?= base_url('cetak_pinjam/' . $dataPinjam['peminjaman_id']); ?>" data-toggle="tooltip" data-placement="top" title="Cetak" target="_blank">
-                                                    <i class="fas fa-print " style='color:#D24545'></i>
-                                                </a>
-                                                <?php
-                                                $tanggal_pengembalian = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
+                                                <td width='10%' class="text-center" style="text-align: center; vertical-align: middle;">
+                                                    <a href="<?= base_url('cetak_pinjam/' . $dataPinjam['peminjaman_id']); ?>" target="_blank">
+                                                        <i class="fas fa-print " style='color:#D24545' data-toggle="tooltip" data-placement="left" title="Cetak"></i>
+                                                    </a>
+                                                    <?php
+                                                    $tanggal_pengembalian = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
 
-                                                // Periksa apakah tanggal pengembalian adalah hari ini atau sudah melebihi tanggal saat ini
-                                                if ($tanggal_pengembalian->toDateString() === date('Y-m-d') || $tanggal_pengembalian < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
-                                                ?>
-                                                    <button class="btn editBtn" data-id="<?= $dataPinjam['peminjaman_id']; ?>" data-toggle="modal" data-target="#editModal">
-                                                        <i class='fas fa-retweet' style='color:#1D24CA' data-toggle="tooltip" data-placement="top" title="Perpanjang"></i>
-                                                    </button>
-                                                <?php
-                                                }
-                                                ?>
-                                            </td>
+                                                    // Periksa apakah tanggal pengembalian adalah hari ini atau sudah melebihi tanggal saat ini
+                                                    if ($tanggal_pengembalian->toDateString() === date('Y-m-d') || $tanggal_pengembalian < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
+                                                    ?>
+                                                        <button class="btn editBtn" data-id="<?= $dataPinjam['peminjaman_id']; ?>" data-toggle="modal" data-target="#editModal">
+                                                            <i class='fas fa-retweet' style='color:#1D24CA' data-toggle="tooltip" data-placement="top" title="Perpanjang"></i>
+                                                        </button>
+                                                    <?php
+                                                    }
+                                                    ?>
+                                                </td>
 
-                                        </tr>
-                                <?php
-                                        $counter++; // Menambahkan hitungan setiap kali loop berjalan
-                                    endif;
-                                endforeach;
-                                ?>
+                                            </tr>
+                                    <?php
+                                            $counter++; // Menambahkan hitungan setiap kali loop berjalan
+                                        endif;
+                                    endforeach;
+                                    ?>
 
-                            </tbody>
+                                </tbody>
 
-                        </table>
+                            </table>
+                        <?php else : ?>
+                            <!-- Tampilkan pesan jika tidak ada data peminjaman -->
+                            <table class="table table-striped">
+                                <tbody>
+
+                                    <tr>
+                                        <th>Tidak ada data peminjaman</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
                     </div>
                 </div>
 
