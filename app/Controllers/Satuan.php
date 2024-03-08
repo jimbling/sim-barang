@@ -2,27 +2,34 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
 use App\Models\SatuanModel;
+
 
 class Satuan extends BaseController
 {
     protected $satuanModel;
+    protected $settingsService;
 
     public function __construct()
     {
 
         $this->satuanModel = new SatuanModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
+
     public function index()
     {
 
         $currentYear = date('Y');
         $csrfToken = csrf_hash();
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $satuanModel = new SatuanModel();
         $dataSatuan = $satuanModel->getSatuan();
 
         $data = [
-            'judul' => 'Data Satuan Barang | Akper "YKY" Yogyakarta',
+            'judul' => "Data Satuan Barang | $namaKampus",
             'currentYear' => $currentYear,
             'data_satuan' => $dataSatuan,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data

@@ -2,8 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Models\BarangModel;
+use App\Helpers\ServiceInjector;
 
+use App\Models\BarangModel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -11,29 +12,31 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 class Barang extends BaseController
 {
     protected $barangModel;
+    protected $settingsService;
 
     public function __construct()
     {
-
         $this->barangModel = new BarangModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
+
     public function masterBarang()
     {
         session();
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
 
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         $data = [
-            'judul' => 'Master Barang | Akper "YKY" Yogyakarta',
+            'judul' => "Master Barang | $namaKampus",
             'currentYear' => $currentYear,
-            'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
-
+            'csrfToken' => $csrfToken,
         ];
 
-        // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
         return view('barang-lab/master_barang', $data);
     }
+
 
     public function getDataBarang()
     {
@@ -193,6 +196,7 @@ class Barang extends BaseController
         $barangModel = new BarangModel();
         $groupedBarang = $barangModel->groupByNamaBarang();
 
+        $namaKampus = $this->settingsService->getNamaKampus();
         // Mendapatkan detail barang untuk setiap kelompok
         $detailBarang = [];
         foreach ($groupedBarang as $all_post) {
@@ -200,7 +204,7 @@ class Barang extends BaseController
         }
 
         $data = [
-            'judul' => 'Daftar Barang | Akper "YKY" Yogyakarta',
+            'judul' => "Daftar Barang | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,
             'grupBarang' => $groupedBarang,
@@ -221,6 +225,7 @@ class Barang extends BaseController
         $barangModel = new BarangModel();
         $barangRusak = $barangModel->groupByNamaBarangRusak();
 
+        $namaKampus = $this->settingsService->getNamaKampus();
         // Mendapatkan detail barang untuk setiap kelompok
         $detailBarang = [];
         foreach ($barangRusak as $barang_rusak) {
@@ -228,7 +233,7 @@ class Barang extends BaseController
         }
 
         $data = [
-            'judul' => 'Daftar Barang Rusak | Akper "YKY" Yogyakarta',
+            'judul' => "Daftar Barang Rusak |  $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,
             'data_barang_rusak' => $barangRusak,
@@ -247,6 +252,7 @@ class Barang extends BaseController
         $barangModel = new BarangModel();
         $barangDisewakan = $barangModel->getDaftarBarangDisewakan();
 
+        $namaKampus = $this->settingsService->getNamaKampus();
         // Mendapatkan detail barang untuk setiap kelompok
         $detailBarang = [];
         foreach ($barangDisewakan as $barang_disewakan) {
@@ -254,7 +260,7 @@ class Barang extends BaseController
         }
 
         $data = [
-            'judul' => 'Daftar Barang Disewakan | Akper "YKY" Yogyakarta',
+            'judul' => "Daftar Barang Disewakan | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,
             'data_barang_disewakan' => $barangDisewakan,

@@ -188,6 +188,8 @@ $routes->get('/pesan', 'Pesan::index');
 $routes->post('/pesan/kirim', 'Pesan::send');
 $routes->get('/pemeliharaan', 'Pemeliharaan::index');
 $routes->post('upload/kopsurat', 'Pengaturan::kopsurat');
+$routes->get('/alert/getNotificationsToShow', 'Alert::getNotificationsToShow');
+$routes->post('/alert/updateAlertHiddenStatus/(:num)', 'Alert::updateAlertHiddenStatus/$1');
 
 
 

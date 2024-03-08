@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use App\Models\PenerimaanModel;
 use App\Models\PenerimaanPersediaanModel;
 use App\Models\SatuanModel;
@@ -31,6 +33,7 @@ class PengeluaranMurni extends BaseController
     protected $pengeluaranmurnidetailModel;
     protected $mahasiswaModel;
     protected $pengaturanModel;
+    protected $settingsService;
 
     public function __construct()
     {
@@ -45,6 +48,7 @@ class PengeluaranMurni extends BaseController
         $this->pengeluaranmurnidetailModel = new PengeluaranmurniDetailModel();
         $this->mahasiswaModel = new MahasiswaModel();
         $this->pengaturanModel = new PengaturanModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 
 
@@ -55,6 +59,8 @@ class PengeluaranMurni extends BaseController
         session();
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $penerimaanpersediaanModel = new PenerimaanPersediaanModel();
         $dataBarang = $penerimaanpersediaanModel->tampilkanData();
 
@@ -71,7 +77,7 @@ class PengeluaranMurni extends BaseController
 
 
         $data = [
-            'judul' => 'Pengeluaran Persediaan | Akper "YKY" Yogyakarta',
+            'judul' => "Pengeluaran Persediaan | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,
             'data_peminjaman' => $dataBarang,
@@ -148,6 +154,7 @@ class PengeluaranMurni extends BaseController
     {
         session();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         $satuanModel = new SatuanModel();
         $dataSatuan = $satuanModel->getSatuan();
@@ -184,7 +191,7 @@ class PengeluaranMurni extends BaseController
 
         // Menyiapkan data untuk disimpan
         $data = [
-            'judul' => 'Tambah Pengeluaran Tanpa Peminjaman | Akper "YKY" Yogyakarta',
+            'judul' => "Tambah Pengeluaran Tanpa Peminjaman | $namaKampus",
             'currentYear' => $currentYear,
             'data_satuan' =>  $dataSatuan,
             'barang_persediaan' => $dataBarang,

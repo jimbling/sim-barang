@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use App\Models\PenerimaanModel;
 use App\Models\PenerimaanPersediaanModel;
 use App\Models\SatuanModel;
@@ -29,6 +31,7 @@ class Pengeluaran extends BaseController
     protected $pengeluaranmurniModel;
     protected $pengeluaranmurnidetailModel;
     protected $mahasiswaModel;
+    protected $settingsService;
 
     public function __construct()
     {
@@ -42,6 +45,7 @@ class Pengeluaran extends BaseController
         $this->pengeluaranmurniModel = new PengeluaranmurniModel();
         $this->pengeluaranmurnidetailModel = new PengeluaranmurniDetailModel();
         $this->mahasiswaModel = new MahasiswaModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 
     public function daftarPengeluaran()
@@ -49,6 +53,8 @@ class Pengeluaran extends BaseController
         session();
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $penerimaanpersediaanModel = new PenerimaanPersediaanModel();
         $dataBarang = $penerimaanpersediaanModel->tampilkanData();
 
@@ -70,7 +76,7 @@ class Pengeluaran extends BaseController
         }
 
         $data = [
-            'judul' => 'Pengeluaran Persediaan | Akper "YKY" Yogyakarta',
+            'judul' => "Pengeluaran Persediaan | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,
             'data_peminjaman' => $dataBarang,
@@ -85,6 +91,7 @@ class Pengeluaran extends BaseController
     {
 
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         $satuanModel = new SatuanModel();
         $dataSatuan = $satuanModel->getSatuan();
@@ -98,7 +105,7 @@ class Pengeluaran extends BaseController
 
         // Menyiapkan data untuk disimpan
         $data = [
-            'judul' => 'Tambah Pengeluaran | Akper "YKY" Yogyakarta',
+            'judul' => "Tambah Pengeluaran | $namaKampus",
             'currentYear' => $currentYear,
             'data_satuan' =>  $dataSatuan,
             'barang_persediaan' => $dataBarang,

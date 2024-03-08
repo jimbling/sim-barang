@@ -3,9 +3,6 @@
 namespace Config;
 
 
-use App\Models\PengaturanModel;
-
-
 use CodeIgniter\Config\BaseService;
 
 /**

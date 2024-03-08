@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use App\Models\BarangModel;
 use App\Models\PeminjamanModel;
 use App\Models\PeminjamanbarangModel;
@@ -19,6 +21,7 @@ use App\Models\PengembalianbarangModel;
 use App\Models\PengeluaranmurniModel;
 use App\Models\PengeluaranmurniDetailModel;
 
+
 class Laporan extends BaseController
 {
     protected $barangModel;
@@ -35,6 +38,7 @@ class Laporan extends BaseController
     protected $dosentendikModel;
     protected $pengeluaranmurniModel;
     protected $pengeluaranmurnidetailModel;
+    protected $settingsService;
 
     public function __construct()
     {
@@ -53,6 +57,7 @@ class Laporan extends BaseController
         $this->dosentendikModel = new DosenTendikModel();
         $this->pengeluaranmurniModel = new PengeluaranmurniModel();
         $this->pengeluaranmurnidetailModel = new PengeluaranmurniDetailModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 
     // Halaman Pilihan untuk cetak
@@ -60,6 +65,8 @@ class Laporan extends BaseController
     {
 
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $peminjamanbarangModel = new PeminjamanbarangModel();
         $barangByStatus = $peminjamanbarangModel->getPeminjamanBarang();
 
@@ -71,7 +78,7 @@ class Laporan extends BaseController
 
 
         $data = [
-            'judul' => 'Laporan Peminjaman | Akper "YKY" Yogyakarta',
+            'judul' => "Laporan Peminjaman | | $namaKampus",
             'currentYear' => $currentYear,
             'data_peminjaman' => $barangByStatus,
             'data_pengeluaran' =>  $dataPengeluaran,
@@ -86,6 +93,8 @@ class Laporan extends BaseController
     // Cetak Laporan Peminjaman Berdasarakan Bulan dan Tahun
     public function cetakPinjamBulanTahun()
     {
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $pengaturanModel = new PengaturanModel();
         $dataPengaturan = $pengaturanModel->getDataById(1);
         $bulan = $this->request->getGet('bulan');
@@ -114,7 +123,7 @@ class Laporan extends BaseController
         $dataByMonthYear = $riwayatPeminjamanModel->getDataByMonthAndYear($month, $year);
 
         $data = [
-            'judul' => 'Daftar Pinjam | Akper "YKY" Yogyakarta',
+            'judul' => "Daftar Pinjam | $namaKampus",
             'data_peminjaman' => $dataByMonthYear,
             'dataPengaturan' => $dataPengaturan,
             'namaBulan' => $namaBulan,
@@ -128,6 +137,8 @@ class Laporan extends BaseController
     // Cetak Laporan Peminjaman Berdasarakan Tahun
     public function cetakPinjamTahun()
     {
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $pengaturanModel = new PengaturanModel();
         $dataPengaturan = $pengaturanModel->getDataById(1);
         $year = $this->request->getGet('tahun');
@@ -137,7 +148,7 @@ class Laporan extends BaseController
         $dataByMonthYear = $riwayatPeminjamanModel->getDataByYear($year);
 
         $data = [
-            'judul' => 'Daftar Pinjam | Akper "YKY" Yogyakarta',
+            'judul' => "Daftar Pinjam | $namaKampus",
             'data_peminjaman' => $dataByMonthYear,
             'dataPengaturan' => $dataPengaturan,
             'tahun' => $year,
@@ -153,6 +164,8 @@ class Laporan extends BaseController
     {
 
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $peminjamanbarangModel = new PeminjamanbarangModel();
         $barangByStatus = $peminjamanbarangModel->getPeminjamanBarang();
 
@@ -167,7 +180,7 @@ class Laporan extends BaseController
 
 
         $data = [
-            'judul' => 'Laporan Persediaan | Akper "YKY" Yogyakarta',
+            'judul' => "Laporan Persediaan | $namaKampus",
             'currentYear' => $currentYear,
             'data_peminjaman' => $barangByStatus,
             'data_pengeluaran' =>  $dataPengeluaran,
@@ -183,6 +196,8 @@ class Laporan extends BaseController
     // Cetak Laporan Penerimaan Barang Persediaan Berdasarakan Bulan dan Tahun
     public function cetakPenerimaanBulanTahun()
     {
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $pengaturanModel = new PengaturanModel();
         $dataPengaturan = $pengaturanModel->getDataById(1);
         $bulan = $this->request->getGet('bulan');
@@ -211,7 +226,7 @@ class Laporan extends BaseController
         $dataByMonthYear = $penerimaanpersediaanModel->getDataByMonthAndYear($month, $year);
 
         $data = [
-            'judul' => 'Daftar Pinjam | Akper "YKY" Yogyakarta',
+            'judul' => "Daftar Pinjam | $namaKampus",
             'data_peminjaman' => $dataByMonthYear,
             'dataPengaturan' => $dataPengaturan,
             'namaBulan' => $namaBulan,

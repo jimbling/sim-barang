@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use App\Models\PengaturanModel;
 use App\Models\UserModel;
 use Ifsnop\Mysqldump\Mysqldump;
@@ -12,19 +14,21 @@ class Pengaturan extends BaseController
     protected $pengaturanModel;
     protected $userModel;
     protected $backupModel;
+    protected $settingsService;
 
     public function __construct()
     {
         $this->pengaturanModel = new PengaturanModel();
         $this->userModel = new UserModel();
         $this->backupModel = new BackupModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
     public function index()
     {
 
         $currentYear = date('Y');
         $csrfToken = csrf_hash();
-
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         $pengguna = $this->userModel->getAdminUser();
 
@@ -33,7 +37,7 @@ class Pengaturan extends BaseController
 
 
         $data = [
-            'judul' => 'Setting Data | Akper "YKY" Yogyakarta',
+            'judul' => "Setting Data | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
             'dataCetak' => $dataCetak,
@@ -49,6 +53,7 @@ class Pengaturan extends BaseController
     {
         $currentYear = date('Y');
         $csrfToken = csrf_hash();
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         // Ambil nilai tipe pengguna dari form jika ada
         $selectedType = $this->request->getGet('type');
@@ -63,7 +68,7 @@ class Pengaturan extends BaseController
         }
 
         $data = [
-            'judul' => 'Setting Data | Akper "YKY" Yogyakarta',
+            'judul' => "Setting Data | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
             'data_pengguna' => $pengguna,

@@ -221,7 +221,7 @@ $level = $session->get('level');
                                 </a>
                             </li>
                             <li class="nav-item menu-close ">
-                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/pinjam/tambah' || $_SERVER['REQUEST_URI'] == '/pinjam/pihakluar' || $_SERVER['REQUEST_URI'] == '/kembali/riwayat' || $_SERVER['REQUEST_URI'] == '/pinjam/pihakluar/riwayat') ? 'active' : '' ?>">
+                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/pinjam/tambah' || $_SERVER['REQUEST_URI'] == '/pinjam/riwayat' || $_SERVER['REQUEST_URI'] == '/pinjam/pihakluar' || $_SERVER['REQUEST_URI'] == '/kembali/riwayat' || $_SERVER['REQUEST_URI'] == '/pinjam/pihakluar/riwayat') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-people-carry"></i>
                                     <p>
                                         Sirkulasi
@@ -232,7 +232,7 @@ $level = $session->get('level');
                                 <ul class="nav nav-treeview">
 
                                     <li class="nav-item">
-                                        <a href="/pinjam/daftar" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
+                                        <a href="/pinjam/daftar" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/pinjam/riwayat') ? 'active' : '' ?>">
                                             <i class="fas fa-dolly sub-item spaced-icon"></i>
                                             <p>
                                                 Peminjaman
@@ -357,7 +357,7 @@ $level = $session->get('level');
 
 
                             <li class="nav-item menu-close">
-                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/data/mahasiswa') !== false || $_SERVER['REQUEST_URI'] == '/data/dosen_tendik' || $_SERVER['REQUEST_URI'] == '/data/pengaturan' || $_SERVER['REQUEST_URI'] == '/data/pengguna') ? 'active' : '' ?>">
+                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/data/mahasiswa') !== false || $_SERVER['REQUEST_URI'] == '/data/dosen_tendik' || $_SERVER['REQUEST_URI'] == '/data/pengaturan' || $_SERVER['REQUEST_URI'] == '/data/pengguna' || $_SERVER['REQUEST_URI'] == '/data/pengguna?type=Dosen_Tendik' || $_SERVER['REQUEST_URI'] == '/data/pengguna?type=Mahasiswa') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-sliders-h"></i>
                                     <p>
                                         Pengaturan
@@ -385,7 +385,7 @@ $level = $session->get('level');
                                                 Setting
                                             </p>
                                         </a>
-                                        <a href="/data/pengguna" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/data/pengguna') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/data/pengguna') ? 'active' : '' ?>">
+                                        <a href="/data/pengguna" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/data/pengguna') !== false || $_SERVER['REQUEST_URI'] == '/data/pengguna?type=Dosen_Tendik' || $_SERVER['REQUEST_URI'] == '/data/pengguna?type=Mahasiswa') ? 'active' : '' ?>">
                                             <i class="fas fa-users sub-item spaced-icon"></i>
                                             <p>
                                                 Pengguna
@@ -433,7 +433,7 @@ $level = $session->get('level');
 
                                 </ul>
                             <li class="nav-item">
-                                <a href="/pemeliharaan" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pemeliharaan') !== false || $_SERVER['REQUEST_URI'] == '/reservasi/tambah') ? 'active' : '' ?>">
+                                <a href="/pemeliharaan" class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/pemeliharaan') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-fire" style='color:red'></i>
                                     <p>
                                         Pemeliharaan

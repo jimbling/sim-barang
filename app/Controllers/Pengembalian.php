@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use App\Models\BarangModel;
 use App\Models\PeminjamanModel;
 use App\Models\PeminjamanbarangModel;
@@ -10,6 +12,7 @@ use App\Models\PengembalianbarangModel;
 use App\Models\RiwayatPeminjamanModel;
 use App\Models\RuanganModel;
 use App\Models\PenggunaanModel;
+
 
 
 class Pengembalian extends BaseController
@@ -22,6 +25,8 @@ class Pengembalian extends BaseController
     protected $ruanganModel;
     protected $penggunaanModel;
     protected $pengembalianbarangModel;
+    protected $settingsService;
+
     public function __construct()
     {
 
@@ -33,12 +38,15 @@ class Pengembalian extends BaseController
         $this->ruanganModel = new RuanganModel();
         $this->penggunaanModel = new PenggunaanModel();
         $this->pengembalianbarangModel = new PengembalianbarangModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjecto
     }
 
     public function index()
     {
 
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $peminjamanbarangModel = new PeminjamanbarangModel();
         $barangByStatus = $peminjamanbarangModel->getPeminjamanBarang();
 
@@ -55,7 +63,7 @@ class Pengembalian extends BaseController
         }
 
         $data = [
-            'judul' => 'Daftar Pengembalian | Akper "YKY" Yogyakarta',
+            'judul' => "Daftar Pengembalian | $namaKampus",
             'currentYear' => $currentYear,
             'data_peminjaman' => $barangByStatus,
 
@@ -68,6 +76,7 @@ class Pengembalian extends BaseController
     public function riwayat()
     {
         $pengembalianbarangModel = new PengembalianbarangModel();
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         // Mengambil tahun dari inputan pengguna, jika tidak ada maka gunakan tahun saat ini
         $selectedYear = $this->request->getVar('tahun') ?? date('Y');
@@ -77,7 +86,7 @@ class Pengembalian extends BaseController
 
 
         $data = [
-            'judul' => 'Daftar Pinjam | Akper "YKY" Yogyakarta',
+            'judul' => "Daftar Pinjam | $namaKampus",
             'currentYear' => $selectedYear,
             'selectedYear' => $selectedYear,
             'availableYears' => $availableYears,
@@ -123,12 +132,13 @@ class Pengembalian extends BaseController
         session();
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         $peminjamanbarangModel = new PeminjamanbarangModel();
         $dataPeminjaman = $peminjamanbarangModel->getPeminjamanBarang();
 
         $data = [
-            'judul' => 'Form Pengembalian | Akper "YKY" Yogyakarta',
+            'judul' => "Form Pengembalian | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
             'data_peminjaman' => $dataPeminjaman,

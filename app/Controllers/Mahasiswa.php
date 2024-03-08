@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -12,12 +14,14 @@ class Mahasiswa extends BaseController
 {
     protected $mahasiswaModel;
     protected $userModel;
+    protected $settingsService;
 
     public function __construct()
     {
 
         $this->mahasiswaModel = new MahasiswaModel();
         $this->userModel = new UserModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 
     public function index()
@@ -25,10 +29,11 @@ class Mahasiswa extends BaseController
 
         $currentYear = date('Y');
         $csrfToken = csrf_hash();
+        $namaKampus = $this->settingsService->getNamaKampus();
 
 
         $data = [
-            'judul' => 'Data Mahasiswa | Akper "YKY" Yogyakarta',
+            'judul' => "Data Mahasiswa | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
 

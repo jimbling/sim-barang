@@ -2,8 +2,10 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
 use App\Models\BarangPersediaanModel;
 use App\Models\SatuanModel;
+
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -13,26 +15,32 @@ class BarangPersediaan extends BaseController
 {
     protected $barangpersediaanModel;
     protected $satuanModel;
+    protected $settingsService;
 
     public function __construct()
     {
 
         $this->barangpersediaanModel = new BarangPersediaanModel();
         $this->satuanModel = new SatuanModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
     public function masterBarang()
     {
         session();
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $barangpersediaanModel = new BarangPersediaanModel();
         $dataBarangPersediaan = $barangpersediaanModel->getBarangPersediaan();
 
         $satuanModel = new SatuanModel();
         $dataSatuan = $satuanModel->getSatuan();
         // Mendapatkan daftar barang yang dikelompokkan berdasarkan nama_barang
+
+
         $data = [
-            'judul' => 'Persediaan Barang | Akper "YKY" Yogyakarta',
+            'judul' => "Persediaan Barang |  $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
             'data_barang_persediaan' => $dataBarangPersediaan,
@@ -149,13 +157,15 @@ class BarangPersediaan extends BaseController
         session();
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $barangpersediaanModel = new BarangPersediaanModel();
         $dataBarangPersediaan = $barangpersediaanModel->getBarangPersediaanbyStock();
 
 
         // Mendapatkan daftar barang yang dikelompokkan berdasarkan nama_barang
         $data = [
-            'judul' => 'Stock Opname | Akper "YKY" Yogyakarta',
+            'judul' => "Stock Opname | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
             'data_barang_persediaan' => $dataBarangPersediaan,
@@ -272,57 +282,5 @@ class BarangPersediaan extends BaseController
     {
         // Format: YKY-Lab-Persed-000001
         return 'YKY-Lab-Persed-' . str_pad($id, 2, '0', STR_PAD_LEFT);
-    }
-
-    public function daftarBarang()
-    {
-        session();
-        $csrfToken = csrf_hash();
-        $currentYear = date('Y');
-        $barangModel = new BarangModel();
-        $groupedBarang = $barangModel->groupByNamaBarang();
-
-        // Mendapatkan detail barang untuk setiap kelompok
-        $detailBarang = [];
-        foreach ($groupedBarang as $all_post) {
-            $detailBarang[$all_post['nama_barang']] = $barangModel->getDetailBarangByNama($all_post['nama_barang']);
-        }
-
-        $data = [
-            'judul' => 'Daftar Barang | Akper "YKY" Yogyakarta',
-            'currentYear' => $currentYear,
-            'csrfToken' => $csrfToken,
-            'grupBarang' => $groupedBarang,
-            'detailBarang' => $detailBarang, // Menambahkan detail barang ke dalam data
-        ];
-
-        // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
-        return view('daftar_barang', $data);
-    }
-
-    public function daftarBarangRusak()
-    {
-        session();
-        $csrfToken = csrf_hash();
-        $currentYear = date('Y');
-        $barangModel = new BarangModel();
-        $barangRusak = $barangModel->groupByNamaBarangRusak();
-
-        // Mendapatkan detail barang untuk setiap kelompok
-        $detailBarang = [];
-        foreach ($barangRusak as $barang_rusak) {
-            $detailBarang[$barang_rusak['nama_barang']] = $barangModel->groupByNamaBarangRusak($barang_rusak['nama_barang']);
-        }
-
-        $data = [
-            'judul' => 'Daftar Barang Rusak | Akper "YKY" Yogyakarta',
-            'currentYear' => $currentYear,
-            'csrfToken' => $csrfToken,
-            'data_barang_rusak' => $barangRusak,
-            'detailBarang' => $detailBarang, // Menambahkan detail barang ke dalam data
-        ];
-
-        // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
-        return view('daftar_barang_rusak', $data);
     }
 }

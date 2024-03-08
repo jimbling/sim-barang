@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use App\Models\BarangModel;
 use App\Models\PeminjamanModel;
 use App\Models\PeminjamanbarangModel;
@@ -36,6 +38,7 @@ class Reservasi extends BaseController
     protected $reservasiModel;
     protected $reservasibarangModel;
     protected $notificationModel;
+    protected $settingsService;
 
     public function __construct()
     {
@@ -55,11 +58,13 @@ class Reservasi extends BaseController
         $this->reservasiModel = new ReservasiModel();
         $this->reservasibarangModel = new ReservasibarangModel();
         $this->notificationModel = new NotificationModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 
     public function index()
     {
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
         $reservasibarangModel = new ReservasibarangModel();
         $barangByStatus = $reservasibarangModel->getReservasiPeminjaman();
 
@@ -80,7 +85,7 @@ class Reservasi extends BaseController
         }
 
         $data = [
-            'judul' => 'Booking Alat | Akper "YKY" Yogyakarta',
+            'judul' => "Booking Alat | $namaKampus",
             'currentYear' => $currentYear,
             'data_reservasi' => $barangByStatus,
         ];
@@ -96,6 +101,8 @@ class Reservasi extends BaseController
         session();
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $barangModel = new BarangModel();
         $barangByStatus = $barangModel->getBarangByStatus();
 
@@ -123,7 +130,7 @@ class Reservasi extends BaseController
         $peminjamanId = $this->request->getPost('reservasi_id');
 
         $data = [
-            'judul' => 'Booking Alat | Akper "YKY" Yogyakarta',
+            'judul' => "Booking Alat | $namaKampus",
             'currentYear' => $currentYear,
             'data_barang' => $barangByStatus,
             'data_mahasiswa' => $dataMahasiswa,

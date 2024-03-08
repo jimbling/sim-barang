@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use App\Models\BarangModel;
 use App\Models\PihakluarPeminjamanModel;
 use App\Models\PihakluarDetailModel;
@@ -13,6 +15,7 @@ class Pihakluar extends BaseController
     protected $pihakluarpeminjamanModel;
     protected $pihakluardetailModel;
     protected $riwayatpihakluarModel;
+    protected $settingsService;
 
     public function __construct()
     {
@@ -21,17 +24,21 @@ class Pihakluar extends BaseController
         $this->pihakluarpeminjamanModel = new PihakluarPeminjamanModel();
         $this->pihakluardetailModel = new PihakluarDetailModel();
         $this->riwayatpihakluarModel = new RiwayatpihakluarModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 
     public function index()
     {
         $csrfToken = csrf_hash();
+        $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $barangModel = new BarangModel();
         $barangByStatus = $barangModel->getBarangDisewakan();
-        $currentYear = date('Y');
+
 
         $data = [
-            'judul' => 'Pihak Luar | Akper "YKY" Yogyakarta',
+            'judul' => "Pihak Luar | $namaKampus",
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
             'currentYear' => $currentYear,
             'data_barang' => $barangByStatus,
@@ -212,9 +219,10 @@ class Pihakluar extends BaseController
         $barangModel = new BarangModel();
         $barangByStatus = $barangModel->getBarangDisewakan();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         $data = [
-            'judul' => 'Data Pinjam Pihak Luar | Akper "YKY" Yogyakarta',
+            'judul' => "Data Pinjam Pihak Luar | $namaKampus",
             'currentYear' => $currentYear,
             'data_barang' => $barangByStatus,
             'data_pinjamLuar' => $completeData,
@@ -270,9 +278,10 @@ class Pihakluar extends BaseController
         $barangModel = new BarangModel();
         $barangByStatus = $barangModel->getBarangDisewakan();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         $data = [
-            'judul' => 'Riwayat Peminjaman Pihak Luar | Akper "YKY" Yogyakarta',
+            'judul' => "Riwayat Peminjaman Pihak Luar | $namaKampus",
             'currentYear' => $currentYear,
             'data_barang' => $barangByStatus,
             'data_pinjamLuar' => $completeData,

@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use App\Models\PenerimaanModel;
 use App\Models\PenerimaanPersediaanModel;
 use App\Models\SatuanModel;
@@ -19,6 +21,7 @@ class Penerimaan extends BaseController
     protected $satuanModel;
     protected $barangpersediaanModel;
     protected $dosentendikModel;
+    protected $settingsService;
 
     public function __construct()
     {
@@ -27,6 +30,7 @@ class Penerimaan extends BaseController
         $this->satuanModel = new SatuanModel();
         $this->barangpersediaanModel = new BarangPersediaanModel();
         $this->dosentendikModel = new DosenTendikModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 
     public function daftarPenerimaan()
@@ -34,6 +38,8 @@ class Penerimaan extends BaseController
         session();
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $penerimaanpersediaanModel = new PenerimaanPersediaanModel();
         $dataPenerimaan = $penerimaanpersediaanModel->getPenerimaanPersediaan();
         $dataBarang = $penerimaanpersediaanModel->tampilkanData();
@@ -44,7 +50,7 @@ class Penerimaan extends BaseController
 
 
         $data = [
-            'judul' => 'Penerimaan Persediaan | Akper "YKY" Yogyakarta',
+            'judul' => "Penerimaan Persediaan | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
             'data_penerimaan' => $dataPenerimaan,
@@ -62,6 +68,7 @@ class Penerimaan extends BaseController
 
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         $satuanModel = new SatuanModel();
         $dataSatuan = $satuanModel->getSatuan();
@@ -74,7 +81,7 @@ class Penerimaan extends BaseController
 
         // Menyiapkan data untuk disimpan
         $data = [
-            'judul' => 'Barang Persediaan | Akper "YKY" Yogyakarta',
+            'judul' => "Barang Persediaan | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
             'data_satuan' =>  $dataSatuan,

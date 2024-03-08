@@ -2,18 +2,30 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use App\Controllers\BaseController;
 
 class Pesan extends BaseController
 {
+    protected $settingsService;
+
+    public function __construct()
+    {
+
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
+    }
+
+
     public function index()
     {
         session();
         $csrfToken = csrf_hash();
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
 
         $data = [
-            'judul' => 'Form Pengembalian | Akper "YKY" Yogyakarta',
+            'judul' => "Form Pengembalian | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
 

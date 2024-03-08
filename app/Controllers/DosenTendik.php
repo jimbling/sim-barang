@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -12,23 +14,27 @@ class DosenTendik extends BaseController
 {
     protected $dosentendikModel;
     protected $userModel;
+    protected $settingsService;
 
     public function __construct()
     {
 
         $this->dosentendikModel = new DosenTendikModel();
         $this->userModel = new UserModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
     public function index()
     {
 
         $currentYear = date('Y');
         $csrfToken = csrf_hash();
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $dosentendikModel = new DosenTendikModel();
         $dataDosenTendik = $dosentendikModel->getDosenTendik();
 
         $data = [
-            'judul' => 'Dosen dan Tendik | Akper "YKY" Yogyakarta',
+            'judul' => "Dosen dan Tendik | $namaKampus",
             'currentYear' => $currentYear,
             'dosen_tendik' => $dataDosenTendik,
             'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data

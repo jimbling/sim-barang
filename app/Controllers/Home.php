@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ServiceInjector;
+
 use App\Models\BarangModel;
 use App\Models\PeminjamanModel;
 use App\Models\PeminjamanbarangModel;
@@ -17,6 +19,7 @@ use App\Models\DosenTendikModel;
 use App\Models\PihakluarDetailModel;
 use App\Models\ReservasibarangModel;
 use App\Models\NotificationModel;
+use App\Models\AlertModel;
 
 
 class Home extends BaseController
@@ -36,6 +39,8 @@ class Home extends BaseController
     protected $pihakluardetailModel;
     protected $reservasibarangModel;
     protected $notificationModel;
+    protected $alertModel;
+    protected $settingsService;
 
 
     public function __construct()
@@ -56,6 +61,8 @@ class Home extends BaseController
         $this->pihakluardetailModel = new PihakluarDetailModel();
         $this->reservasibarangModel = new ReservasibarangModel();
         $this->notificationModel = new NotificationModel();
+        $this->alertModel = new AlertModel();
+        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 
     public function adminpanel()
@@ -63,6 +70,8 @@ class Home extends BaseController
         session();
         $currentYear = date('Y');
         $csrfToken = csrf_hash();
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $peminjamanbarangModel = new PeminjamanbarangModel();
         $barangByStatus = $peminjamanbarangModel->getPeminjamanBarang();
 
@@ -81,7 +90,9 @@ class Home extends BaseController
 
         $pihakluarDetailModel = new PihakluarDetailModel();
         $completeData = $pihakluarDetailModel->getCompleteData();
+        $notificationModel = new AlertModel();
 
+        $alertModel = $notificationModel->getNotificationsToShow();
         $peminjamanModel = new PeminjamanModel();
 
         // Kata-kata yang dicari
@@ -96,7 +107,7 @@ class Home extends BaseController
         }
 
         $data = [
-            'judul' => 'SIM Barang Lab Keperawatan | Akper "YKY" Yogyakarta',
+            'judul' => "SIM Lab | $namaKampus",
             'currentYear' => $currentYear,
             'csrfToken' => $csrfToken,
             'data_peminjaman' => $barangByStatus,
@@ -108,6 +119,7 @@ class Home extends BaseController
             'jumlah_booking' => $dataBooking,
             'keywords' => $keywords,
             'data_pinjamLuar' => $completeData,
+            'alert' => $alertModel
         ];
 
         // Kirim data ke view atau lakukan hal lain sesuai kebutuhan
@@ -117,6 +129,8 @@ class Home extends BaseController
     public function dashboard_user()
     {
         $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
         $peminjamanbarangModel = new PeminjamanbarangModel();
         $barangByStatus = $peminjamanbarangModel->getPeminjamanBarang();
 
@@ -129,7 +143,7 @@ class Home extends BaseController
 
 
         $data = [
-            'judul' => 'SIM Barang Lab Keperawatan | Akper "YKY" Yogyakarta',
+            'judul' => "SIM Lab | $namaKampus",
             'currentYear' => $currentYear,
             'data_peminjaman' => $barangByStatus,
             'data_pengeluaran' =>  $dataPengeluaran,

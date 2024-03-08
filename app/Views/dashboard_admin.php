@@ -242,7 +242,7 @@
 
                                                 // Jika tanggal pengembalian adalah hari ini atau melebihi tanggal saat ini, tambahkan badge "JATUH TEMPO"
                                                 if ($tanggal_kembali->toDateString() === date('Y-m-d') || $tanggal_kembali < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
-                                                    $waktu .= '<br><span class="badge badge-danger">JATUH TEMPO</span>';
+                                                    $waktu .= '<br><span class="badge badge-danger ">JATUH TEMPO</span>';
                                                 }
 
                                                 echo $waktu;
@@ -596,12 +596,72 @@
                 confirmButtonText: 'OK',
                 backdrop: 'static', // Set backdrop to static
                 allowOutsideClick: false // Set allowOutsideClick to false
+            }).then((result) => {
+                // Tampilkan SweetAlert kedua setelah pengguna menekan tombol OK pada SweetAlert pertama
+                if (result.isConfirmed) {
+                    showBackupAlert(); // Panggil fungsi untuk menampilkan SweetAlert kedua
+                }
             });
+        } else {
+            // Jika tidak ada peminjaman aktif, langsung tampilkan SweetAlert kedua
+            showBackupAlert();
         }
     });
+
+    function showBackupAlert() {
+        // Mendapatkan tanggal hari ini menggunakan JavaScript
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+
+        // Periksa apakah tanggal hari ini adalah tanggal 08
+        if (dd === '08') {
+            // Lakukan permintaan AJAX untuk memuat pesan dari database
+            $.ajax({
+                url: '/alert/getNotificationsToShow', // Sesuaikan dengan URL yang benar
+                method: 'GET',
+                success: function(response) {
+                    if (response.length > 0) {
+                        // Jika terdapat pesan yang harus ditampilkan
+                        var message = response[0].message; // Ambil pesan pertama dari respons
+
+                        // Tampilkan SweetAlert dengan pesan dari database
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Peringatan!',
+                            text: message,
+                            backdrop: 'static', // Set backdrop to static
+                            allowOutsideClick: false, // Set allowOutsideClick to false
+                            showCancelButton: true,
+                            showConfirmButton: false, // Hide the "OK" button
+                            cancelButtonText: 'Sembunyikan 30 Hari'
+                        }).then((result) => {
+                            if (result.dismiss === Swal.DismissReason.cancel) {
+                                // Jika pengguna memilih "Sembunyikan 30 Hari", mengupdate status hidden
+                                $.ajax({
+                                    url: '/alert/updateAlertHiddenStatus/' + response[0].id, // Ubah URL sesuai dengan fungsi yang baru
+                                    method: 'POST',
+                                    success: function(response) {
+                                        // Tambahkan logika jika diperlukan
+                                        // Arahkan pengguna ke halaman /pemeliharaan
+                                        window.location.href = '/pemeliharaan';
+                                    },
+                                    error: function(xhr, status, error) {
+                                        // Handle error jika terjadi
+                                        console.error(error);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle error jika terjadi
+                    console.error(error);
+                }
+            });
+        }
+    }
 </script>
-
-
 
 
 <?php echo view('tema/footer.php'); ?>
