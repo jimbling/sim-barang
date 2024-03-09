@@ -25,13 +25,23 @@
 
 
 </head>
+<?php
 
+use App\Services\PengaturanService;
+
+$pengaturanService = new PengaturanService();
+// Mendapatkan nama kampus dan website
+$data_pengaturan = $pengaturanService->getNamaKampus();
+$nama_kampus = $data_pengaturan['nama_kampus'];
+$logo = $data_pengaturan['logo'];
+
+?>
 
 <body class="bg-light">
 
     <div class="container">
         <div class="py-5 text-center">
-            <img class="d-block mx-auto mb-4" src="../../assets/dist/login/img/logo-yky.png" alt="" width="100" height="100">
+            <img class="d-block mx-auto mb-4" src="../../assets/dist/img/<?= $logo; ?>" alt="" width="100" height="100">
             <h2>Form Peminjaman Oleh Pihak Luar</h2>
             <p class="lead">Form dibawah ini adalah formulir peminjaman barang laboratorium keperawatan oleh pihak luar. Silahkan mengisi data peminjaman sesuai kebutuhan, untuk selanjutnya data peminjaman tersebut akan diperiksa oleh Laboran.
             </p>

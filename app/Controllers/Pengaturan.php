@@ -203,7 +203,7 @@ class Pengaturan extends BaseController
             session()->setFlashData('pesanHapusMhs', 'Post berhasil dihapus');
             return redirect()->to('data/mahasiswa')->with('success', 'Data pengguna berhasil disimpan.');
         } else {
-            // Tangani jika tidak ada ID yang diberikan
+
             return redirect()->back();
         }
     }
@@ -213,7 +213,7 @@ class Pengaturan extends BaseController
         $model = new PengaturanModel();
 
         if ($this->request->getMethod() === 'post') {
-            $existingData = $model->first(); // Ambil data yang sudah ada dalam database
+            $existingData = $model->first();
 
             // Ambil file yang diunggah
             $file = $this->request->getFile('kop_surat');
@@ -226,23 +226,61 @@ class Pengaturan extends BaseController
 
                 if (in_array($fileExtension, $allowedExtensions)) {
                     $newName = $file->getRandomName();
-                    $newLocation = 'assets/dist/img' . DIRECTORY_SEPARATOR; // Lokasi baru
+                    $newLocation = 'assets/dist/img' . DIRECTORY_SEPARATOR;
                     $file->move($newLocation, $newName);
 
                     // Perbarui nama file dalam database
                     $model->update($existingData['id'], ['kop_surat' => $newName]);
                     session()->setFlashData('pesanDataCetak', 'Data berhasil diperbaharui');
-                    return redirect()->to('/data/pengaturan'); // Redirect ke halaman sukses atau yang sesuai
+                    return redirect()->to('/data/pengaturan');
                 } else {
                     session()->setFlashData('pesanError', 'Jenis file tidak diijinkan.');
-                    return redirect()->to('/data/pengaturan'); // Redirect dengan pesan kesalahan
+                    return redirect()->to('/data/pengaturan');
                 }
             } else {
                 session()->setFlashData('pesanError', 'Terjadi kesalahan dalam pengunggahan file.');
-                return redirect()->to('/data/pengaturan'); // Redirect dengan pesan kesalahan
+                return redirect()->to('/data/pengaturan');
             }
         }
 
-        return view('upload_form'); // Ganti dengan nama view yang sesuai
+        return view('upload_form');
+    }
+
+    public function logo()
+    {
+        $model = new PengaturanModel();
+
+        if ($this->request->getMethod() === 'post') {
+            $existingData = $model->first();
+
+            // Ambil file yang diunggah
+            $file = $this->request->getFile('logo');
+
+            // Validasi file ekstensi
+            if ($file->isValid() && !$file->hasMoved()) {
+                // Validasi ekstensi file yang diijinkan
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+                $fileExtension = $file->getClientExtension();
+
+                if (in_array($fileExtension, $allowedExtensions)) {
+                    $newName = $file->getRandomName();
+                    $newLocation = 'assets/dist/img' . DIRECTORY_SEPARATOR;
+                    $file->move($newLocation, $newName);
+
+                    // Perbarui nama file dalam database
+                    $model->update($existingData['id'], ['logo' => $newName]);
+                    session()->setFlashData('pesanLogo', 'Data berhasil diperbaharui');
+                    return redirect()->to('/data/pengaturan');
+                } else {
+                    session()->setFlashData('pesanError', 'Jenis file tidak diijinkan.');
+                    return redirect()->to('/data/pengaturan');
+                }
+            } else {
+                session()->setFlashData('pesanError', 'Terjadi kesalahan dalam pengunggahan file.');
+                return redirect()->to('/data/pengaturan');
+            }
+        }
+
+        return view('upload_form');
     }
 }

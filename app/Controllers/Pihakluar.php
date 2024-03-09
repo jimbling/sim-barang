@@ -8,6 +8,7 @@ use App\Models\BarangModel;
 use App\Models\PihakluarPeminjamanModel;
 use App\Models\PihakluarDetailModel;
 use App\Models\RiwayatpihakluarModel;
+use App\Models\PengaturanModel;
 
 class Pihakluar extends BaseController
 {
@@ -16,6 +17,7 @@ class Pihakluar extends BaseController
     protected $pihakluardetailModel;
     protected $riwayatpihakluarModel;
     protected $settingsService;
+    protected $pengaturanModel;
 
     public function __construct()
     {
@@ -24,7 +26,8 @@ class Pihakluar extends BaseController
         $this->pihakluarpeminjamanModel = new PihakluarPeminjamanModel();
         $this->pihakluardetailModel = new PihakluarDetailModel();
         $this->riwayatpihakluarModel = new RiwayatpihakluarModel();
-        $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
+        $this->settingsService = ServiceInjector::getSettingsService();
+        $this->pengaturanModel = new PengaturanModel();
     }
 
     public function index()
@@ -171,7 +174,6 @@ class Pihakluar extends BaseController
         $pihakluarDetailModel = new PihakluarDetailModel();
         $completeData = $pihakluarDetailModel->getCompleteData();
 
-
         $pihakluarDetailModel = new PihakluarDetailModel();
         $groupedData = $pihakluarDetailModel->getGroupedData($peminjaman_id);
 
@@ -179,10 +181,27 @@ class Pihakluar extends BaseController
         $barangByStatus = $barangModel->getBarangDisewakan();
         $currentYear = date('Y');
 
+        $pengaturanModel = new PengaturanModel();
+        $dataInvoice = $pengaturanModel->getDataById(1);
+
+        // Membuat array baru dengan data yang diperlukan dan alias untuk nama kolom sensitif
+        $preparedDataInvoice = [
+            'data_bank' => $dataInvoice['nama_bank'],
+            'data_rek' => $dataInvoice['no_rekening'],
+            'data_an' => $dataInvoice['atas_nama'],
+            'data_kampus' => $dataInvoice['nama_kampus'],
+            'data_telp' => $dataInvoice['no_telp'],
+            'data_alamat' => $dataInvoice['alamat'],
+            'data_email' => $dataInvoice['email'],
+            'data_logo' => $dataInvoice['logo'],
+            // Tambahkan kolom lain yang diperlukan di sini
+        ];
+
         $data = [
             'currentYear' => $currentYear,
             'data_barang' => $barangByStatus,
             'data_pinjamLuar' => $groupedData,
+            'data_invoice' => $preparedDataInvoice
         ];
 
         return view('pihak-luar/invoice', $data);

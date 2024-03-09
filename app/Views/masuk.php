@@ -25,12 +25,23 @@
     }
   </style>
 </head>
+<?php
 
+use App\Services\PengaturanService;
+
+$pengaturanService = new PengaturanService();
+
+// Mendapatkan nama kampus dan website
+$data_pengaturan = $pengaturanService->getNamaKampus();
+$nama_kampus = $data_pengaturan['nama_kampus'];
+$logo = $data_pengaturan['logo'];
+
+?>
 
 <body>
   <div class="preloader flex-column justify-content-center align-items-center" style="display:none;">
     <div class="spinner-border" role="status"></div>
-    <img class="logo" src="../../assets/dist/login/img/logo-yky.png" alt="Akper YKY Logo" height="60" width="60">
+    <img class="logo" src="../../assets/dist/img/<?= $logo; ?>" alt="<?= $nama_kampus; ?> Logo" height="60" width="60">
   </div>
   <div class="flash-data" data-flashdata="<?= (session()->getFlashData('pesanMasuk')); ?>"></div><!-- Page Heading -->
 
@@ -45,12 +56,12 @@
           <h6 class="widget-user-username" src="../../assets/img/logo.png">Sistem Informasi Manajemen</h6>
           <h6 class="widget-user-desc">LABORATORIUM KEPERAWATAN
           </h6>
-          <h5 class="widget-user-desc">AKPER "YKY" YOGYAKARTA
+          <h5 class="widget-user-desc"><?= $nama_kampus; ?>
           </h5>
 
         </div>
         <div class="widget-user-image">
-          <img class="img-circle elevation-4" src="../../assets/dist/login/img/logo-yky.png" alt="Akper YKY Yogyakarta">
+          <img class="img-circle elevation-4" src="../../assets/dist/img/<?= $logo; ?>" alt="<?= $nama_kampus; ?>">
         </div>
         <div class="card-footer">
           <form method="post" action="auth/login" id="loginForm">

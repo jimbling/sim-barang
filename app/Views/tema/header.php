@@ -43,6 +43,19 @@ $password = $session->get('user_password');
 $level = $session->get('level');
 ?>
 
+<?php
+
+use App\Services\PengaturanService;
+
+$pengaturanService = new PengaturanService();
+
+// Mendapatkan nama kampus dan website
+$data_pengaturan = $pengaturanService->getNamaKampus();
+$nama_kampus = $data_pengaturan['nama_kampus'];
+$logo = $data_pengaturan['logo'];
+
+?>
+
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
         <!-- <div class="preloader flex-column justify-content-center align-items-center">
@@ -73,7 +86,7 @@ $level = $session->get('level');
 
                         <div class="card-body box-profile">
                             <div class="text-center">
-                                <img class="profile-user-img img-fluid img-circle" src="../../assets/dist/login/img/logo-yky.png" alt="User profile picture">
+                                <img class="profile-user-img img-fluid img-circle" src="../../assets/dist/img/<?= $logo; ?>" alt="User profile picture">
                             </div>
                             <h3 class="profile-username text-center"><?php echo $nama; ?></h3>
                             <ul class="list-group list-group-unbordered mb-3 text-center">
@@ -105,7 +118,7 @@ $level = $session->get('level');
         <aside class="main-sidebar sidebar-light-primary elevation-4 ">
 
             <a href="<?php echo ($level === 'Admin') ? '/adminpanel' : '/dashboard'; ?>" class="brand-link bg-olive">
-                <img src="../../assets/dist/login/img/logo-yky.png" alt="Akper YKY Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <img src="../../assets/dist/img/<?= $logo; ?>" alt="<?= $nama_kampus; ?> Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">
                     <?php if ($level === 'Admin') : ?>
                         Admin Dashboard

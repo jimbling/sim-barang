@@ -43,7 +43,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <h4>
-                                    <img src="../../assets/dist/img/ilustrasi/logo-yky.png" width="40px" alt="BRI"> AKPER "YKY" YOGYAKARTA
+                                    <img src="../../assets/dist/img/<?php echo $data_invoice['data_logo']; ?>" width="40px" alt="<?php echo $data_invoice['data_kampus']; ?>"> <?php echo $data_invoice['data_kampus']; ?>
                                     <small class="float-right">Tanggal: <?php echo date('Y-m-d H:i:s'); ?></small>
                                 </h4>
                             </div>
@@ -54,11 +54,10 @@
                             <div class="col-sm-4 invoice-col">
                                 Dari
                                 <address>
-                                    <strong>Akper "YKY" Yogyakarta</strong><br>
-                                    Jl. Patangpuluhan Sonosewu, Ngestiharjo<br>
-                                    Kasihan, Bantul 94107<br>
-                                    Phone: (0274) 450691<br>
-                                    Email: akper_yky@yahoo.com</a>
+                                    <strong><?php echo $data_invoice['data_kampus']; ?></strong><br>
+                                    <?php echo $data_invoice['data_alamat']; ?>
+                                    <br>Telp: <?php echo $data_invoice['data_telp']; ?>
+                                    <br>Email: <?php echo $data_invoice['data_email']; ?>
                                 </address>
                             </div>
 
@@ -197,9 +196,10 @@
                                 <p class="lead">Pembayaran:</p>
                                 <img src="../../assets/dist/img/ilustrasi/bri.png" width="300px" alt="BRI">
                                 <p style="margin-top: 10px;" font-size="bold">
-                                    Bank BRI CP Katamso Yogyakarta
-                                    <br>No. Rekening : 0245-01-000906-56-9
-                                    <br> Atas Nama : Akademi Keperawatan YKY Yogyakarta</br>
+                                    <?php echo $data_invoice['data_bank']; ?>
+                                    <br>No. Rekening : <?php echo $data_invoice['data_rek']; ?>
+                                    <br> Atas Nama : <?php echo $data_invoice['data_an']; ?></br>
+
                             </div>
 
                             <div class="col-6">

@@ -78,6 +78,35 @@
                                     <td>:</td>
                                     <td> <input type="text" class="form-control form-control-sm" id="alamat" name="alamat" value="<?php echo $dataCetak['alamat']; ?>" readonly></textarea></td>
                                 </tr>
+                                <tr>
+                                    <td style="text-align: left;">4. No. Telp </td>
+                                    <td>:</td>
+                                    <td><input type="text" class="form-control form-control-sm" id="no_telp" name="no_telp" value="<?php echo $dataCetak['no_telp']; ?>" readonly></td>
+                                </tr>
+                                <tr>
+
+                                    <td style="text-align: left;">5. Email </td>
+                                    <td>:</td>
+                                    <td><input type="email" class="form-control form-control-sm" id="email" name="email" value="<?php echo $dataCetak['email']; ?>" readonly></td>
+                                </tr>
+                                <tr>
+
+                                    <td style="text-align: left;">6. Nama Bank</td>
+                                    <td>:</td>
+                                    <td> <input type="text" class="form-control form-control-sm" id="nama_bank" name="nama_bank" value="<?php echo $dataCetak['nama_bank']; ?>" readonly></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">7. No. Rekening </td>
+                                    <td>:</td>
+                                    <td><input type="text" class="form-control form-control-sm" id="no_rekening" name="no_rekening" value="<?php echo $dataCetak['no_rekening']; ?>" readonly></td>
+                                </tr>
+                                <tr>
+
+                                    <td style="text-align: left;">8. Atas Nama </td>
+                                    <td>:</td>
+                                    <td><input type="email" class="form-control form-control-sm" id="atas_nama" name="atas_nama" value="<?php echo $dataCetak['atas_nama']; ?>" readonly></td>
+                                </tr>
+
 
 
                             </tbody>
@@ -87,43 +116,7 @@
 
 
 
-                <div class="col">
-                    <div class="card text-center mt-1">
-                        <div class="card-header bg-primary">
-                            Setting Akun
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-sm table-striped text-gray-900" id="penggunaTabel" width="100%" cellspacing="0">
-                                    <thead class="text-gray-900 thead-dark">
-                                        <tr>
-                                            <th>Nama Pengguna</th>
-                                            <th>Username</th>
-                                            <th>Level</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
 
-                                        <?php foreach ($data_pengguna as $akun) : ?>
-                                            <tr>
-                                                <td class="text-left"><?= $akun['full_nama']; ?></td>
-                                                <td><?= $akun['user_nama']; ?></td>
-                                                <td><?= $akun['level']; ?></td>
-                                                <td>
-                                                    <a href="javascript:void(0);" class="btn btn-xs btn-primary mx-auto text-white" id="edit-button-<?= $akun['id']; ?>" data-toggle="modal" data-target="#editModal<?= $akun['id']; ?>" data-id="<?= $akun['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
-                                                    <!-- Tambah modal untuk edit di sini -->
-                                                </td>
-
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
 
                 <div class="col">
                     <div class="card shadow mb-4">
@@ -253,7 +246,85 @@
                     </div>
                 </div>
 
+                <div class="col">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3 border-left-primary">
+                                    <h6 class="m-0 font-weight-bold text-primary">Atur Logo</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post" action="/upload/logo" enctype="multipart/form-data">
+                                        <!-- Form fields for other data -->
+                                        <div class="form-group row">
+                                            <div class="col-sm-12">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" name="logo" id="customLogo" required>
+                                                    <label class="custom-file-label" for="selectedFileLogo" id="selectedFileLogo">Pilih Logo</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container-fluid mb-3">
+                                            <img id="previewLogo" src="#" alt="Preview Logo" style="max-width: 100%; max-height: 200px; display: none;">
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary btn-block">Simpan Logo</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="col-sm-12">
+                                            <img src="../../assets/dist/img/<?php echo $dataCetak['logo']; ?>" class="img-fluid rounded align-center" alt="Tampilan Logo">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+
+                </div>
+
+                <div class="col">
+                    <div class="card text-center mt-1">
+                        <div class="card-header bg-primary">
+                            Setting Akun
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-striped text-gray-900" id="penggunaTabel" width="100%" cellspacing="0">
+                                    <thead class="text-gray-900 thead-dark">
+                                        <tr>
+                                            <th>Nama Pengguna</th>
+                                            <th>Username</th>
+                                            <th>Level</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <?php foreach ($data_pengguna as $akun) : ?>
+                                            <tr>
+                                                <td class="text-left"><?= $akun['full_nama']; ?></td>
+                                                <td><?= $akun['user_nama']; ?></td>
+                                                <td><?= $akun['level']; ?></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-xs btn-primary mx-auto text-white" id="edit-button-<?= $akun['id']; ?>" data-toggle="modal" data-target="#editModal<?= $akun['id']; ?>" data-id="<?= $akun['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
+                                                    <!-- Tambah modal untuk edit di sini -->
+                                                </td>
+
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
 
             </div>
 
@@ -399,6 +470,11 @@
         document.getElementById('nama_kampus').removeAttribute('readonly');
         document.getElementById('website').removeAttribute('readonly');
         document.getElementById('alamat').removeAttribute('readonly');
+        document.getElementById('no_telp').removeAttribute('readonly');
+        document.getElementById('email').removeAttribute('readonly');
+        document.getElementById('nama_bank').removeAttribute('readonly');
+        document.getElementById('no_rekening').removeAttribute('readonly');
+        document.getElementById('atas_nama').removeAttribute('readonly');
 
         document.getElementById('nama_direktur').removeAttribute('readonly');
         document.getElementById('ttd_1').removeAttribute('readonly');
@@ -431,6 +507,11 @@
         document.getElementById('nama_kampus').setAttribute('readonly', true);
         document.getElementById('website').setAttribute('readonly', true);
         document.getElementById('alamat').setAttribute('readonly', true);
+        document.getElementById('no_telp').setAttribute('readonly', true);
+        document.getElementById('email').setAttribute('readonly', true);
+        document.getElementById('nama_bank').setAttribute('readonly', true);
+        document.getElementById('no_rekening').setAttribute('readonly', true);
+        document.getElementById('atas_nama').setAttribute('readonly', true);
 
         document.getElementById('nama_direktur').setAttribute('readonly', true);
         document.getElementById('ttd_1').setAttribute('readonly', true);
@@ -463,6 +544,11 @@
         document.getElementById('nama_kampus').setAttribute('readonly', true);
         document.getElementById('website').setAttribute('readonly', true);
         document.getElementById('alamat').setAttribute('readonly', true);
+        document.getElementById('no_telp').setAttribute('readonly', true);
+        document.getElementById('email').setAttribute('readonly', true);
+        document.getElementById('nama_bank').setAttribute('readonly', true);
+        document.getElementById('no_rekening').setAttribute('readonly', true);
+        document.getElementById('atas_nama').setAttribute('readonly', true);
 
         document.getElementById('nama_direktur').setAttribute('readonly', true);
         document.getElementById('ttd_1').setAttribute('readonly', true);
@@ -497,6 +583,11 @@
         var nama_kampus = document.getElementById('nama_kampus').value;
         var website = document.getElementById('website').value;
         var alamat = document.getElementById('alamat').value;
+        var no_telp = document.getElementById('no_telp').value;
+        var email = document.getElementById('email').value;
+        var nama_bank = document.getElementById('nama_bank').value;
+        var no_rekening = document.getElementById('no_rekening').value;
+        var atas_nama = document.getElementById('atas_nama').value;
 
         var nama_direktur = document.getElementById('nama_direktur').value;
         var nik_dir = document.getElementById('nik_dir').value;
@@ -517,37 +608,18 @@
 
 
 
-        // Log data yang akan dikirim ke konsol
-        console.log('Data yang akan dikirim:', {
-            nama_kampus: nama_kampus,
-            website: website,
-            alamat: alamat,
 
-            nama_direktur: nama_direktur,
-            nik_dir: nik_dir,
-            ttd_1: ttd_1,
-
-            nama_laboran: nama_laboran,
-            ttd_2: ttd_2,
-            nik_laboran: nik_laboran,
-
-            ttd_4: ttd_4,
-            nama_ttd_4: nama_ttd_4,
-            id_ttd_4: id_ttd_4,
-
-            ttd_3: ttd_3,
-            nama_ttd_3: nama_ttd_3,
-            id_ttd_3: id_ttd_3,
-
-
-
-        });
 
         // Buat objek data yang akan dikirimkan melalui AJAX
         var data = {
             nama_kampus: nama_kampus,
             website: website,
             alamat: alamat,
+            no_telp: no_telp,
+            email: email,
+            nama_bank: nama_bank,
+            no_rekening: no_rekening,
+            atas_nama: atas_nama,
 
             nama_direktur: nama_direktur,
             nik_dir: nik_dir,
@@ -725,6 +797,115 @@
     });
 </script>
 
-
-
 <!-- END KOP SURAT -->
+
+<!-- UPLOAD LOGO -->
+<script>
+    // Fungsi untuk menampilkan gambar previ saat gambar dipilih
+    function showPreviewLogo(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#previewLogo').attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        // Menampilkan nama file yang dipilih
+        var fileName = input.files[0].name;
+        $('#selectedFileLogo').text(fileName);
+    }
+
+    // Memanggil fungsi showPreviewImage saat input file berubah
+    $('#customFile').change(function() {
+        showPreviewImage(this);
+    });
+</script>
+<script>
+    const customFileLogo = document.querySelector("#customFile");
+    const previewLogo = document.querySelector("#previewLogo");
+
+    customFileInput.addEventListener("change", function() {
+        if (this.files.length > 0) {
+            previewImage.style.display = "block";
+        } else {
+            previewImage.style.display = "none";
+        }
+    });
+</script>
+
+
+<script>
+    // Function to show loading
+    function showLoading() {
+        let timerInterval
+        Swal.fire({
+            title: 'Memproses upload...',
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+                const b = Swal.getHtmlContainer().querySelector('b')
+                timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                }, 100)
+            }
+        });
+    }
+
+    // Function to hide loading
+    function hideLoading() {
+        Swal.close();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const fileInput = document.querySelector("input[name='logo']");
+        const submitButton = document.querySelector("button[type='submit']");
+        const selectedFileLogo = document.querySelector("#selectedFileLogo");
+        const previewImage = document.querySelector("#previewLogo");
+
+        fileInput.addEventListener("change", function() {
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+            const fileName = this.files[0].name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (allowedExtensions.includes(fileExtension)) {
+                selectedFileName.textContent = fileName;
+                previewImage.style.display = "block";
+                previewImage.src = URL.createObjectURL(this.files[0]);
+                submitButton.disabled = false;
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Jenis File Tidak Diijinkan!",
+                    text: "Anda hanya dapat mengimpor file dengan ekstensi .jpg, .jpeg, .png, atau .svg."
+                });
+                this.value = ''; // Clear the file input
+                selectedFileName.textContent = "Pilih File Foto";
+                previewImage.style.display = "none";
+                submitButton.disabled = true;
+            }
+        });
+
+        // Prevent default form submission and show loading when file successfully uploaded
+        submitButton.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent default form submission
+            if (!fileInput.files || !fileInput.files.length) {
+                return;
+            }
+            const fileName = fileInput.files[0].name;
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (allowedExtensions.includes(fileExtension)) {
+                showLoading(); // Show loading
+                // Submit the form after some time (you can adjust the time as needed)
+                setTimeout(function() {
+                    submitButton.form.submit();
+                }, 2000); // Example: submit the form after 2 seconds (2000 milliseconds)
+            }
+        });
+    });
+</script>
+<!-- END UPLOAD LOGO -->
