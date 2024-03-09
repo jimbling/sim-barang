@@ -273,20 +273,31 @@ class Reservasi extends BaseController
 
             $email->setSubject('Booking Alat Baru');
 
-            // Isi email dengan informasi reservasi
-            $email->setMessage('Booking alat baru telah dibuat dengan rincian sebagai berikut: <br>'
-                . 'Nama Peminjam: ' . $reservasi['nama_peminjam'] . '<br>'
-                . 'Nama Ruangan: ' . $reservasi['nama_ruangan'] . '<br>'
-                . 'Nama Dosen: ' . $reservasi['nama_dosen'] . '<br>'
-                . 'Keperluan: ' . $reservasi['keperluan'] . '<br>'
-                . 'Tanggal Penggunaan: ' . $reservasi['tanggal_penggunaan'] . '<br>'
-                . 'Tanggal Kembali: ' . $reservasi['tanggal_pengembalian']);
+            // Buat pesan email dalam format HTML
+            $pesanEmail = '<html><body>';
+            $pesanEmail .= '<h2 style="color: #007bff;">Booking Alat Baru</h2>';
+            $pesanEmail .= '<p>Berikut adalah rincian booking alat baru:</p>';
+            $pesanEmail .= '<ul>';
+            $pesanEmail .= '<li><strong>Nama Peminjam:</strong> ' . $reservasi['nama_peminjam'] . '</li>';
+            $pesanEmail .= '<li><strong>Nama Ruangan:</strong> ' . $reservasi['nama_ruangan'] . '</li>';
+            $pesanEmail .= '<li><strong>Nama Dosen:</strong> ' . $reservasi['nama_dosen'] . '</li>';
+            $pesanEmail .= '<li><strong>Keperluan:</strong> ' . $reservasi['keperluan'] . '</li>';
+            $pesanEmail .= '<li><strong>Tanggal Penggunaan:</strong> ' . $reservasi['tanggal_penggunaan'] . '</li>';
+            $pesanEmail .= '<li><strong>Tanggal Kembali:</strong> ' . $reservasi['tanggal_pengembalian'] . '</li>';
+            $pesanEmail .= '</ul>';
+            $pesanEmail .= '</body></html>';
 
+            // Isi pesan email
+            $email->setMessage($pesanEmail);
+
+            // Set konten email sebagai HTML
+            $email->setMailType('html');
 
             // Kirim email
             $email->send();
         }
     }
+
 
     public function hapus($reservasiId)
     {
