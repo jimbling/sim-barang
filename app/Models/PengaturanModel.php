@@ -9,7 +9,7 @@ class PengaturanModel extends Model
     protected $table = 'tbl_pengaturan';
     protected $primaryKey = 'id'; // Nama kolom primary key
     protected $useAutoIncrement = true; // Pastikan ini true
-    protected $allowedFields = ['id', 'nama_kampus', 'website', 'alamat', 'no_telp', 'email', 'nama_bank', 'no_rekening', 'atas_nama', 'ttd_1', 'nama_direktur', 'nik_dir', 'ttd_2', 'nama_laboran', 'nik_laboran', 'ttd_3', 'nama_ttd_3', 'id_ttd_3', 'ttd_4', 'nama_ttd_4', 'id_ttd_4', 'kop_surat', 'logo'];
+    protected $allowedFields = ['id', 'nama_kampus', 'website', 'alamat', 'no_telp', 'email', 'nama_bank', 'no_rekening', 'atas_nama', 'ttd_1', 'nama_direktur', 'nik_dir', 'ttd_2', 'nama_laboran', 'nik_laboran', 'ttd_3', 'nama_ttd_3', 'id_ttd_3', 'ttd_4', 'nama_ttd_4', 'id_ttd_4', 'kop_surat', 'logo', 'favicon', 'logo_bank'];
 
 
     public function getPengaturan()

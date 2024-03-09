@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 
 <html lang="en">
+<?php
+
+use App\Services\PengaturanService;
+
+$pengaturanService = new PengaturanService();
+
+// Mendapatkan nama kampus dan website
+$data_pengaturan = $pengaturanService->getNamaKampus();
+$nama_kampus = $data_pengaturan['nama_kampus'];
+$logo = $data_pengaturan['logo'];
+$favicon = $data_pengaturan['favicon'];
+
+?>
 
 <head>
     <meta charset="utf-8">
@@ -8,6 +21,7 @@
     <meta name="description" content="Sistem Informasi Managemen Pengelolaan, Penggunaan Barang Laboratorium Keperawatan.">
     <title><?= $judul; ?></title>
     <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> -->
+    <link rel="icon" href="../../assets/dist/img/ilustrasi/<?= $favicon; ?>" type="image/x-icon">
     <link rel="stylesheet" href="../../assets/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="../../assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
@@ -43,18 +57,7 @@ $password = $session->get('user_password');
 $level = $session->get('level');
 ?>
 
-<?php
 
-use App\Services\PengaturanService;
-
-$pengaturanService = new PengaturanService();
-
-// Mendapatkan nama kampus dan website
-$data_pengaturan = $pengaturanService->getNamaKampus();
-$nama_kampus = $data_pengaturan['nama_kampus'];
-$logo = $data_pengaturan['logo'];
-
-?>
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">

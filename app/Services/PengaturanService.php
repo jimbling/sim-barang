@@ -26,7 +26,8 @@ class PengaturanService
                 'email' => $pengaturan['email'],
                 'nama_bank' => $pengaturan['nama_bank'],
                 'no_rekening' => $pengaturan['no_rekening'],
-                'atas_nama' => $pengaturan['atas_nama']
+                'atas_nama' => $pengaturan['atas_nama'],
+                'favicon' => $pengaturan['favicon']
             ];
         } else {
             return [
@@ -39,6 +40,7 @@ class PengaturanService
                 'nama_bank' => "Bank Default",
                 'no_rekening' => "No Rek Default",
                 'atas_nama' => "Nama Default",
+                'favicon' => "Favicon Default",
             ];
         }
     }

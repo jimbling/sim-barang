@@ -189,6 +189,8 @@ $routes->post('/pesan/kirim', 'Pesan::send');
 $routes->get('/pemeliharaan', 'Pemeliharaan::index');
 $routes->post('upload/kopsurat', 'Pengaturan::kopsurat');
 $routes->post('upload/logo', 'Pengaturan::logo');
+$routes->post('upload/favicon', 'Pengaturan::favicon');
+$routes->post('upload/logobank', 'Pengaturan::uploadLogoBank');
 $routes->get('/alert/getNotificationsToShow', 'Alert::getNotificationsToShow');
 $routes->post('/alert/updateAlertHiddenStatus/(:num)', 'Alert::updateAlertHiddenStatus/$1');
 

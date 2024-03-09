@@ -194,7 +194,7 @@
 
                             <div class="col-6">
                                 <p class="lead">Pembayaran:</p>
-                                <img src="../../assets/dist/img/ilustrasi/bri.png" width="300px" alt="BRI">
+                                <img src="../../assets/dist/img/ilustrasi/<?php echo $data_invoice['data_logoBank']; ?>" width="300px" alt="BRI">
                                 <p style="margin-top: 10px;" font-size="bold">
                                     <?php echo $data_invoice['data_bank']; ?>
                                     <br>No. Rekening : <?php echo $data_invoice['data_rek']; ?>

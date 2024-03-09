@@ -283,4 +283,84 @@ class Pengaturan extends BaseController
 
         return view('upload_form');
     }
+
+    public function favicon()
+    {
+        $model = new PengaturanModel();
+
+        if ($this->request->getMethod() === 'post') {
+            $existingData = $model->first();
+
+            // Ambil file yang diunggah
+            $file = $this->request->getFile('favicon');
+
+            // Validasi file ekstensi
+            if ($file->isValid() && !$file->hasMoved()) {
+                // Validasi ekstensi file yang diijinkan
+                $allowedExtensions = ['ico'];
+                $fileExtension = $file->getClientExtension();
+
+                if (in_array($fileExtension, $allowedExtensions)) {
+                    // Tentukan nama file
+                    $newName = 'favicon.ico';
+                    $newLocation = 'assets/dist/img/ilustrasi' . DIRECTORY_SEPARATOR;
+
+                    // Pindahkan file ke lokasi yang ditentukan dan ganti file lama jika sudah ada
+                    $file->move($newLocation, $newName, true);
+
+                    // Perbarui nama file dalam database
+                    $model->update($existingData['id'], ['favicon' => $newName]);
+
+                    session()->setFlashData('pesanLogo', 'Data berhasil diperbaharui');
+                    return redirect()->to('/data/pengaturan');
+                } else {
+                    session()->setFlashData('pesanError', 'Jenis file tidak diijinkan.');
+                    return redirect()->to('/data/pengaturan');
+                }
+            } else {
+                session()->setFlashData('pesanError', 'Terjadi kesalahan dalam pengunggahan file.');
+                return redirect()->to('/data/pengaturan');
+            }
+        }
+
+        return view('upload_form');
+    }
+
+    public function uploadLogoBank()
+    {
+        $model = new PengaturanModel();
+
+        if ($this->request->getMethod() === 'post') {
+            $existingData = $model->first();
+
+            // Ambil file yang diunggah
+            $file = $this->request->getFile('logo_bank');
+
+            // Validasi file ekstensi
+            if ($file->isValid() && !$file->hasMoved()) {
+                // Validasi ekstensi file yang diijinkan
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+                $fileExtension = $file->getClientExtension();
+
+                if (in_array($fileExtension, $allowedExtensions)) {
+                    $newName = $file->getRandomName();
+                    $newLocation = 'assets/dist/img' . DIRECTORY_SEPARATOR;
+                    $file->move($newLocation, $newName);
+
+                    // Perbarui nama file dalam database
+                    $model->update($existingData['id'], ['logo_bank' => $newName]);
+                    session()->setFlashData('pesanLogo', 'Data berhasil diperbaharui');
+                    return redirect()->to('/data/pengaturan');
+                } else {
+                    session()->setFlashData('pesanError', 'Jenis file tidak diijinkan.');
+                    return redirect()->to('/data/pengaturan');
+                }
+            } else {
+                session()->setFlashData('pesanError', 'Terjadi kesalahan dalam pengunggahan file.');
+                return redirect()->to('/data/pengaturan');
+            }
+        }
+
+        return view('upload_form');
+    }
 }

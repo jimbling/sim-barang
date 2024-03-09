@@ -58,7 +58,7 @@
                     <div class="container">
 
 
-                        <table class="table table-hover tabel-cetak table-borderless table-sm font">
+                        <table class="table table-hover tabel-cetak table-borderless table-sm">
 
                             <tbody>
                                 <tr>
@@ -101,10 +101,51 @@
                                     <td><input type="text" class="form-control form-control-sm" id="no_rekening" name="no_rekening" value="<?php echo $dataCetak['no_rekening']; ?>" readonly></td>
                                 </tr>
                                 <tr>
-
                                     <td style="text-align: left;">8. Atas Nama </td>
                                     <td>:</td>
                                     <td><input type="email" class="form-control form-control-sm" id="atas_nama" name="atas_nama" value="<?php echo $dataCetak['atas_nama']; ?>" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">9. Logo Bank </td>
+                                    <td>:</td>
+                                    <td>
+                                        <form method="post" action="/upload/logobank" enctype="multipart/form-data">
+                                            <!-- Form fields for other data -->
+                                            <div class="form-group row">
+                                                <div class="col-sm-12">
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input" name="logo_bank" id="customBank" required>
+                                                        <label class="custom-file-label" for="selectedFileBank" id="selectedFileBank">Pilih Logo Bank</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid mb-3">
+                                                <img id="previewBank" src="#" alt="Preview Logo Bank" style="max-width: 100%; max-height: 200px; display: none;">
+                                            </div>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary btn-block">Simpan Logo Bank</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">10. Favicon <img src="../../assets/dist/img/ilustrasi/<?php echo $dataCetak['favicon']; ?>" class="img-fluid rounded float-right" alt="Tampilan Favicon"></td>
+                                    <td>:</td>
+                                    <td>
+                                        <form method="post" action="/upload/favicon" enctype="multipart/form-data">
+                                            <!-- Form fields for other data -->
+                                            <div class="form-group row">
+                                                <div class="col-sm-12">
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input" name="favicon" id="customFavicon" required>
+                                                        <label class="custom-file-label" for="selectedFileFavicon" id="selectedFileFavicon">Pilih Favicon</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid mb-3">
+                                                <img id="previewFavicon" src="#" alt="Preview Favicon" style="max-width: 100%; max-height: 200px; display: none;">
+                                            </div>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary btn-block">Simpan Favicon</button>
+                                        </form>
+                                    </td>
                                 </tr>
 
 
@@ -284,9 +325,9 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
+
+
 
                 <div class="col">
                     <div class="card text-center mt-1">
@@ -871,7 +912,7 @@
             const fileExtension = fileName.split('.').pop().toLowerCase();
 
             if (allowedExtensions.includes(fileExtension)) {
-                selectedFileName.textContent = fileName;
+                selectedFileLogo.textContent = fileName;
                 previewImage.style.display = "block";
                 previewImage.src = URL.createObjectURL(this.files[0]);
                 submitButton.disabled = false;
@@ -882,7 +923,7 @@
                     text: "Anda hanya dapat mengimpor file dengan ekstensi .jpg, .jpeg, .png, atau .svg."
                 });
                 this.value = ''; // Clear the file input
-                selectedFileName.textContent = "Pilih File Foto";
+                selectedFileLogo.textContent = "Pilih File Foto";
                 previewImage.style.display = "none";
                 submitButton.disabled = true;
             }
@@ -909,3 +950,225 @@
     });
 </script>
 <!-- END UPLOAD LOGO -->
+
+<!-- UPLOAD FAVICON -->
+<script>
+    // Fungsi untuk menampilkan gambar previ saat gambar dipilih
+    function showPreviewLogo(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#previewFavicon').attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        // Menampilkan nama file yang dipilih
+        var fileName = input.files[0].name;
+        $('#selectedFileFavicon').text(fileName);
+    }
+
+    // Memanggil fungsi showPreviewImage saat input file berubah
+    $('#customFile').change(function() {
+        showPreviewImage(this);
+    });
+</script>
+<script>
+    const customFileFavicon = document.querySelector("#customFile");
+    const previewFavicon = document.querySelector("#previewFavicon");
+
+    customFileInput.addEventListener("change", function() {
+        if (this.files.length > 0) {
+            previewImage.style.display = "block";
+        } else {
+            previewImage.style.display = "none";
+        }
+    });
+</script>
+
+
+<script>
+    // Function to show loading
+    function showLoading() {
+        let timerInterval
+        Swal.fire({
+            title: 'Memproses upload...',
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+                const b = Swal.getHtmlContainer().querySelector('b')
+                timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                }, 100)
+            }
+        });
+    }
+
+    // Function to hide loading
+    function hideLoading() {
+        Swal.close();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const fileInput = document.querySelector("input[name='favicon']");
+        const submitButton = document.querySelector("button[type='submit']");
+        const selectedFileFavicon = document.querySelector("#selectedFileFavicon");
+        const previewImage = document.querySelector("#previewFavicon");
+
+        fileInput.addEventListener("change", function() {
+            const allowedExtensions = ['ico'];
+            const fileName = this.files[0].name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (allowedExtensions.includes(fileExtension)) {
+                selectedFileFavicon.textContent = fileName;
+                previewImage.style.display = "block";
+                previewImage.src = URL.createObjectURL(this.files[0]);
+                submitButton.disabled = false;
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Jenis File Tidak Diijinkan!",
+                    text: "Anda hanya dapat mengimpor file dengan ekstensi .ico"
+                });
+                this.value = ''; // Clear the file input
+                selectedFileFavicon.textContent = "Pilih File Favicon";
+                previewImage.style.display = "none";
+                submitButton.disabled = true;
+            }
+        });
+
+        // Prevent default form submission and show loading when file successfully uploaded
+        submitButton.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent default form submission
+            if (!fileInput.files || !fileInput.files.length) {
+                return;
+            }
+            const fileName = fileInput.files[0].name;
+            const allowedExtensions = ['ico'];
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (allowedExtensions.includes(fileExtension)) {
+                showLoading(); // Show loading
+                // Submit the form after some time (you can adjust the time as needed)
+                setTimeout(function() {
+                    submitButton.form.submit();
+                }, 2000); // Example: submit the form after 2 seconds (2000 milliseconds)
+            }
+        });
+    });
+</script>
+<!-- END UPLOAD FAVICON -->
+
+<!-- UPLOAD LOGO BANK -->
+<script>
+    // Fungsi untuk menampilkan gambar previ saat gambar dipilih
+    function showPreviewBank(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#previewBank').attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        // Menampilkan nama file yang dipilih
+        var fileName = input.files[0].name;
+        $('#selectedFileBank').text(fileName);
+    }
+
+    // Memanggil fungsi showPreviewImage saat input file berubah
+    $('#customFile').change(function() {
+        showPreviewImage(this);
+    });
+</script>
+<script>
+    const customFileBank = document.querySelector("#customFile");
+    const previewBank = document.querySelector("#previewBank");
+
+    customFileInput.addEventListener("change", function() {
+        if (this.files.length > 0) {
+            previewImage.style.display = "block";
+        } else {
+            previewImage.style.display = "none";
+        }
+    });
+</script>
+
+
+<script>
+    // Function to show loading
+    function showLoading() {
+        let timerInterval
+        Swal.fire({
+            title: 'Memproses upload...',
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+                const b = Swal.getHtmlContainer().querySelector('b')
+                timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                }, 100)
+            }
+        });
+    }
+
+    // Function to hide loading
+    function hideLoading() {
+        Swal.close();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const fileInput = document.querySelector("input[name='logo_bank']");
+        const submitButton = document.querySelector("button[type='submit']");
+        const selectedFileBank = document.querySelector("#selectedFileBank");
+        const previewImage = document.querySelector("#previewBank");
+
+        fileInput.addEventListener("change", function() {
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+            const fileName = this.files[0].name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (allowedExtensions.includes(fileExtension)) {
+                selectedFileBank.textContent = fileName;
+                previewImage.style.display = "block";
+                previewImage.src = URL.createObjectURL(this.files[0]);
+                submitButton.disabled = false;
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Jenis File Tidak Diijinkan!",
+                    text: "Anda hanya dapat mengimpor file dengan ekstensi .jpg, .jpeg, .png, atau .svg."
+                });
+                this.value = ''; // Clear the file input
+                selectedFileBank.textContent = "Pilih Logo Bank";
+                previewImage.style.display = "none";
+                submitButton.disabled = true;
+            }
+        });
+
+        // Prevent default form submission and show loading when file successfully uploaded
+        submitButton.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent default form submission
+            if (!fileInput.files || !fileInput.files.length) {
+                return;
+            }
+            const fileName = fileInput.files[0].name;
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (allowedExtensions.includes(fileExtension)) {
+                showLoading(); // Show loading
+                // Submit the form after some time (you can adjust the time as needed)
+                setTimeout(function() {
+                    submitButton.form.submit();
+                }, 2000); // Example: submit the form after 2 seconds (2000 milliseconds)
+            }
+        });
+    });
+</script>
+<!-- END UPLOAD LOGO BANK -->

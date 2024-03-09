@@ -194,6 +194,7 @@ class Pihakluar extends BaseController
             'data_alamat' => $dataInvoice['alamat'],
             'data_email' => $dataInvoice['email'],
             'data_logo' => $dataInvoice['logo'],
+            'data_logoBank' => $dataInvoice['logo_bank'],
             // Tambahkan kolom lain yang diperlukan di sini
         ];
 
