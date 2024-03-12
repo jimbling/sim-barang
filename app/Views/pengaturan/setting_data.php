@@ -127,7 +127,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align: left;">10. Favicon <img src="../../assets/dist/img/ilustrasi/<?php echo $dataCetak['favicon']; ?>" class="img-fluid rounded float-right" alt="Tampilan Favicon"></td>
+                                    <td style="text-align: left;">10. Favicon <img src="../../assets/dist/img/ilustrasi/<?php echo $dataCetak['favicon']; ?>" class="img-fluid rounded float-right" alt="Tampilan Favicon" width="30" height="30"></td>
                                     <td>:</td>
                                     <td>
                                         <form method="post" action="/upload/favicon" enctype="multipart/form-data">

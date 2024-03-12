@@ -250,53 +250,116 @@ class Reservasi extends BaseController
             // Update status_barang menjadi 1 pada tbl_barang
             $this->barangModel->update($barangId, ['status_barang' => 1]);
         }
-        // Pengiriman email ke admin
-        $this->kirimEmailAdmin($reservasiId);
+        // // Pengiriman email ke admin
+        // $this->kirimPesanWhatsApp($reservasiId);
+        // JANGAN DULU DIAKTIFKAN SUPAYA NOMOR WA TIDAK TERBANNED
 
         // Redirect atau tampilkan pesan sukses
         return redirect()->to('reservasi')->with('success', 'Peminjaman berhasil!');
     }
 
-    private function kirimEmailAdmin($reservasiId)
-    {
-        // Ambil informasi reservasi berdasarkan ID
-        $reservasi = $this->reservasiModel->find($reservasiId);
+    // private function kirimEmailAdmin($reservasiId)
+    // {
+    //     // Ambil informasi reservasi berdasarkan ID
+    //     $reservasi = $this->reservasiModel->find($reservasiId);
 
-        // Lakukan pengecekan jika reservasi ditemukan
-        if ($reservasi) {
-            // Load library email
-            $email = \Config\Services::email();
+    //     // Lakukan pengecekan jika reservasi ditemukan
+    //     if ($reservasi) {
+    //         // Load library email
+    //         $email = \Config\Services::email();
 
-            // Konfigurasi email
-            $email->setFrom('notifikasi@jimbling.my.id', 'Sistem SIM-Barang');
-            $email->setTo('jimbling05@gmail.com');
+    //         // Konfigurasi email
+    //         $email->setFrom('notifikasi@jimbling.my.id', 'Sistem SIM-Barang');
+    //         $email->setTo('jimbling05@gmail.com');
 
-            $email->setSubject('Booking Alat Baru');
+    //         $email->setSubject('Booking Alat Baru');
 
-            // Buat pesan email dalam format HTML
-            $pesanEmail = '<html><body>';
-            $pesanEmail .= '<h2 style="color: #007bff;">Booking Alat Baru</h2>';
-            $pesanEmail .= '<p>Berikut adalah rincian booking alat baru:</p>';
-            $pesanEmail .= '<ul>';
-            $pesanEmail .= '<li><strong>Nama Peminjam:</strong> ' . $reservasi['nama_peminjam'] . '</li>';
-            $pesanEmail .= '<li><strong>Nama Ruangan:</strong> ' . $reservasi['nama_ruangan'] . '</li>';
-            $pesanEmail .= '<li><strong>Nama Dosen:</strong> ' . $reservasi['nama_dosen'] . '</li>';
-            $pesanEmail .= '<li><strong>Keperluan:</strong> ' . $reservasi['keperluan'] . '</li>';
-            $pesanEmail .= '<li><strong>Tanggal Penggunaan:</strong> ' . $reservasi['tanggal_penggunaan'] . '</li>';
-            $pesanEmail .= '<li><strong>Tanggal Kembali:</strong> ' . $reservasi['tanggal_pengembalian'] . '</li>';
-            $pesanEmail .= '</ul>';
-            $pesanEmail .= '</body></html>';
+    //         // Buat pesan email dalam format HTML
+    //         $pesanEmail = '<html><body>';
+    //         $pesanEmail .= '<h2 style="color: #007bff;">Booking Alat Baru</h2>';
+    //         $pesanEmail .= '<p>Berikut adalah rincian booking alat baru:</p>';
+    //         $pesanEmail .= '<ul>';
+    //         $pesanEmail .= '<li><strong>Nama Peminjam:</strong> ' . $reservasi['nama_peminjam'] . '</li>';
+    //         $pesanEmail .= '<li><strong>Nama Ruangan:</strong> ' . $reservasi['nama_ruangan'] . '</li>';
+    //         $pesanEmail .= '<li><strong>Nama Dosen:</strong> ' . $reservasi['nama_dosen'] . '</li>';
+    //         $pesanEmail .= '<li><strong>Keperluan:</strong> ' . $reservasi['keperluan'] . '</li>';
+    //         $pesanEmail .= '<li><strong>Tanggal Penggunaan:</strong> ' . $reservasi['tanggal_penggunaan'] . '</li>';
+    //         $pesanEmail .= '<li><strong>Tanggal Kembali:</strong> ' . $reservasi['tanggal_pengembalian'] . '</li>';
+    //         $pesanEmail .= '</ul>';
+    //         $pesanEmail .= '</body></html>';
 
-            // Isi pesan email
-            $email->setMessage($pesanEmail);
+    //         // Isi pesan email
+    //         $email->setMessage($pesanEmail);
 
-            // Set konten email sebagai HTML
-            $email->setMailType('html');
+    //         // Set konten email sebagai HTML
+    //         $email->setMailType('html');
 
-            // Kirim email
-            $email->send();
-        }
-    }
+    //         // Kirim email
+    //         $email->send();
+    //     }
+    // }
+
+    // API UNTUK KIRIM WA
+    // private function kirimPesanWhatsApp($reservasiId)
+    // {
+    //     // Ambil informasi reservasi berdasarkan ID
+    //     $reservasi = $this->reservasiModel->find($reservasiId);
+
+    //     // Lakukan pengecekan jika reservasi ditemukan
+    //     if ($reservasi) {
+    //         // Inisialisasi curl
+    //         $curl = curl_init();
+
+    //         // Set konfigurasi curl
+    //         curl_setopt_array($curl, array(
+    //             CURLOPT_URL => 'https://api.jimbling.my.id/send-message',
+    //             CURLOPT_RETURNTRANSFER => true,
+    //             CURLOPT_ENCODING => '',
+    //             CURLOPT_MAXREDIRS => 10,
+    //             CURLOPT_TIMEOUT => 0,
+    //             CURLOPT_FOLLOWLOCATION => true,
+    //             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    //             CURLOPT_CUSTOMREQUEST => 'POST',
+    //             CURLOPT_POSTFIELDS => array(
+    //                 'target' => '088888888|Fonnte|Admin', // Ganti dengan nomor yang sesuai
+    //                 'message' => '*Booking Alat Baru:*' . PHP_EOL .
+    //                     '* Nama Peminjam: ' . $reservasi['nama_peminjam'] . PHP_EOL .
+    //                     '* Nama Ruangan: ' . $reservasi['nama_ruangan'] . PHP_EOL .
+    //                     '* Nama Dosen: ' . $reservasi['nama_dosen'] . PHP_EOL .
+    //                     '* Keperluan: ' . $reservasi['keperluan'] . PHP_EOL .
+    //                     '* Tanggal Penggunaan: ' . $reservasi['tanggal_penggunaan'] . PHP_EOL .
+    //                     '* Tanggal Kembali: ' . $reservasi['tanggal_pengembalian'] . PHP_EOL .
+    //                     '*Login ke SIM-Barang Lab Keperawatan untuk menerima/menolak Booking Alat*' . PHP_EOL,
+    //                 'schedule' => '0',
+    //                 'typing' => false,
+    //                 'delay' => '2',
+    //                 'countryCode' => '62',
+    //             ),
+    //             CURLOPT_HTTPHEADER => array(
+    //                 'Authorization: SPBi11rrBPCGaA1jbP!w' // Ganti dengan token Anda dari Fonnte
+    //             ),
+    //         ));
+
+    //         // Eksekusi curl
+    //         $response = curl_exec($curl);
+
+    //         // Tangani kesalahan curl
+    //         if (curl_errno($curl)) {
+    //             $error_msg = curl_error($curl);
+    //         }
+
+    //         // Tutup curl
+    //         curl_close($curl);
+
+    //         // Tangani kesalahan jika ada
+    //         if (isset($error_msg)) {
+    //             echo $error_msg;
+    //         } else {
+    //             // Tampilkan respons
+    //             echo $response;
+    //         }
+    //     }
+    // }
 
 
     public function hapus($reservasiId)
