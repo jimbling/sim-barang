@@ -146,22 +146,19 @@ $logo = $data_pengaturan['logo'];
                     <div class="col">
                         <div class="card shadow mb-4">
                             <div class="card-header py-3 border-left-primary">
-                                <h6 class="m-0 font-weight-bold text-primary">Atur Kop Surat</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Upload Surat Permohonan Alat</h6>
                             </div>
                             <div class="card-body">
 
                                 <div class="form-group row">
-                                    <label for="foto_siswa" class="col-sm-6 col-form-label">Upload Surat Permohonan Alat</label>
                                     <div class="col-sm-12">
                                         <div class="custom-file">
                                             <input type="file" class="custom-file-input" name="surat_permohonan_alat" id="customFile" required>
-                                            <label class="custom-file-label" for="selectedFileName" id="selectedFileName">Pilih File Foto</label>
+                                            <label class="custom-file-label" for="selectedFileName" id="selectedFileName">Pilih File Surat Permohonan Alat (.pdf) </label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="container-fluid mb-3">
-                                    <img id="previewImage" src="#" alt="Preview Image" style="max-width: 100%; max-height: 200px; display: none;">
-                                </div>
+
 
 
                             </div>
@@ -232,27 +229,23 @@ $logo = $data_pengaturan['logo'];
             const fileInput = document.querySelector("input[name='surat_permohonan_alat']");
             const submitButton = document.querySelector("button[type='submit']");
             const selectedFileName = document.querySelector("#selectedFileName");
-            const previewImage = document.querySelector("#previewImage");
+
 
             fileInput.addEventListener("change", function() {
-                const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+                const allowedExtensions = ['pdf'];
                 const fileName = this.files[0].name;
                 const fileExtension = fileName.split('.').pop().toLowerCase();
-
                 if (allowedExtensions.includes(fileExtension)) {
                     selectedFileName.textContent = fileName;
-                    previewImage.style.display = "block";
-                    previewImage.src = URL.createObjectURL(this.files[0]);
                     submitButton.disabled = false;
                 } else {
                     Swal.fire({
                         icon: "error",
                         title: "Jenis File Tidak Diijinkan!",
-                        text: "Anda hanya dapat mengimpor file dengan ekstensi .jpg, .jpeg, .png, atau .svg."
+                        text: "Anda hanya dapat mengimpor file dengan ekstensi .pdf"
                     });
                     this.value = ''; // Clear the file input
-                    selectedFileName.textContent = "Pilih File Foto";
-                    previewImage.style.display = "none";
+                    selectedFileName.textContent = "Pilih File Surat Permohonan Alat (.pdf)";
                     submitButton.disabled = true;
                 }
             });

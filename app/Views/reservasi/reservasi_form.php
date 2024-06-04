@@ -94,7 +94,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Tambahkan form select kedua -->
+
                                         <div class="col-md-4 col-12" id="form-pembelajaran" style="display:none;">
                                             <label for="satuan" class="col-12 col-form-label">Pilih Pembelajaran</label>
                                             <div class="col-12">
@@ -107,53 +107,15 @@
                                             </div>
                                         </div>
 
-
-
                                     </div>
 
-                                    <!-- Tambahkan form textarea -->
+
                                     <div class="form-group" id="form-materi-pembelajaran" style="display:none;">
                                         <label for="materi_pembelajaran" class="col-12 col-form-label">Materi Pembelajaran</label>
                                         <div class="col-12">
                                             <textarea class="form-control" id="materi_pembelajaran" name="materi_pembelajaran" rows="3" disabled></textarea>
                                         </div>
                                     </div>
-
-                                    <!-- Tambahkan script JavaScript -->
-                                    <script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
-
-                                    <script>
-                                        $(document).ready(function() {
-                                            const keperluanSelect = $('#pinjam_keperluan');
-                                            const formPembelajaran = $('#form-pembelajaran');
-                                            const pembelajaranSelect = $('#pembelajaran');
-                                            const formMateriPembelajaran = $('#form-materi-pembelajaran');
-                                            const materiPembelajaranTextarea = $('#materi_pembelajaran');
-
-                                            keperluanSelect.change(function() {
-                                                const selectedValue = $(this).val();
-                                                if (selectedValue === 'Praktek Pembelajaran') {
-                                                    formPembelajaran.show();
-                                                    pembelajaranSelect.prop('disabled', false); // Aktifkan form pembelajaran
-                                                    formMateriPembelajaran.show();
-                                                    materiPembelajaranTextarea.prop('disabled', false); // Aktifkan form textarea
-                                                } else {
-                                                    formPembelajaran.hide();
-                                                    pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran
-                                                    formMateriPembelajaran.hide();
-                                                    materiPembelajaranTextarea.prop('disabled', true); // Nonaktifkan form textarea
-                                                }
-                                            });
-
-                                            // Inisialisasi form select kedua dan textarea
-                                            formPembelajaran.hide();
-                                            pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran awal
-                                            formMateriPembelajaran.hide();
-                                            materiPembelajaranTextarea.prop('disabled', true); // Nonaktifkan form textarea awal
-                                        });
-                                    </script>
-
-
 
 
                                     <div class="row">
@@ -233,14 +195,39 @@
 
 
 
+<!-- Tambahkan script JavaScript -->
+<script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
 
-<aside class="control-sidebar control-sidebar-dark">
+<script>
+    $(document).ready(function() {
+        const keperluanSelect = $('#pinjam_keperluan');
+        const formPembelajaran = $('#form-pembelajaran');
+        const pembelajaranSelect = $('#pembelajaran');
+        const formMateriPembelajaran = $('#form-materi-pembelajaran');
+        const materiPembelajaranTextarea = $('#materi_pembelajaran');
 
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
+        keperluanSelect.change(function() {
+            const selectedValue = $(this).val();
+            if (selectedValue === 'Praktek Pembelajaran') {
+                formPembelajaran.show();
+                pembelajaranSelect.prop('disabled', false); // Aktifkan form pembelajaran
+                formMateriPembelajaran.show();
+                materiPembelajaranTextarea.prop('disabled', false); // Aktifkan form textarea
+            } else {
+                formPembelajaran.hide();
+                pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran
+                formMateriPembelajaran.hide();
+                materiPembelajaranTextarea.prop('disabled', true); // Nonaktifkan form textarea
+            }
+        });
+
+        // Inisialisasi form select kedua dan textarea
+        formPembelajaran.hide();
+        pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran awal
+        formMateriPembelajaran.hide();
+        materiPembelajaranTextarea.prop('disabled', true); // Nonaktifkan form textarea awal
+    });
+</script>
 
 
 <script>

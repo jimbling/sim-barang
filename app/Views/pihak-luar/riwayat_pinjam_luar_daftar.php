@@ -117,9 +117,7 @@
                                             <td width='10%' class="text-center" style="text-align: center; vertical-align: middle;">
                                                 <a onclick=" hapus_data('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>
                                                 <a href=" <?= ('/cetak/invoice/' . $dataKembali['peminjaman_id']); ?>" class="btn btn-success btn-xs " target="_blank"><i class="fas fa-print "></i><b> Invoice</b></a>
-                                                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modalSurat<?= $dataKembali['peminjaman_id']; ?>">
-                                                    Surat
-                                                </button>
+                                                <a href="../../assets/dist/img/pihakluar/<?= $dataKembali['file_surat']; ?>" class="btn btn-primary btn-xs" download><i class="fas fa-download"></i><b> Surat</b></a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -134,28 +132,6 @@
     </div>
 
 </div>
-
-
-<?php foreach ($data_pinjamLuar as $dataKembali) : ?>
-    <div class="modal fade" data-backdrop="static" id="modalSurat<?= $dataKembali['peminjaman_id']; ?>" tabindex="-1" role="dialog" aria-labelledby="modalSuratLabel<?= $dataKembali['peminjaman_id']; ?>" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalSuratLabel<?= $dataKembali['peminjaman_id']; ?>">Surat Peminjaman</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-                    <img src=" ../../assets/dist/img/pihakluar/<?php echo $dataKembali['file_surat']; ?>" class="img-fluid" alt="Surat Peminjaman">
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endforeach; ?>
-
-
 
 
 <script>
