@@ -18,9 +18,11 @@ $favicon = $data_pengaturan['favicon'];
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Sistem Informasi Managemen Pengelolaan, Penggunaan Barang Laboratorium Keperawatan.">
+    <meta name="description" content="Sitem Informasi Manajemen (SIM) Pengelolaan dan Penggunaan Barang Laboratorium Keperawatan Akper YKY Yogyakarta, adalah SIM untuk mengelola data peminjaman, penerimaan, dan penggunaan barang laboratorium keperawatan">
+    <meta name="keywords" content="sim, akper, yky, akper yky, akper yky yogyakarta, laboratorium, keperawatan, lab, lab keperawatan, sim lab">
+    <meta name="author" content="Akper YKY Yogyakarta">
     <title><?= $judul; ?></title>
-    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="icon" href="../../assets/dist/img/ilustrasi/<?= $favicon; ?>" type="image/x-icon">
     <link rel="stylesheet" href="../../assets/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -212,6 +214,15 @@ $level = $session->get('level');
 
                             </li>
 
+                            <li class="nav-item">
+                                <a href="/profile" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/profile') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
+                                    <i class="far fa-list-alt nav-icon"></i>
+                                    <p>
+                                        Profile
+                                    </p>
+                                </a>
+                            </li>
+
 
 
 
@@ -309,7 +320,9 @@ $level = $session->get('level');
                                     <p>
                                         Persediaan
                                         <i class="right fas fa-angle-left"></i>
+
                                     </p>
+                                    <span class="center badge badge-danger"> <?= session('bhp_baru'); ?> BHP</span>
                                 </a>
 
 
@@ -338,6 +351,7 @@ $level = $session->get('level');
                                             <p>
                                                 Pengeluaran
                                             </p>
+                                            <span class="center badge badge-danger"> <?= session('bhp_baru'); ?> BHP</span>
                                         </a>
                                     </li>
 

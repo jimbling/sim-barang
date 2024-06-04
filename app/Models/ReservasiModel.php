@@ -39,12 +39,14 @@ class ReservasiModel extends Model
 
     public function generateKodeReservasi()
     {
+        // Ambil nilai nilai_kode_pinjam dari database
+        $nilai_kode_reservasi = $this->db->table('tbl_pengaturan')->select('nilai_kode_reservasi')->get()->getRow()->nilai_kode_reservasi;
         // Ganti getLastId() dengan getLastIdFromAngka() untuk mengambil last ID dari tbl_angka_reservasi
         $lastId = $this->getLastIdFromAngka();
 
         // Menghasilkan kode pinjam dengan format yang sesuai
         $nextId = $lastId + 1;
-        $kode_reservasi = 'RSV-YKY-LAB-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+        $kode_reservasi = $nilai_kode_reservasi . '-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
 
         return $kode_reservasi;
     }

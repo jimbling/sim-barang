@@ -5,6 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <meta name="description" content="Sistem Informasi Managemen Pengelolaan, Penggunaan Barang Laboratorium Keperawatan.">
     <?php if (!empty($data_pinjamLuar)) : ?>
         <?php $pinjamLuar = $data_pinjamLuar[0]; ?>
@@ -27,7 +28,20 @@
     <link rel="stylesheet" href="../../assets/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
     <link rel="stylesheet" href="../../assets/plugins/bs-stepper/css/bs-stepper.min.css">
 
+    <style>
+        @media print {
+            .bg-danger {
+                background-color: transparent !important;
+                /* Menghilangkan warna latar belakang */
+            }
 
+            td.bg-danger b {
+                font-weight: bold;
+                color: red;
+            }
+
+        }
+    </style>
 
 </head>
 
@@ -194,7 +208,7 @@
 
                             <div class="col-6">
                                 <p class="lead">Pembayaran:</p>
-                                <img src="../../assets/dist/img/ilustrasi/<?php echo $data_invoice['data_logoBank']; ?>" width="300px" alt="BRI">
+                                <img src="../../assets/dist/img/<?php echo $data_invoice['data_logoBank']; ?>" width="300px" alt="BRI">
                                 <p style="margin-top: 10px;" font-size="bold">
                                     <?php echo $data_invoice['data_bank']; ?>
                                     <br>No. Rekening : <?php echo $data_invoice['data_rek']; ?>
@@ -215,8 +229,8 @@
                                             <td style="text-align: right;"><?php echo 'Rp. ' . number_format($biayaPerawatan, 0, ',', '.'); ?></td>
                                         </tr>
                                         <tr>
-                                            <th class="bg-secondary">Total:</th>
-                                            <td class="bg-secondary" style="text-align: right;"><b><?php echo 'Rp. ' . number_format($totalSemuaHarga, 0, ',', '.'); ?></b></td>
+                                            <th class="bg-danger">Total:</th>
+                                            <td class="bg-danger" style="text-align: right;"><b><?php echo 'Rp. ' . number_format($totalSemuaHarga, 0, ',', '.'); ?></b></td>
                                         </tr>
                                     </table>
                                 </div>

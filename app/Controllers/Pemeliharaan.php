@@ -23,6 +23,7 @@ class Pemeliharaan extends BaseController
         $this->backupModel = new BackupModel();
         $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
+
     public function index()
     {
 
@@ -36,6 +37,7 @@ class Pemeliharaan extends BaseController
         $dataCetak = $pengaturanModel->getDataById(1);
         $backupModel = new BackupModel();
         $dbBackup = $backupModel->getLatestBackups();
+        $expiredBackups = $backupModel->getExpiredBackups();
 
         $data = [
             'judul' => "Setting Data | $namaKampus",
@@ -44,6 +46,7 @@ class Pemeliharaan extends BaseController
             'dataCetak' => $dataCetak,
             'data_pengguna' => $pengguna,
             'backup_db' => $dbBackup,
+            'backup_kadaluarsa' => $expiredBackups
         ];
 
         // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
@@ -79,6 +82,40 @@ class Pemeliharaan extends BaseController
         return view('pengaturan/pengguna', $data);
     }
 
+    public function backup()
+    {
+        try {
+            $tglSekarang = date('Y-m-dHis');
+            $dump = new Mysqldump('mysql:host=localhost;dbname=yky_pinjam;port=3306', 'root', '');
+            $dumpFile = 'database/backup/db-' . $tglSekarang . '.sql';
+            $dump->start($dumpFile);
+
+            // Mengukur ukuran file yang dihasilkan dalam byte
+            $ukuranFile = filesize($dumpFile);
+
+            // Menggunakan basename() untuk mendapatkan nama file tanpa folder
+            $namaFileTanpaFolder = basename($dumpFile);
+
+            // Setelah backup berhasil, simpan nama file dan ukuran file ke dalam database
+            $backupModel = new BackupModel();
+            $data = [
+                'nama_file' => $namaFileTanpaFolder,
+                'ukuran' => $ukuranFile, // Menyimpan ukuran file dalam byte
+            ];
+            $backupModel->insertBackup($data);
+
+            $pesan = "Backup Berhasil...";
+            session()->setFlashData('pesan', $pesan);
+
+            // Kembalikan nama file sebagai response JSON
+            return $this->response->setJSON(['nama_file' => $namaFileTanpaFolder, 'ukuran' => $ukuranFile]);
+        } catch (\Exception $e) {
+            $pesan = "mysqldump error-php error" . $e->getMessage();
+            session()->setFlashData('pesan', $pesan);
+            return redirect()->to('/data/pengaturan')->with('success', 'Data siswa berhasil diubah.');
+        }
+    }
+
 
     public function unduh($namaFile)
     {
@@ -101,6 +138,28 @@ class Pemeliharaan extends BaseController
             // Jika file tidak ditemukan, tampilkan pesan atau lakukan sesuatu yang sesuai
             echo "File tidak ditemukan";
         }
+    }
+
+    public function deleteExpiredBackups()
+    {
+        if ($this->request->getMethod() === 'post') {
+            // Menjalankan proses penghapusan hanya jika permintaan adalah POST
+            $backupModel = new BackupModel();
+
+            // Menghapus semua backup yang sudah kadaluarsa
+            $deletedCount = $backupModel->deleteExpiredBackups();
+
+            // Setelah penghapusan berhasil, set pesan sukses
+            if ($deletedCount > 0) {
+                $pesan = "Total $deletedCount backup kadaluarsa berhasil dihapus.";
+                session()->setFlashData('pesan', $pesan);
+            } else {
+                $pesan = "Tidak ada backup yang kadaluarsa untuk dihapus.";
+                session()->setFlashData('pesan', $pesan);
+            }
+        }
+
+        return redirect()->to('/pemeliharaan'); // Redirect kembali ke halaman pengaturan setelah selesai
     }
 
     public function update()
@@ -155,35 +214,7 @@ class Pemeliharaan extends BaseController
     }
 
 
-    public function backup()
-    {
-        try {
-            $tglSekarang = date('Y-m-d_H.i.s');
-            $dump = new Mysqldump('mysql:host=localhost;dbname=yky_pinjam;port=3306', 'root', '');
-            $dumpFile = 'database/backup/dbbackup-' . $tglSekarang . '.sql';
-            $dump->start($dumpFile);
 
-            // Menggunakan basename() untuk mendapatkan nama file tanpa folder
-            $namaFileTanpaFolder = basename($dumpFile);
-
-            // Setelah backup berhasil, simpan nama file tanpa folder ke dalam database
-            $backupModel = new BackupModel();
-            $data = [
-                'nama_file' => $namaFileTanpaFolder,
-            ];
-            $backupModel->insertBackup($data);
-
-            $pesan = "Backup Berhasil...";
-            session()->setFlashData('pesan', $pesan);
-
-            // Kembalikan nama file sebagai response JSON
-            return $this->response->setJSON(['nama_file' => $namaFileTanpaFolder]);
-        } catch (\Exception $e) {
-            $pesan = "mysqldump error-php error" . $e->getMessage();
-            session()->setFlashData('pesan', $pesan);
-            return redirect()->to('/data/pengaturan')->with('success', 'Data siswa berhasil diubah.');
-        }
-    }
 
     public function delete()
     {
@@ -203,5 +234,21 @@ class Pemeliharaan extends BaseController
             // Tangani jika tidak ada ID yang diberikan
             return redirect()->back();
         }
+    }
+
+    public function getAllBackups()
+    {
+        $backupModel = new BackupModel();
+        $allBackups = $backupModel->findAll();
+
+        return $this->response->setJSON($allBackups);
+    }
+
+    public function getLatestBackups()
+    {
+        $backupModel = new BackupModel();
+        $latestBackups = $backupModel->getLatestBackups();
+
+        return $this->response->setJSON($latestBackups);
     }
 }

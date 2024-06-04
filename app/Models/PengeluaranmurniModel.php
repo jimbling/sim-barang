@@ -60,4 +60,10 @@ class PengeluaranmurniModel extends Model
     {
         return $this->distinct()->select('YEAR(tanggal_penggunaan) as tahun')->orderBy('tahun', 'ASC')->findAll();
     }
+
+    public function hitungDataBaru()
+    {
+        $db = \Config\Database::connect();
+        return $db->table('tbl_pengeluaran_murni')->countAll();
+    }
 }

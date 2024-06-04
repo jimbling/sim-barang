@@ -609,20 +609,22 @@
     });
 
     function showBackupAlert() {
-        // Mendapatkan tanggal hari ini menggunakan JavaScript
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
+        // Lakukan permintaan AJAX untuk memuat pesan dari database
+        $.ajax({
+            url: '/alert/getNotificationsToShow', // Sesuaikan dengan URL yang benar
+            method: 'GET',
+            success: function(response) {
+                if (response.length > 0) {
+                    var today = new Date(); // Dapatkan tanggal hari ini menggunakan JavaScript
+                    var dd = String(today.getDate()).padStart(2, '0'); // Ambil tanggal dari tanggal hari ini
 
-        // Periksa apakah tanggal hari ini adalah tanggal 08
-        if (dd === '08') {
-            // Lakukan permintaan AJAX untuk memuat pesan dari database
-            $.ajax({
-                url: '/alert/getNotificationsToShow', // Sesuaikan dengan URL yang benar
-                method: 'GET',
-                success: function(response) {
-                    if (response.length > 0) {
-                        // Jika terdapat pesan yang harus ditampilkan
-                        var message = response[0].message; // Ambil pesan pertama dari respons
+                    // Ambil tanggal dari data show_date
+                    var showDate = new Date(response[0].show_date);
+                    var showDate_dd = String(showDate.getDate()).padStart(2, '0'); // Ambil tanggal dari show_date
+
+                    // Periksa apakah tanggal hari ini sama dengan tanggal show_date
+                    if (dd === showDate_dd) {
+                        var message = response[0].message; // Ambil pesan dari data notifikasi
 
                         // Tampilkan SweetAlert dengan pesan dari database
                         Swal.fire({
@@ -633,7 +635,7 @@
                             allowOutsideClick: false, // Set allowOutsideClick to false
                             showCancelButton: true,
                             showConfirmButton: false, // Hide the "OK" button
-                            cancelButtonText: 'Sembunyikan 30 Hari'
+                            cancelButtonText: 'Sembunyikan'
                         }).then((result) => {
                             if (result.dismiss === Swal.DismissReason.cancel) {
                                 // Jika pengguna memilih "Sembunyikan 30 Hari", mengupdate status hidden
@@ -653,13 +655,13 @@
                             }
                         });
                     }
-                },
-                error: function(xhr, status, error) {
-                    // Handle error jika terjadi
-                    console.error(error);
                 }
-            });
-        }
+            },
+            error: function(xhr, status, error) {
+                // Handle error jika terjadi
+                console.error(error);
+            }
+        });
     }
 </script>
 

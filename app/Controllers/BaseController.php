@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use App\Models\PengeluaranmurniModel;
 
 /**
  * Class BaseController
@@ -54,5 +55,14 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
+
+        // Hitung jumlah data baru dalam 12 jam terakhir
+        $model = new PengeluaranmurniModel();
+        $waktu12JamLalu = date('Y-m-d H:i:s', strtotime('-12 hours'));
+        $queryDataBaru = $model->where('created_at >', $waktu12JamLalu)->findAll();
+        $bhp_baru = count($queryDataBaru);
+
+        // Simpan 'bhp_baru' ke dalam sesi
+        session()->set('bhp_baru', $bhp_baru);
     }
 }

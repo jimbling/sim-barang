@@ -106,7 +106,37 @@
                                     <td><input type="email" class="form-control form-control-sm" id="atas_nama" name="atas_nama" value="<?php echo $dataCetak['atas_nama']; ?>" readonly></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align: left;">9. Logo Bank </td>
+                                    <td style="text-align: left;">9. No. HP Admin </td>
+                                    <td>:</td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" id="no_hp" name="no_hp" value="<?php echo $dataCetak['no_hp']; ?>" readonly>
+                                        <span class="small float-left" style="color: #EE4266;">Untuk menerima notifikasi WA saat ada Reservasi Baru</span>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">10. Kode Reservasi </td>
+                                    <td>:</td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" id="nilai_kode_reservasi" name="nilai_kode_reservasi" value="<?php echo $dataCetak['nilai_kode_reservasi']; ?>" readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">11. Kode Pinjam </td>
+                                    <td>:</td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" id="nilai_kode_pinjam" name="nilai_kode_pinjam" value="<?php echo $dataCetak['nilai_kode_pinjam']; ?>" readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">12. Kode Kembali </td>
+                                    <td>:</td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" id="nilai_kode_kembali" name="nilai_kode_kembali" value="<?php echo $dataCetak['nilai_kode_kembali']; ?>" readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">13. Logo Bank </td>
                                     <td>:</td>
                                     <td>
                                         <form method="post" action="/upload/logobank" enctype="multipart/form-data">
@@ -124,10 +154,11 @@
                                             </div>
                                             <button type="submit" class="btn btn-sm btn-outline-primary btn-block">Simpan Logo Bank</button>
                                         </form>
+                                        <img src="../../assets/dist/img/<?php echo $dataCetak['logo_bank']; ?>" class="img-fluid rounded float-right" alt="Tampilan Logo Bank" width="200" height="100">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align: left;">10. Favicon <img src="../../assets/dist/img/ilustrasi/<?php echo $dataCetak['favicon']; ?>" class="img-fluid rounded float-right" alt="Tampilan Favicon" width="30" height="30"></td>
+                                    <td style="text-align: left;">14. Favicon <img src="../../assets/dist/img/ilustrasi/<?php echo $dataCetak['favicon']; ?>" class="img-fluid rounded float-right" alt="Tampilan Favicon" width="30" height="30"></td>
                                     <td>:</td>
                                     <td>
                                         <form method="post" action="/upload/favicon" enctype="multipart/form-data">
@@ -157,43 +188,63 @@
 
 
 
-
-
                 <div class="col">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3 border-left-primary">
-                            <h6 class="m-0 font-weight-bold text-primary">Atur Kop Surat</h6>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3 border-left-primary">
+                                    <h6 class="m-0 font-weight-bold text-primary">Atur Logo</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post" action="/upload/logo" enctype="multipart/form-data">
+                                        <!-- Form fields for other data -->
+                                        <div class="form-group row">
+                                            <div class="col-sm-12">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" name="logo" id="customLogo" required>
+                                                    <label class="custom-file-label" for="selectedFileLogo" id="selectedFileLogo">Pilih Logo</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container-fluid mb-3">
+                                            <img id="previewLogo" src="#" alt="Preview Logo" style="max-width: 100%; max-height: 200px; display: none;">
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary btn-block">Simpan Logo</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <form method="post" action="/upload/kopsurat" enctype="multipart/form-data">
-                                <!-- Form fields for other data -->
-                                <div class="form-group row">
-                                    <label for="foto_siswa" class="col-sm-6 col-form-label">Upload file Kop Surat</label>
-                                    <div class="col-sm-12">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="kop_surat" id="customFile" required>
-                                            <label class="custom-file-label" for="selectedFileName" id="selectedFileName">Pilih File Foto</label>
+                        <div class="col-md-5">
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="col-sm-12">
+                                            <img src="../../assets/dist/img/<?php echo $dataCetak['logo']; ?>" class="img-fluid rounded align-center" alt="Tampilan Logo">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="container-fluid mb-3">
-                                    <img id="previewImage" src="#" alt="Preview Image" style="max-width: 100%; max-height: 200px; display: none;">
-                                </div>
-                                <button type="submit" class="btn btn-outline-primary btn-block">Simpan Kop Surat</button>
-                            </form>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3 border-left-primary">
-                            <h6 class="m-0 font-weight-bold text-primary">Tampilan Kop Surat</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="container">
-                                <div class="col-sm-12">
-                                    <img src="../../assets/dist/img/<?php echo $dataCetak['kop_surat']; ?>" class="img-fluid rounded align-center" alt="Tampilan Kop Surat">
-                                </div>
-                            </div>
+                <div class="col-md-12">
+
+                    <div class="card shadow">
+                        <div class="card-body bg-success">
+                            <dl class="row" style="font-size: 13px;">
+                                <dt class="col-sm-3">Atur Data Kampus</dt>
+                                <dd class="col-sm-9">Silahkan disesuaikan dengan keadaan Kampus/Instansi masing-masing, data-data tersebut akan menjadi identitas tepat pada sistem dan juga pada laporan.</dd>
+
+                                <dt class="col-sm-3">Setting Tanda Tangan</dt>
+                                <dd class="col-sm-9">
+                                    Silahkan disesuaikan sesuai keadaan sebenarnya siapa saja yang bertanggung jawab/berkompeten terhadap laporan Peminjaman, Persediaan dan Penggunaan Barang.
+                                </dd>
+                                <dt class="col-sm-3">Setting Akun</dt>
+                                <dd class="col-sm-9">
+                                    Harap digunakan dengan hati-hati karena terkait akses login sebagai Administrator. Sebaiknya kata sandi default diubah, namun jangan sampai lupa.
+                                </dd>
+                            </dl>
                         </div>
                     </div>
 
@@ -287,40 +338,40 @@
                     </div>
                 </div>
 
+
                 <div class="col">
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 border-left-primary">
-                                    <h6 class="m-0 font-weight-bold text-primary">Atur Logo</h6>
-                                </div>
-                                <div class="card-body">
-                                    <form method="post" action="/upload/logo" enctype="multipart/form-data">
-                                        <!-- Form fields for other data -->
-                                        <div class="form-group row">
-                                            <div class="col-sm-12">
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" name="logo" id="customLogo" required>
-                                                    <label class="custom-file-label" for="selectedFileLogo" id="selectedFileLogo">Pilih Logo</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="container-fluid mb-3">
-                                            <img id="previewLogo" src="#" alt="Preview Logo" style="max-width: 100%; max-height: 200px; display: none;">
-                                        </div>
-                                        <button type="submit" class="btn btn-sm btn-outline-primary btn-block">Simpan Logo</button>
-                                    </form>
-                                </div>
-                            </div>
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 border-left-primary">
+                            <h6 class="m-0 font-weight-bold text-primary">Atur Kop Surat</h6>
                         </div>
-                        <div class="col-md-5">
-                            <div class="card shadow mb-4">
-                                <div class="card-body">
-                                    <div class="container">
-                                        <div class="col-sm-12">
-                                            <img src="../../assets/dist/img/<?php echo $dataCetak['logo']; ?>" class="img-fluid rounded align-center" alt="Tampilan Logo">
+                        <div class="card-body">
+                            <form method="post" action="/upload/kopsurat" enctype="multipart/form-data">
+                                <!-- Form fields for other data -->
+                                <div class="form-group row">
+                                    <label for="foto_siswa" class="col-sm-6 col-form-label">Upload file Kop Surat</label>
+                                    <div class="col-sm-12">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="kop_surat" id="customFile" required>
+                                            <label class="custom-file-label" for="selectedFileName" id="selectedFileName">Pilih File Foto</label>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="container-fluid mb-3">
+                                    <img id="previewImage" src="#" alt="Preview Image" style="max-width: 100%; max-height: 200px; display: none;">
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary btn-block">Simpan Kop Surat</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 border-left-primary">
+                            <h6 class="m-0 font-weight-bold text-primary">Tampilan Kop Surat</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="col-sm-12">
+                                    <img src="../../assets/dist/img/<?php echo $dataCetak['kop_surat']; ?>" class="img-fluid rounded align-center" alt="Tampilan Kop Surat">
                                 </div>
                             </div>
                         </div>
@@ -365,6 +416,8 @@
                         </div>
 
                     </div>
+
+
                 </div>
 
             </div>
@@ -413,6 +466,9 @@
                         <button type="submit" class="btn btn-primary btn-sm" onclick="simpan_editAkun()">Simpan</button>
 
                     </form>
+
+
+
                 </div>
 
             </div>
@@ -420,11 +476,15 @@
     </div>
 <?php endforeach; ?>
 
+<script>
+    var updateUrl = "<?php echo base_url('/pengaturan/update'); ?>";
+</script>
+<script src="../../assets/dist/js/edit.js"></script>
 
 <?php echo view('tema/footer.php'); ?>
 
 <script>
-    function showLoading() {
+    function showLoadingProses() {
         let timerInterval
         Swal.fire({
             title: 'Sedang memproses data ....',
@@ -448,7 +508,7 @@
         var full_nama = document.getElementById('editNama').value;
         var user_nama = document.getElementById('editUserNama').value;
         var user_password = document.getElementById('editUserPass').value;
-        showLoading();
+        showLoadingProses();
 
         // Kirim data ke controller dengan Ajax
         $.ajax({
@@ -497,236 +557,7 @@
     }
 </script>
 
-<script>
-    // Fungsi yang dijalankan saat halaman diload
-    window.addEventListener('load', function() {
-        // Sembunyikan tombol Update dan Batal saat halaman diload
-        document.getElementById('updateButton').style.display = 'none';
-        document.getElementById('batalButton').style.display = 'none';
-    });
-
-    document.getElementById('editButton').addEventListener('click', function() {
-        event.preventDefault(); // Menghentikan default behavior dari tombol submit
-        // Hapus atribut readonly dari elemen input yang diinginkan
-        document.getElementById('nama_kampus').removeAttribute('readonly');
-        document.getElementById('website').removeAttribute('readonly');
-        document.getElementById('alamat').removeAttribute('readonly');
-        document.getElementById('no_telp').removeAttribute('readonly');
-        document.getElementById('email').removeAttribute('readonly');
-        document.getElementById('nama_bank').removeAttribute('readonly');
-        document.getElementById('no_rekening').removeAttribute('readonly');
-        document.getElementById('atas_nama').removeAttribute('readonly');
-
-        document.getElementById('nama_direktur').removeAttribute('readonly');
-        document.getElementById('ttd_1').removeAttribute('readonly');
-        document.getElementById('nik_dir').removeAttribute('readonly');
-
-        document.getElementById('ttd_4').removeAttribute('readonly');
-        document.getElementById('nama_ttd_4').removeAttribute('readonly');
-        document.getElementById('id_ttd_4').removeAttribute('readonly');
-
-        document.getElementById('ttd_3').removeAttribute('readonly');
-        document.getElementById('nama_ttd_3').removeAttribute('readonly');
-        document.getElementById('id_ttd_3').removeAttribute('readonly');
-
-        document.getElementById('ttd_2').removeAttribute('readonly');
-        document.getElementById('nama_laboran').removeAttribute('readonly');
-        document.getElementById('nik_laboran').removeAttribute('readonly');
-
-
-        // (Tambahkan kode serupa untuk elemen input lainnya)
-
-        // Tampilkan tombol Batal dan Update
-        document.getElementById('batalButton').style.display = 'block';
-        document.getElementById('updateButton').style.display = 'block';
-        // Sembunyikan tombol Edit
-        this.style.display = 'none';
-    });
-
-    document.getElementById('batalButton').addEventListener('click', function() {
-        // Tambahkan atribut readonly ke elemen input yang diinginkan
-        document.getElementById('nama_kampus').setAttribute('readonly', true);
-        document.getElementById('website').setAttribute('readonly', true);
-        document.getElementById('alamat').setAttribute('readonly', true);
-        document.getElementById('no_telp').setAttribute('readonly', true);
-        document.getElementById('email').setAttribute('readonly', true);
-        document.getElementById('nama_bank').setAttribute('readonly', true);
-        document.getElementById('no_rekening').setAttribute('readonly', true);
-        document.getElementById('atas_nama').setAttribute('readonly', true);
-
-        document.getElementById('nama_direktur').setAttribute('readonly', true);
-        document.getElementById('ttd_1').setAttribute('readonly', true);
-        document.getElementById('nik_dir').setAttribute('readonly', true);
-
-        document.getElementById('ttd_4').setAttribute('readonly', true);
-        document.getElementById('nama_ttd_4').setAttribute('readonly', true);
-        document.getElementById('id_ttd_4').setAttribute('readonly', true);
-
-        document.getElementById('ttd_3').setAttribute('readonly', true);
-        document.getElementById('nama_ttd_3').setAttribute('readonly', true);
-        document.getElementById('id_ttd_3').setAttribute('readonly', true);
-
-        document.getElementById('ttd_2').setAttribute('readonly', true);
-        document.getElementById('nama_laboran').setAttribute('readonly', true);
-        document.getElementById('nik_laboran').setAttribute('readonly', true);
-
-
-        // (Tambahkan kode serupa untuk elemen input lainnya)
-
-        // Tampilkan tombol Edit
-        document.getElementById('editButton').style.display = 'block';
-        // Sembunyikan tombol Update dan Batal
-        document.getElementById('updateButton').style.display = 'none';
-        this.style.display = 'none';
-    });
-
-    document.getElementById('updateButton').addEventListener('click', function() {
-        // Tambahkan atribut readonly ke elemen input yang diinginkan
-        document.getElementById('nama_kampus').setAttribute('readonly', true);
-        document.getElementById('website').setAttribute('readonly', true);
-        document.getElementById('alamat').setAttribute('readonly', true);
-        document.getElementById('no_telp').setAttribute('readonly', true);
-        document.getElementById('email').setAttribute('readonly', true);
-        document.getElementById('nama_bank').setAttribute('readonly', true);
-        document.getElementById('no_rekening').setAttribute('readonly', true);
-        document.getElementById('atas_nama').setAttribute('readonly', true);
-
-        document.getElementById('nama_direktur').setAttribute('readonly', true);
-        document.getElementById('ttd_1').setAttribute('readonly', true);
-        document.getElementById('nik_dir').setAttribute('readonly', true);
-
-        document.getElementById('ttd_4').setAttribute('readonly', true);
-        document.getElementById('nama_ttd_4').setAttribute('readonly', true);
-        document.getElementById('id_ttd_4').setAttribute('readonly', true);
-
-        document.getElementById('ttd_3').setAttribute('readonly', true);
-        document.getElementById('nama_ttd_3').setAttribute('readonly', true);
-        document.getElementById('id_ttd_3').setAttribute('readonly', true);
-
-        document.getElementById('ttd_2').setAttribute('readonly', true);
-        document.getElementById('nama_laboran').setAttribute('readonly', true);
-        document.getElementById('nik_laboran').setAttribute('readonly', true);
-
-
-        // (Tambahkan kode serupa untuk elemen input lainnya)
-
-        // Tampilkan tombol Edit
-        document.getElementById('editButton').style.display = 'block';
-        // Sembunyikan tombol Update dan Batal
-        document.getElementById('updateButton').style.display = 'none';
-        document.getElementById('batalButton').style.display = 'none';
-    });
-</script>
-
-<script>
-    document.getElementById('updateButton').addEventListener('click', function() {
-        // Ambil data dari formulir
-        var nama_kampus = document.getElementById('nama_kampus').value;
-        var website = document.getElementById('website').value;
-        var alamat = document.getElementById('alamat').value;
-        var no_telp = document.getElementById('no_telp').value;
-        var email = document.getElementById('email').value;
-        var nama_bank = document.getElementById('nama_bank').value;
-        var no_rekening = document.getElementById('no_rekening').value;
-        var atas_nama = document.getElementById('atas_nama').value;
-
-        var nama_direktur = document.getElementById('nama_direktur').value;
-        var nik_dir = document.getElementById('nik_dir').value;
-        var ttd_1 = document.getElementById('ttd_1').value;
-
-        var ttd_2 = document.getElementById('ttd_2').value;
-        var nama_laboran = document.getElementById('nama_laboran').value;
-        var nik_laboran = document.getElementById('nik_laboran').value;
-
-        var ttd_4 = document.getElementById('ttd_4').value;
-        var nama_ttd_4 = document.getElementById('nama_ttd_4').value;
-        var id_ttd_4 = document.getElementById('id_ttd_4').value;
-
-        var ttd_3 = document.getElementById('ttd_3').value;
-        var nama_ttd_3 = document.getElementById('nama_ttd_3').value;
-        var id_ttd_3 = document.getElementById('id_ttd_3').value;
-
-
-
-
-
-
-        // Buat objek data yang akan dikirimkan melalui AJAX
-        var data = {
-            nama_kampus: nama_kampus,
-            website: website,
-            alamat: alamat,
-            no_telp: no_telp,
-            email: email,
-            nama_bank: nama_bank,
-            no_rekening: no_rekening,
-            atas_nama: atas_nama,
-
-            nama_direktur: nama_direktur,
-            nik_dir: nik_dir,
-            ttd_1: ttd_1,
-
-            nama_laboran: nama_laboran,
-            ttd_2: ttd_2,
-            nik_laboran: nik_laboran,
-
-            ttd_4: ttd_4,
-            nama_ttd_4: nama_ttd_4,
-            id_ttd_4: id_ttd_4,
-
-            ttd_3: ttd_3,
-            nama_ttd_3: nama_ttd_3,
-            id_ttd_3: id_ttd_3,
-        };
-        // Tampilkan loading sebelum mengirimkan data
-        showLoading();
-
-        // Kirim data ke controller menggunakan AJAX
-        fetch('<?= base_url('/pengaturan/update') ?>', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Sembunyikan loading setelah mendapatkan respons dari server
-                hideLoading();
-
-                // Handle respons dari server jika diperlukan
-                console.log('Respons dari server:', data);
-
-                // Tampilkan SweetAlert sukses dengan timer 5000 milidetik (5 detik)
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: 'Data berhasil dirubah.',
-                    icon: 'success',
-                    timer: 3000, // Durasi tampilan dalam milidetik (misalnya, 5000 milidetik = 5 detik)
-                    showConfirmButton: false, // Sembunyikan tombol OK (jika tidak diinginkan)
-                }).then(() => {
-                    // Arahkan pengguna ke halaman baru setelah SweetAlert ditutup
-                    window.location.replace("/data/pengaturan");
-                });
-            })
-            .catch(error => {
-                // Sembunyikan loading jika terjadi kesalahan
-                hideLoading();
-
-                console.error('Error:', error);
-
-                // Tampilkan SweetAlert sukses dengan jeda waktu 2000 milidetik (2 detik)
-                setTimeout(function() {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sukses',
-                        text: 'Data berhasil diperbarui',
-                    });
-                }, 2000);
-            });
-    });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Include SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- KOP SURAT -->
 
 <script>

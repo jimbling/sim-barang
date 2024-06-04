@@ -113,13 +113,15 @@ class Pihakluar extends BaseController
         }
 
         // Hitung lama_pinjam dalam satuan hari
-        $lamaPinjam = $tanggalPinjam->diff($tanggalKembali)->days;
+        $lamaPinjam = $tanggalPinjam->diff($tanggalKembali)->format('%a');
 
         // Jika tanggal_pinjam dan tanggal_kembali sama, atur lama_pinjam menjadi 1 hari
-        if ($tanggalPinjam == $tanggalKembali) {
+        if ($tanggalPinjam->format('Y-m-d') == $tanggalKembali->format('Y-m-d')) {
             $lamaPinjam = 1;
+        } else {
+            // Tambah 1 hari karena peminjaman dimulai pada hari tersebut
+            $lamaPinjam += 1;
         }
-
         // Ambil ID terakhir dari tabel
         $lastId = $this->pihakluarpeminjamanModel->selectMax('id')->get()->getRow()->id;
 

@@ -140,6 +140,10 @@ $routes->get('/laporan/peminjaman', 'Laporan::laporanPeminjaman');
 $routes->get('/laporan/persediaan', 'Laporan::laporanPersediaan');
 $routes->get('/laporan/stock', 'Laporan::laporanStockOpname');
 
+$routes->get('/profile', 'Pengaturan::settingUser');
+$routes->get('/get-user-by-id/(:num)', 'Pengaturan::getUserById/$1');
+$routes->post('/update-user', 'Pengaturan::updateUser');
+
 $routes->get('/cetak/peminjaman/bulan', 'Laporan::cetakPinjamBulanTahun');
 $routes->get('/cetak/peminjaman/tahun', 'Laporan::cetakPinjamTahun');
 $routes->get('/cetak/pengembalian/bulan', 'Laporan::cetakKembaliBulanTahun');
@@ -159,8 +163,9 @@ $routes->get('/cetak/mutasi/bulan', 'Laporan::laporanMutasiBulan');
 
 $routes->get('/unauthorized', 'Unauthorized::index');
 
-$routes->get('/backup', 'Pengaturan::backup');
-$routes->get('/backup/unduh/(:segment)', 'Pengaturan::unduh/$1');
+$routes->get('/backup', 'Pemeliharaan::backup');
+$routes->get('/backup/unduh/(:segment)', 'Pemeliharaan::unduh/$1');
+$routes->post('/hapus/backup', 'Pemeliharaan::deleteExpiredBackups');
 
 $routes->get('/pihakluar', 'Pihakluar::index');
 $routes->post('/pihakluar/simpan', 'Pihakluar::prosesPeminjaman');
@@ -193,6 +198,12 @@ $routes->post('upload/favicon', 'Pengaturan::favicon');
 $routes->post('upload/logobank', 'Pengaturan::uploadLogoBank');
 $routes->get('/alert/getNotificationsToShow', 'Alert::getNotificationsToShow');
 $routes->post('/alert/updateAlertHiddenStatus/(:num)', 'Alert::updateAlertHiddenStatus/$1');
+$routes->post('/generate-kode-pinjam', 'Pengaturan::generateKodePinjam');
+
+$routes->get('backup/all', 'Pemeliharaan::getAllBackups');
+$routes->get('backup/latest', 'Pemeliharaan::getLatestBackups');
+
+
 
 
 

@@ -1,0 +1,4 @@
+1.  Pada Controller Pengaturan -> public function backup() -> $dump = new Mysqldump('mysql:host=localhost;dbname=yky_pinjam;port=3306', 'root', '');
+    sesuaikan dengan konfigurasi database.
+
+2.  

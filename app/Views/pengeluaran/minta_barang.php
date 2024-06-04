@@ -442,7 +442,31 @@
 </script>
 
 
+<script>
+    $(document).ready(function() {
+        // Fungsi yang dipanggil saat elemen #ambil_barang kehilangan fokus (blur)
+        $('#ambil_barang_murni').blur(function() {
+            // Dapatkan nilai ambil_barang dan jumlah_barang
+            var ambilBarang = parseInt($('#ambil_barang_murni').val()) || 0;
+            var jumlahBarang = parseInt($('#jumlah_barang').val()) || 0;
 
+            // Lakukan validasi
+            if (ambilBarang > jumlahBarang) {
+                // Tampilkan SweetAlert jika ambil_barang lebih besar dari jumlah_barang
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Nilai Ambil Barang tidak boleh lebih besar dari Jumlah Barang!',
+                });
+                // Bersihkan nilai input agar pengguna harus memasukkan ulang
+                $('#ambil_barang_murni').val('');
+            }
+            // Validasi terpenuhi atau tidak, lanjutkan dengan proses yang diperlukan
+        });
+
+        // Anda dapat menambahkan event blur untuk input lainnya jika diperlukan
+    });
+</script>
 
 
 

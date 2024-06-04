@@ -95,12 +95,15 @@ class PeminjamanModel extends Model
 
     public function generateKodePinjam()
     {
+        // Ambil nilai nilai_kode_pinjam dari database
+        $nilai_kode_pinjam = $this->db->table('tbl_pengaturan')->select('nilai_kode_pinjam')->get()->getRow()->nilai_kode_pinjam;
+
         // Ganti getLastId() dengan getLastIdFromAngka() untuk mengambil last ID dari tbl_angka
         $lastId = $this->getLastIdFromAngka();
 
-        // Menghasilkan kode pinjam dengan format yang sesuai
+        // Menghasilkan kode pinjam dengan format yang sesuai dengan nilai_kode_pinjam dari database
         $nextId = $lastId + 1;
-        $kode_pinjam = 'P-YKY-LAB-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+        $kode_pinjam = $nilai_kode_pinjam . '-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
 
         return $kode_pinjam;
     }

@@ -26,7 +26,19 @@
     <link rel="stylesheet" href="../../assets/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
     <link rel="stylesheet" href="../../assets/plugins/bs-stepper/css/bs-stepper.min.css">
 
+    <style>
+        @media print {
+            .bg-danger {
+                background-color: transparent !important;
+                /* Menghilangkan warna latar belakang */
+            }
 
+            td.bg-danger b {
+                font-weight: bold;
+                color: red;
+            }
+        }
+    </style>
 
 </head>
 
@@ -214,8 +226,8 @@
                                             <td style="text-align: right;"><?php echo 'Rp. ' . number_format($biayaPerawatan, 0, ',', '.'); ?></td>
                                         </tr>
                                         <tr>
-                                            <th class="bg-secondary">Total:</th>
-                                            <td class="bg-secondary" style="text-align: right;"><b><?php echo 'Rp. ' . number_format($totalSemuaHarga, 0, ',', '.'); ?></b></td>
+                                            <th class="bg-danger">Total:</th>
+                                            <td class="bg-danger" style="text-align: right; "><span style="font-weight:bold; color:red;"><?php echo 'Rp. ' . number_format($totalSemuaHarga, 0, ',', '.'); ?></span></td>
                                         </tr>
                                     </table>
                                 </div>

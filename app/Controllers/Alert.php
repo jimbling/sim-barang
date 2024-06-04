@@ -37,7 +37,7 @@ class Alert extends BaseController
             // Tambahkan data baru ke database
             $newNotification = [
                 'message' => 'Silakan lakukan backup database',
-                'show_date' => date('Y-m-d', strtotime('+30 days', strtotime($notification['show_date']))),
+                'show_date' => date('Y-m-d', strtotime('+7 days')), // Menambahkan 7 hari dari tanggal saat ini
                 'hidden' => false
             ];
             $this->notificationModel->insert($newNotification);

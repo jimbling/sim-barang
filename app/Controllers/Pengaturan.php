@@ -78,29 +78,118 @@ class Pengaturan extends BaseController
         return view('pengaturan/pengguna', $data);
     }
 
-
-    public function unduh($namaFile)
+    public function settingUser()
     {
-        // Tentukan path lengkap ke file backup
-        $fileBackup = 'database/backup/' . $namaFile;
 
-        // Pastikan file ada sebelum mencoba mengirimkannya
-        if (file_exists($fileBackup)) {
-            // Tentukan header untuk memicu unduhan
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename="' . basename($fileBackup) . '"');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($fileBackup));
-            readfile($fileBackup);
-            exit;
+        $currentYear = date('Y');
+        $csrfToken = csrf_hash();
+        $namaKampus = $this->settingsService->getNamaKampus();
+
+        // Ambil ID pengguna dari sesi
+        $userId = session('id');
+
+        // Panggil metode di model untuk mengambil data pengguna berdasarkan ID pengguna yang login
+        $pengguna = $this->userModel->getUserById($userId);
+
+        $data = [
+            'judul' => "Profile Pengguna | $namaKampus",
+            'currentYear' => $currentYear,
+            'csrfToken' => $csrfToken,  // Sertakan token CSRF dalam data
+            'data_pengguna' => $pengguna,
+        ];
+
+        // Kirim data pengguna ke view
+        return view('pengaturan/setting_user', $data);
+    }
+
+    public function getUserById($userId)
+    {
+        // Panggil metode di model untuk mengambil data pengguna berdasarkan ID
+        $user = $this->userModel->find($userId);
+
+        // Buat array untuk menyimpan data pengguna
+        $userData = [];
+
+        // Periksa apakah pengguna ditemukan
+        if ($user) {
+            // Jika pengguna ditemukan, tambahkan data ke array
+            $userData = [
+                'id' => $user['id'],
+                'user_nama' => $user['user_nama'],
+                'level' => $user['level'],
+                'full_nama' => $user['full_nama'],
+                'type' => $user['type']
+                // tambahkan kolom lainnya sesuai kebutuhan
+            ];
         } else {
-            // Jika file tidak ditemukan, tampilkan pesan atau lakukan sesuatu yang sesuai
-            echo "File tidak ditemukan";
+            // Jika pengguna tidak ditemukan, set data pengguna ke null
+            $userData = null;
+        }
+
+        // Kembalikan data pengguna dalam format JSON
+        return json_encode($userData);
+    }
+
+    public function updateUser()
+    {
+        // Ambil data yang dikirim melalui AJAX
+        $userId = $this->request->getPost('id');
+        $fullName = $this->request->getPost('full_nama');
+        $userName = $this->request->getPost('user_nama');
+        $password = $this->request->getPost('user_password');
+
+        // Lakukan validasi data jika diperlukan
+
+        // Validasi password
+        if (!empty($password)) {
+            // Panjang minimal 8 karakter
+            if (strlen($password) < 8) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Password harus memiliki panjang minimal 8 karakter.']);
+            }
+
+            // Mengandung setidaknya satu huruf besar, satu huruf kecil, satu angka, dan satu karakter khusus
+            if (!preg_match('/[A-Z]/', $password)) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Password harus mengandung setidaknya satu huruf besar.']);
+            }
+
+            if (!preg_match('/[a-z]/', $password)) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Password harus mengandung setidaknya satu huruf kecil.']);
+            }
+
+            if (!preg_match('/[0-9]/', $password)) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Password harus mengandung setidaknya satu angka.']);
+            }
+
+            if (!preg_match('/[!@#$%^&*()\-_=+{};:,<.>]/', $password)) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Password harus mengandung setidaknya satu karakter khusus (!@#$%^&*()\-_=+{};:,<.>).']);
+            }
+        }
+
+        // Panggil model untuk mendapatkan data pengguna berdasarkan ID
+        $userModel = new UserModel();
+        $userData = $userModel->find($userId);
+
+        // Hash password baru menggunakan password_hash() PHP function
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $dataToUpdate = [
+            'full_nama' => $fullName,
+            'user_nama' => $userName,
+            'user_password' => $hashedPassword
+            // tambahkan kolom lainnya sesuai kebutuhan
+        ];
+
+        // Panggil model untuk melakukan pembaruan data
+        $updated = $userModel->update($userId, $dataToUpdate);
+
+        if ($updated) {
+            // Jika berhasil, kirim respon berhasil
+            return $this->response->setJSON(['status' => 'success']);
+        } else {
+            // Jika gagal, kirim respon gagal
+            return $this->response->setJSON(['status' => 'error']);
         }
     }
+
 
     public function update()
     {
@@ -152,41 +241,6 @@ class Pengaturan extends BaseController
         // Berikan respons jika diperlukan
         return $this->response->setJSON(['message' => 'Data berhasil diperbaharui']);
     }
-
-    public function backup()
-    {
-        try {
-            $tglSekarang = date('Y-m-d_H.i.s');
-            $dump = new Mysqldump('mysql:host=localhost;dbname=yky_pinjam;port=3306', 'root', '');
-            $dumpFile = 'database/backup/dbbackup-' . $tglSekarang . '.sql';
-            $dump->start($dumpFile);
-
-            // Mengukur ukuran file yang dihasilkan dalam byte
-            $ukuranFile = filesize($dumpFile);
-
-            // Menggunakan basename() untuk mendapatkan nama file tanpa folder
-            $namaFileTanpaFolder = basename($dumpFile);
-
-            // Setelah backup berhasil, simpan nama file dan ukuran file ke dalam database
-            $backupModel = new BackupModel();
-            $data = [
-                'nama_file' => $namaFileTanpaFolder,
-                'ukuran' => $ukuranFile, // Menyimpan ukuran file dalam byte
-            ];
-            $backupModel->insertBackup($data);
-
-            $pesan = "Backup Berhasil...";
-            session()->setFlashData('pesan', $pesan);
-
-            // Kembalikan nama file sebagai response JSON
-            return $this->response->setJSON(['nama_file' => $namaFileTanpaFolder, 'ukuran' => $ukuranFile]);
-        } catch (\Exception $e) {
-            $pesan = "mysqldump error-php error" . $e->getMessage();
-            session()->setFlashData('pesan', $pesan);
-            return redirect()->to('/data/pengaturan')->with('success', 'Data siswa berhasil diubah.');
-        }
-    }
-
 
     public function delete()
     {

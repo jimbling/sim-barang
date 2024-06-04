@@ -166,12 +166,14 @@ class PengembalianbarangModel extends Model
 
     public function generateKodeKembali()
     {
+        // Ambil nilai nilai_kode_pinjam dari database
+        $nilai_kode_kembali = $this->db->table('tbl_pengaturan')->select('nilai_kode_kembali')->get()->getRow()->nilai_kode_kembali;
         // Ganti getLastId() dengan getLastIdFromAngka() untuk mengambil last ID dari tbl_angka
         $lastId = $this->getLastIdFromAngka();
 
         // Menghasilkan kode kembali dengan format yang sesuai
         $nextId = $lastId + 1;
-        $kode_kembali = 'K-YKY-LAB-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+        $kode_kembali = $nilai_kode_kembali . '-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
 
         return $kode_kembali;
     }

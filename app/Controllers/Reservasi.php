@@ -250,8 +250,8 @@ class Reservasi extends BaseController
             // Update status_barang menjadi 1 pada tbl_barang
             $this->barangModel->update($barangId, ['status_barang' => 1]);
         }
-        // // Pengiriman email ke admin
-        // $this->kirimPesanWhatsApp($reservasiId);
+        // Pengiriman email ke admin
+        $this->kirimPesanWhatsApp($reservasiId);
         // JANGAN DULU DIAKTIFKAN SUPAYA NOMOR WA TIDAK TERBANNED
 
         // Redirect atau tampilkan pesan sukses
@@ -299,9 +299,53 @@ class Reservasi extends BaseController
     //     }
     // }
 
-    // API UNTUK KIRIM WA
+
+    private function kirimPesanWhatsApp($reservasiId)
+    {
+        $no_hp = $this->settingsService->getNomorHP();
+        // Ambil informasi reservasi berdasarkan ID
+        $reservasi = $this->reservasiModel->find($reservasiId);
+
+        // Lakukan pengecekan jika reservasi ditemukan
+        if ($reservasi) {
+            // Inisialisasi curl
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://api.jimbling.my.id/send-message',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => array(
+                    'number' => $no_hp, // Ganti dengan nomor yang sesuai
+                    'message' => '*Booking Alat Baru:*' . PHP_EOL .
+                        '* Nama Peminjam: ' . $reservasi['nama_peminjam'] . PHP_EOL .
+                        '* Nama Ruangan: ' . $reservasi['nama_ruangan'] . PHP_EOL .
+                        '* Nama Dosen: ' . $reservasi['nama_dosen'] . PHP_EOL .
+                        '* Keperluan: ' . $reservasi['keperluan'] . PHP_EOL .
+                        '* Tanggal Penggunaan: ' . $reservasi['tanggal_penggunaan'] . PHP_EOL .
+                        '* Tanggal Kembali: ' . $reservasi['tanggal_pengembalian'] . PHP_EOL .
+                        '*Login ke SIM-Barang Lab Keperawatan untuk menerima/menolak Booking Alat*' . PHP_EOL,
+                    'file_dikirim' => ''
+                ),
+            ));
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            echo $response;
+        }
+    }
+
+
+
+    // SCRIPT FONNTE
     // private function kirimPesanWhatsApp($reservasiId)
     // {
+    //     $no_hp = $this->settingsService->getNomorHP();
     //     // Ambil informasi reservasi berdasarkan ID
     //     $reservasi = $this->reservasiModel->find($reservasiId);
 
@@ -312,7 +356,7 @@ class Reservasi extends BaseController
 
     //         // Set konfigurasi curl
     //         curl_setopt_array($curl, array(
-    //             CURLOPT_URL => 'https://api.jimbling.my.id/send-message',
+    //             CURLOPT_URL => 'https://api.fonnte.com/send',
     //             CURLOPT_RETURNTRANSFER => true,
     //             CURLOPT_ENCODING => '',
     //             CURLOPT_MAXREDIRS => 10,
@@ -321,7 +365,7 @@ class Reservasi extends BaseController
     //             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     //             CURLOPT_CUSTOMREQUEST => 'POST',
     //             CURLOPT_POSTFIELDS => array(
-    //                 'target' => '088888888|Fonnte|Admin', // Ganti dengan nomor yang sesuai
+    //                 'target' => $no_hp, // Ganti dengan nomor yang sesuai
     //                 'message' => '*Booking Alat Baru:*' . PHP_EOL .
     //                     '* Nama Peminjam: ' . $reservasi['nama_peminjam'] . PHP_EOL .
     //                     '* Nama Ruangan: ' . $reservasi['nama_ruangan'] . PHP_EOL .
@@ -336,7 +380,7 @@ class Reservasi extends BaseController
     //                 'countryCode' => '62',
     //             ),
     //             CURLOPT_HTTPHEADER => array(
-    //                 'Authorization: SPBi11rrBPCGaA1jbP!w' // Ganti dengan token Anda dari Fonnte
+    //                 'Authorization: ijBAWQjcpCcZ!FJHg2ZN' // Ganti dengan token Anda dari Fonnte
     //             ),
     //         ));
 
@@ -360,6 +404,7 @@ class Reservasi extends BaseController
     //         }
     //     }
     // }
+    // SCRIPT FONNTE
 
 
     public function hapus($reservasiId)

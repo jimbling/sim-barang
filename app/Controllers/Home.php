@@ -20,6 +20,7 @@ use App\Models\PihakluarDetailModel;
 use App\Models\ReservasibarangModel;
 use App\Models\NotificationModel;
 use App\Models\AlertModel;
+use App\Models\PengeluaranmurniModel;
 
 
 class Home extends BaseController
@@ -106,6 +107,20 @@ class Home extends BaseController
             $jumlahDataByKeperluan[$keyword] = $peminjamanModel->getByKeperluanKeyword($keyword, $currentYear);
         }
 
+        $model = new PengeluaranmurniModel();
+
+        // Waktu 12 jam yang lalu dari sekarang
+        $waktu12JamLalu = date('Y-m-d H:i:s', strtotime('-12 hours'));
+
+        // Mencari data baru berdasarkan waktu pembuatan dalam 12 jam terakhir
+        $queryDataBaru = $model->where('created_at >', $waktu12JamLalu)->findAll();
+
+        // Mencari jumlah total data dalam database
+        $jumlahTotalData = $model->countAll();
+
+        // Jumlah data baru dalam 12 jam terakhir
+        $jumlahDataBaru = count($queryDataBaru);
+
         $data = [
             'judul' => "SIM Lab | $namaKampus",
             'currentYear' => $currentYear,
@@ -117,6 +132,7 @@ class Home extends BaseController
             'jumlah_barangBaik' => $jumlahBarangBaik,
             'jumlah_data_by_keperluan' => $jumlahDataByKeperluan,
             'jumlah_booking' => $dataBooking,
+            'bhp_baru' => $jumlahDataBaru,
             'keywords' => $keywords,
             'data_pinjamLuar' => $completeData,
             'alert' => $alertModel
@@ -194,5 +210,13 @@ class Home extends BaseController
         $data = $peminjamanModel->find($id); // Mengambil data berdasarkan ID
 
         return $this->response->setJSON($data); // Mengembalikan data dalam format JSON
+    }
+
+    public function tampilkanData()
+    {
+        session();
+        $model = new PengeluaranmurniModel();
+        $jumlahDataBaru = $model->hitungDataBaru();
+        return view('dashboard_admin', ['jumlahDataBaru' => $jumlahDataBaru]);
     }
 }
