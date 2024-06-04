@@ -107,6 +107,16 @@
                                             </div>
                                         </div>
 
+
+
+                                    </div>
+
+                                    <!-- Tambahkan form textarea -->
+                                    <div class="form-group" id="form-materi-pembelajaran" style="display:none;">
+                                        <label for="materi_pembelajaran" class="col-12 col-form-label">Materi Pembelajaran</label>
+                                        <div class="col-12">
+                                            <textarea class="form-control" id="materi_pembelajaran" name="materi_pembelajaran" rows="3" disabled></textarea>
+                                        </div>
                                     </div>
 
                                     <!-- Tambahkan script JavaScript -->
@@ -117,23 +127,33 @@
                                             const keperluanSelect = $('#pinjam_keperluan');
                                             const formPembelajaran = $('#form-pembelajaran');
                                             const pembelajaranSelect = $('#pembelajaran');
+                                            const formMateriPembelajaran = $('#form-materi-pembelajaran');
+                                            const materiPembelajaranTextarea = $('#materi_pembelajaran');
 
                                             keperluanSelect.change(function() {
                                                 const selectedValue = $(this).val();
                                                 if (selectedValue === 'Praktek Pembelajaran') {
                                                     formPembelajaran.show();
                                                     pembelajaranSelect.prop('disabled', false); // Aktifkan form pembelajaran
+                                                    formMateriPembelajaran.show();
+                                                    materiPembelajaranTextarea.prop('disabled', false); // Aktifkan form textarea
                                                 } else {
                                                     formPembelajaran.hide();
                                                     pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran
+                                                    formMateriPembelajaran.hide();
+                                                    materiPembelajaranTextarea.prop('disabled', true); // Nonaktifkan form textarea
                                                 }
                                             });
 
-                                            // Inisialisasi form select kedua
-                                            pembelajaranSelect.hide();
+                                            // Inisialisasi form select kedua dan textarea
+                                            formPembelajaran.hide();
                                             pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran awal
+                                            formMateriPembelajaran.hide();
+                                            materiPembelajaranTextarea.prop('disabled', true); // Nonaktifkan form textarea awal
                                         });
                                     </script>
+
+
 
 
                                     <div class="row">

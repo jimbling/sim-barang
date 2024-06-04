@@ -216,17 +216,21 @@ class Reservasi extends BaseController
             'tanggal_penggunaan' => $tanggalPenggunaan->format('Y-m-d H:i:s'), // Sesuaikan format yang sesuai dengan basis data
         ];
 
-        // Pilihan pertama
+        // Variabel yang berisi nilai dari form
         $keperluan = $this->request->getPost('keperluan');
-
-        // Pilihan kedua (jika terpilih)
         $pembelajaran = $this->request->getPost('pembelajaran');
+        $materiPembelajaran = $this->request->getPost('materi_pembelajaran');
 
-        // Gabungkan nilai dari pilihan pertama dan pilihan kedua (jika terpilih)
+        // Gabungkan semua nilai menjadi satu string dengan tanda pemisah "-"
+        $keperluan = $keperluan;
+
         if (!empty($pembelajaran)) {
             $keperluan .= ' - ' . $pembelajaran;
         }
 
+        if (!empty($materiPembelajaran)) {
+            $keperluan .= ' - ' . $materiPembelajaran;
+        }
         // Tambahkan nilai keperluan ke dalam data peminjaman
         $dataPeminjaman['keperluan'] = $keperluan;
 
