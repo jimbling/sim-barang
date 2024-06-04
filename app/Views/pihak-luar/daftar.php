@@ -50,7 +50,7 @@ $logo = $data_pengaturan['logo'];
         <div class="row">
             <div class="col-md-12 order-md-1">
                 <h4 class="mb-3">Data Peminjam</h4>
-                <form class="needs-validation" novalidate action="/pihakluar/simpan" method="post" id="tambahPinjamPihakLuar">
+                <form class="needs-validation" novalidate action="/pihakluar/simpan" method="post" enctype="multipart/form-data" id="tambahPinjamPihakLuar">
                     <input type="hidden" name="<?= csrf_token() ?>" value="<?= $csrfToken ?>">
                     <div class="row">
 
@@ -142,6 +142,33 @@ $logo = $data_pengaturan['logo'];
                         </select>
 
                     </div>
+                    <br>
+                    <div class="col">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 border-left-primary">
+                                <h6 class="m-0 font-weight-bold text-primary">Atur Kop Surat</h6>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="form-group row">
+                                    <label for="foto_siswa" class="col-sm-6 col-form-label">Upload Surat Permohonan Alat</label>
+                                    <div class="col-sm-12">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="surat_permohonan_alat" id="customFile" required>
+                                            <label class="custom-file-label" for="selectedFileName" id="selectedFileName">Pilih File Foto</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-fluid mb-3">
+                                    <img id="previewImage" src="#" alt="Preview Image" style="max-width: 100%; max-height: 200px; display: none;">
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
 
                     <hr class="mb-4">
                     <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="submitForm()">Ajukan Peminjaman Barang</button>
@@ -200,6 +227,38 @@ $logo = $data_pengaturan['logo'];
         function hideLoading() {
             Swal.close();
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const fileInput = document.querySelector("input[name='surat_permohonan_alat']");
+            const submitButton = document.querySelector("button[type='submit']");
+            const selectedFileName = document.querySelector("#selectedFileName");
+            const previewImage = document.querySelector("#previewImage");
+
+            fileInput.addEventListener("change", function() {
+                const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+                const fileName = this.files[0].name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+
+                if (allowedExtensions.includes(fileExtension)) {
+                    selectedFileName.textContent = fileName;
+                    previewImage.style.display = "block";
+                    previewImage.src = URL.createObjectURL(this.files[0]);
+                    submitButton.disabled = false;
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Jenis File Tidak Diijinkan!",
+                        text: "Anda hanya dapat mengimpor file dengan ekstensi .jpg, .jpeg, .png, atau .svg."
+                    });
+                    this.value = ''; // Clear the file input
+                    selectedFileName.textContent = "Pilih File Foto";
+                    previewImage.style.display = "none";
+                    submitButton.disabled = true;
+                }
+            });
+
+
+        });
 
         function submitForm() {
             // Validasi formulir menggunakan HTML5 Constraint Validation API

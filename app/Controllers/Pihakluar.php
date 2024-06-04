@@ -99,6 +99,22 @@ class Pihakluar extends BaseController
             ],
         ];
 
+        // Terapkan validasi untuk unggahan file
+        if (!$this->validate($validationRules, $validationMessages)) {
+            return redirect()->back()->withInput()->with('errorMessages', $this->validator->getErrors());
+        }
+
+        // Mengelola unggahan file
+        $fileSurat = $this->request->getFile('surat_permohonan_alat');
+
+        if ($fileSurat->isValid() && !$fileSurat->hasMoved()) {
+            // Simpan file ke direktori yang baru
+            $newFileName = $fileSurat->getRandomName();
+            $fileSurat->move(ROOTPATH . 'public/assets/dist/img/pihakluar', $newFileName);
+        } else {
+            // Jika ada kesalahan dalam proses unggah
+            return redirect()->back()->withInput()->with('errorMessages', ['File Surat Permohonan Alat gagal diunggah.']);
+        }
         if (!$this->validate($validationRules, $validationMessages)) {
             // Jika validasi gagal, kembalikan pesan error
             return redirect()->to(base_url('penerimaan/tambahBaru'))->withInput()->with('errorMessages', $this->validator->getErrors());
@@ -139,6 +155,7 @@ class Pihakluar extends BaseController
             'tanggal_pinjam' => $tanggalPinjam->format('Y-m-d'),
             'tanggal_kembali' => $tanggalKembali->format('Y-m-d'),
             'lama_pinjam' => $lamaPinjam,
+            'file_surat' => $newFileName, // Simpan nama file di database
         ];
 
         // Masukkan ID baru ke dalam data peminjaman

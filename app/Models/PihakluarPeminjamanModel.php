@@ -10,7 +10,7 @@ class PihakluarPeminjamanModel extends Model
     protected $primaryKey = 'id'; // Nama kolom primary key
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $useTimestamps = true; // Sesuaikan dengan kebutuhan Anda
-    protected $allowedFields = ['id', 'nama_peminjam', 'tanggal_pinjam', 'tanggal_kembali', 'kode_pinjam', 'nama_instansi', 'alamat_instansi', 'no_telp', 'email', 'no_invoice', 'created_at', 'updated_at'];
+    protected $allowedFields = ['id', 'nama_peminjam', 'tanggal_pinjam', 'tanggal_kembali', 'kode_pinjam', 'nama_instansi', 'alamat_instansi', 'no_telp', 'email', 'no_invoice', 'file_surat', 'created_at', 'updated_at'];
 
     public function getPihakluarPeminjaman()
     {
