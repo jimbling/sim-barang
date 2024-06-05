@@ -164,6 +164,7 @@
                     <th>Tempat Penggunaan</th>
                     <th>Keperluan</th>
                     <th>Nama Barang Yang Akan Dipinjam</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody class="table-border">
@@ -173,7 +174,7 @@
                 foreach ($data_reservasi as $peminjamanBarangDetail) :
                 ?>
                     <tr>
-                        <td style=" text-align: center; vertical-align: middle;"><?= $counter; ?></td>
+                        <td style="text-align: center; vertical-align: middle;"><?= $counter; ?></td>
                         <td style="text-align: center; vertical-align: middle;"><?= $peminjamanBarangDetail['nama_ruangan']; ?></td>
                         <td style="text-align: center; vertical-align: middle;"><?= $peminjamanBarangDetail['keperluan']; ?></td>
                         <td style="text-align: left;">
@@ -187,6 +188,9 @@
                                 $counter++;
                             }
                             ?>
+                        </td>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <input type="checkbox" name="barang[]" value="<?= $peminjamanBarangDetail['id_barang']; ?>">
                         </td>
                     </tr>
                 <?php

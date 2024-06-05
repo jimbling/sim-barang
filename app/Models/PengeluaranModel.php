@@ -182,28 +182,28 @@ class PengeluaranModel extends Model
 
     public function getDataByMonthAndYear($month, $year)
     {
-        return $this->select('tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam, tbl_peminjaman.keperluan, tbl_persediaan_barang.kode_barang, tbl_persediaan_barang.nama_barang, tbl_pengeluaran_persediaan.ambil_barang')
+        return $this->select('tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam, tbl_peminjaman.keperluan, tbl_persediaan_barang.kode_barang, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.satuan,tbl_pengeluaran_persediaan.ambil_barang')
             ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_pengeluaran_persediaan.peminjaman_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_pengeluaran_persediaan.barang_id')
             ->where('MONTH(tbl_peminjaman.tanggal_pinjam)', $month)
             ->where('YEAR(tbl_peminjaman.tanggal_pinjam)', $year)
-            ->groupBy(['tbl_peminjaman.id', 'tbl_peminjaman.tanggal_pinjam', 'tbl_peminjaman.kode_pinjam', 'tbl_peminjaman.nama_peminjam', 'tbl_peminjaman.keperluan',  'tbl_persediaan_barang.kode_barang', 'tbl_persediaan_barang.nama_barang', 'tbl_pengeluaran_persediaan.ambil_barang'])
+            ->groupBy(['tbl_peminjaman.id', 'tbl_peminjaman.tanggal_pinjam', 'tbl_peminjaman.kode_pinjam', 'tbl_peminjaman.nama_peminjam', 'tbl_peminjaman.keperluan',  'tbl_persediaan_barang.kode_barang', 'tbl_persediaan_barang.nama_barang', 'tbl_persediaan_barang.satuan', 'tbl_pengeluaran_persediaan.ambil_barang'])
             ->findAll();
     }
 
     public function getDataByYear($year)
     {
-        return $this->select('tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam, tbl_peminjaman.keperluan, tbl_persediaan_barang.kode_barang, tbl_persediaan_barang.nama_barang, tbl_pengeluaran_persediaan.ambil_barang')
+        return $this->select('tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam, tbl_peminjaman.keperluan, tbl_persediaan_barang.kode_barang, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.satuan, tbl_pengeluaran_persediaan.ambil_barang')
             ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_pengeluaran_persediaan.peminjaman_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_pengeluaran_persediaan.barang_id')
             ->where('YEAR(tbl_peminjaman.tanggal_pinjam)', $year)
-            ->groupBy(['tbl_peminjaman.id', 'tbl_peminjaman.tanggal_pinjam', 'tbl_peminjaman.kode_pinjam', 'tbl_peminjaman.nama_peminjam', 'tbl_peminjaman.keperluan', 'tbl_persediaan_barang.kode_barang', 'tbl_persediaan_barang.nama_barang', 'tbl_pengeluaran_persediaan.ambil_barang'])
+            ->groupBy(['tbl_peminjaman.id', 'tbl_peminjaman.tanggal_pinjam', 'tbl_peminjaman.kode_pinjam', 'tbl_peminjaman.nama_peminjam', 'tbl_peminjaman.keperluan', 'tbl_persediaan_barang.kode_barang', 'tbl_persediaan_barang.nama_barang', 'tbl_persediaan_barang.satuan', 'tbl_pengeluaran_persediaan.ambil_barang'])
             ->findAll();
     }
 
     public function getBarangDataByMonthAndYear($month, $year)
     {
-        return $this->select('tbl_pengeluaran_persediaan.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, SUM(tbl_pengeluaran_persediaan.ambil_barang) as ambil_barang')
+        return $this->select('tbl_pengeluaran_persediaan.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, tbl_persediaan_barang.satuan, SUM(tbl_pengeluaran_persediaan.ambil_barang) as ambil_barang')
             ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_pengeluaran_persediaan.peminjaman_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_pengeluaran_persediaan.barang_id')
             ->where('MONTH(tbl_peminjaman.tanggal_pinjam)', $month)
@@ -214,7 +214,7 @@ class PengeluaranModel extends Model
 
     public function getBarangDataByYear($year)
     {
-        return $this->select('tbl_pengeluaran_persediaan.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, SUM(tbl_pengeluaran_persediaan.ambil_barang) as ambil_barang')
+        return $this->select('tbl_pengeluaran_persediaan.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, tbl_persediaan_barang.harga_satuan, SUM(tbl_pengeluaran_persediaan.ambil_barang) as ambil_barang')
             ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_pengeluaran_persediaan.peminjaman_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_pengeluaran_persediaan.barang_id')
             ->where('YEAR(tbl_peminjaman.tanggal_pinjam)', $year)
@@ -224,7 +224,7 @@ class PengeluaranModel extends Model
 
     public function getAllBarangDataUntilYear($year)
     {
-        return $this->select('tbl_pengeluaran_persediaan.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, SUM(tbl_pengeluaran_persediaan.ambil_barang) as ambil_barang')
+        return $this->select('tbl_pengeluaran_persediaan.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, tbl_persediaan_barang.harga_satuan, SUM(tbl_pengeluaran_persediaan.ambil_barang) as ambil_barang')
             ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_pengeluaran_persediaan.peminjaman_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_pengeluaran_persediaan.barang_id')
             ->where('YEAR(tbl_peminjaman.tanggal_pinjam)<=', $year)

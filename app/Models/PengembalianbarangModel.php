@@ -9,37 +9,117 @@ class PengembalianbarangModel extends Model
     protected $table = 'tbl_riwayat_pengembalian';
     protected $primaryKey = 'id'; // Nama kolom primary key
     protected $useAutoIncrement = true; // Pastikan ini true
-    protected $allowedFields = ['id', 'peminjaman_id', 'kode_kembali', 'tanggal_kembali', 'keterangan', 'nama_barang'];
+    protected $allowedFields = ['id', 'peminjaman_id', 'barang_id', 'kode_kembali', 'tanggal_kembali', 'keterangan', 'nama_barang'];
+
+
+    public function savePengembalian($peminjamanId, $barangIds, $kodeKembali, $tanggalKembali, $keterangan)
+    {
+        // Mulai transaksi
+        $this->transStart();
+
+        // Simpan data pengembalian
+        $pengembalianData = [
+            'peminjaman_id' => $peminjamanId,
+            'kode_kembali' => $kodeKembali,
+            'tanggal_kembali' => $tanggalKembali,
+            'keterangan' => $keterangan
+        ];
+        $this->insert($pengembalianData);
+        $pengembalianId = $this->insertID(); // Mendapatkan ID dari pengembalian yang baru saja disimpan
+
+        // Simpan detail barang yang dipilih
+        foreach ($barangIds as $barangId) {
+            $detailData = [
+                'peminjaman_id' => $peminjamanId,
+                'barang_id' => $barangId,
+                'kode_kembali' => $kodeKembali,
+                'tanggal_kembali' => $tanggalKembali,
+                'keterangan' => $keterangan,
+
+            ];
+            $this->insert($detailData);
+        }
+
+        // Commit transaksi
+        $this->transComplete();
+    }
+
+    public function simpanPengembalianDanBarang($data, $barangIds)
+    {
+        $builder = $this->db->table($this->table);
+
+        // Mulai transaksi database
+        $this->db->transStart();
+
+        // Simpan data pengembalian barang
+        $builder->insert($data);
+
+        // Ambil ID pengembalian barang yang baru saja disimpan
+        $pengembalianId = $this->db->insertID();
+
+        // Simpan data barang yang dikembalikan
+        foreach ($barangIds as $barangId) {
+            $builder->insert([
+                'peminjaman_id' => $data['peminjaman_id'],
+                'barang_id' => $barangId,
+                'kode_kembali' => $data['kode_kembali'],
+                'tanggal_kembali' => $data['tanggal_kembali'],
+                'keterangan' => $data['keterangan']
+            ]);
+        }
+
+        // Selesaikan transaksi database
+        $this->db->transComplete();
+
+        // Kembalikan status transaksi
+        return $this->db->transStatus();
+    }
 
     public function getRiwayatPengembalianBarang($year, $userId = null)
     {
-        // Menentukan tabel dan kolom yang akan digunakan
-        $this->select('ROW_NUMBER() OVER() AS no, tbl_riwayat_pengembalian.id as riwayat_id, tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.kode_pinjam,tbl_peminjaman.user_id, tbl_peminjaman.nama_peminjam, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.keperluan, kode_kembali, tanggal_kembali, keterangan, nama_barang');
+        // Periksa apakah pengguna adalah admin
+        $isAdmin = $this->isAdmin($userId);
 
-        // Menggunakan metode join untuk menggabungkan tbl_riwayat_pengembalian dengan tbl_peminjaman
+        $this->select('ROW_NUMBER() OVER() AS no, 
+               tbl_riwayat_pengembalian.id as riwayat_id, 
+               tbl_peminjaman.id as peminjaman_id, 
+               tbl_peminjaman.kode_pinjam, 
+               tbl_peminjaman.user_id, 
+               tbl_peminjaman.nama_peminjam, 
+               tbl_peminjaman.tanggal_pinjam, 
+               tbl_peminjaman.keperluan, 
+               kode_kembali, 
+               tanggal_kembali, 
+               keterangan, 
+               tbl_barang.nama_barang,
+               tbl_barang.kode_barang'); // Memilih nama_barang dari tbl_barang
+
         $this->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_pengembalian.peminjaman_id');
+        $this->join('tbl_barang', 'tbl_barang.id = tbl_riwayat_pengembalian.barang_id'); // Join dengan tbl_barang
 
-        // Menambahkan orderBy untuk mengurutkan berdasarkan tanggal_kembali secara descending
         $this->orderBy('tanggal_kembali', 'DESC');
-
-        // Filter berdasarkan tahun
         $this->like('tanggal_kembali', $year, 'after');
 
-        // Jika $userId tidak null (pengguna bukan admin), filter berdasarkan user_id
-        if ($userId !== null) {
+        // Jika pengguna bukan admin, filter data berdasarkan user_id
+        if (!$isAdmin && $userId !== null) {
             $this->where('tbl_peminjaman.user_id', $userId);
         }
 
-        // Mengambil data yang dibutuhkan
         $result = $this->findAll();
 
         return $result;
     }
 
+
+    public function hapusBerdasarkanKodeKembali($kodeKembali)
+    {
+        return $this->where('kode_kembali', $kodeKembali)->delete();
+    }
+
     private function isAdmin($userId)
     {
         // Query ke database atau model untuk mendapatkan level pengguna berdasarkan user_id
-        $user = $this->db->table('tbl_users')->where('id', $userId)->get()->getRow();
+        $user = $this->db->table('tbl_user')->where('id', $userId)->get()->getRow();
 
         // Jika pengguna tidak ditemukan, atau level tidak ada, maka tidak dianggap sebagai admin
         if (!$user || !isset($user->level)) {

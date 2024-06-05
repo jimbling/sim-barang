@@ -125,7 +125,7 @@
                                     <?= $peminjaman['nama_barang']; ?>
                                 </td>
                                 <td style="text-align: left; vertical-align: middle; ">
-                                    <?= $peminjaman['ambil_barang']; ?>
+                                    <?= $peminjaman['ambil_barang']; ?> <?= $peminjaman['satuan']; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

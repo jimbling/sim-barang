@@ -203,6 +203,8 @@ $routes->post('/generate-kode-pinjam', 'Pengaturan::generateKodePinjam');
 $routes->get('backup/all', 'Pemeliharaan::getAllBackups');
 $routes->get('backup/latest', 'Pemeliharaan::getLatestBackups');
 
+$routes->get('/kembali/hapus_kode/(:segment)', 'Pengembalian::hapusKembaliKode/$1');
+
 
 
 

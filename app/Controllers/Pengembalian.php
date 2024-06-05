@@ -77,54 +77,35 @@ class Pengembalian extends BaseController
     {
         $pengembalianbarangModel = new PengembalianbarangModel();
         $namaKampus = $this->settingsService->getNamaKampus();
-
-        // Mengambil tahun dari inputan pengguna, jika tidak ada maka gunakan tahun saat ini
         $selectedYear = $this->request->getVar('tahun') ?? date('Y');
-
-        // Mengambil tahun-tahun unik dari tanggal_kembali di tabel
         $availableYears = $pengembalianbarangModel->getAvailableYears();
+        $userId = session()->get('id'); // Ambil userId dari sesi
+        $riwayatPengembalian = $this->pengembalianbarangModel->getRiwayatPengembalianBarang($selectedYear, $userId);
 
+        // Susun data berdasarkan kode_kembali
+        $groupedData = [];
+        foreach ($riwayatPengembalian as $riwayat) {
+            $kodeKembali = $riwayat['kode_kembali'];
+            $groupedData[$kodeKembali]['kode_kembali'] = $kodeKembali;
+            $groupedData[$kodeKembali]['nama_peminjam'] = $riwayat['nama_peminjam'];
+            $groupedData[$kodeKembali]['tanggal_pinjam'] = $riwayat['tanggal_pinjam'];
+            $groupedData[$kodeKembali]['tanggal_kembali'] = $riwayat['tanggal_kembali'];
+            $groupedData[$kodeKembali]['keperluan'] = $riwayat['keperluan'];
+            $groupedData[$kodeKembali]['riwayat'][] = [
+                'nama_barang' => $riwayat['nama_barang'],
+                'kode_barang' => $riwayat['kode_barang'] // Tambahkan kode_barang di sini
+            ];
+        }
 
         $data = [
             'judul' => "Daftar Pinjam | $namaKampus",
             'currentYear' => $selectedYear,
             'selectedYear' => $selectedYear,
             'availableYears' => $availableYears,
+            'groupedRiwayatPengembalian' => $groupedData, // Gunakan data yang telah dikelompokkan
         ];
 
-        // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
         return view('pengembalian/kembali_daftar', $data);
-    }
-
-    public function getRiwayatPengembalianBarang()
-    {
-        // Dapatkan user_id dan role dari sesi
-        $userId = session()->get('id');
-        $userRole = session()->get('level');
-
-        $requestData = $this->request->getVar();
-        $draw = isset($requestData['draw']) ? intval($requestData['draw']) : 1; // Menggunakan nilai default 1 jika 'draw' tidak ada
-        $year = $requestData['tahun'] ?? date('Y');
-
-        // Panggil metode untuk mendapatkan data riwayat peminjaman berdasarkan tahun
-        if ($userRole == 'Admin') {
-            // Jika pengguna adalah admin, tampilkan semua data tanpa filter user_id
-            $riwayatPengembalian = $this->pengembalianbarangModel->getRiwayatPengembalianBarang($year);
-        } else {
-            // Jika pengguna bukan admin, filter data berdasarkan user_id
-            $riwayatPengembalian = $this->pengembalianbarangModel->getRiwayatPengembalianBarang($year, $userId);
-        }
-
-        // Format data sesuai spesifikasi DataTables
-        $response = [
-            "draw" => $draw, // Menggunakan nilai 'draw' yang telah diperiksa
-            "recordsTotal" => count($riwayatPengembalian),
-            "recordsFiltered" => count($riwayatPengembalian), // Jumlah total data setelah filter (jika ada)
-            "data" => $riwayatPengembalian
-        ];
-
-        // Mengembalikan data dalam format JSON
-        return $this->response->setJSON($response);
     }
 
     public function addKembali()
@@ -151,10 +132,10 @@ class Pengembalian extends BaseController
 
     public function prosesPengembalian()
     {
-        // Ambil data dari formulir
+        // Membaca data dari form
         $peminjamanId = $this->request->getPost('peminjaman_id');
         $keterangan = $this->request->getPost('keterangan');
-        $nama_barang = $this->request->getPost('nama_barang');
+        $barangIds = $this->request->getPost('barang_id');
         $kode_kembali = $this->request->getPost('kode_kembali');
 
         // Dapatkan data peminjaman untuk mendapatkan nama_peminjam dan tanggal_pinjam
@@ -167,24 +148,31 @@ class Pengembalian extends BaseController
         }
 
         $nama_peminjam = $peminjamanData['nama_peminjam'];
-        $tanggal_pinjam = $peminjamanData['tanggal_pinjam'];
 
-        // Simpan data pengembalian ke dalam model
-        $pengembalianbarangModel = new PengembalianbarangModel();
-        $data = [
-            'peminjaman_id' => $peminjamanId,
-            'keterangan' => $keterangan,
-            'kode_kembali' => $kode_kembali,
-            'nama_barang' => $nama_barang,
-            'tanggal_kembali' => date('Y-m-d H:i:s'), // Tanggal dan waktu saat ini
-            'tanggal_pinjam' => $tanggal_pinjam // Tanggal pinjam dari data peminjaman
-        ];
-        $pengembalianbarangModel->insertPengembalianBarang($data);
+        // Menyiapkan data untuk disimpan
+        $dataToInsert = [];
+        foreach ($barangIds as $barangId) {
+            $dataToInsert[] = [
+                'peminjaman_id' => $peminjamanId,
+                'barang_id' => $barangId,
+                'kode_kembali' => $kode_kembali, // Anda perlu mengganti ini dengan cara yang sesuai
+                'tanggal_kembali' => date('Y-m-d H:i:s'), // Tanggal dan waktu saat ini
+                'keterangan' => $keterangan
+            ];
+        }
+
+        // Menyimpan data ke dalam database
+        $pengembalianModel = new PengembalianbarangModel();
+        $pengembalianModel->insertBatch($dataToInsert);
 
         // Update nilai pada tbl_angka
         $this->pengembalianbarangModel->updateIdAngka();
         // Hapus data peminjaman yang sesuai
-        $this->hapusPeminjaman($peminjamanId);
+        // Mendapatkan daftar barang_id yang dipilih dari checkbox
+        $barangIdsToDelete = $this->request->getPost('barang_id');
+
+        // Memanggil metode hapusPeminjaman yang berada di dalam kontroler
+        $this->hapusPeminjaman($peminjamanId, $barangIdsToDelete);
 
         setlocale(LC_TIME, 'id_ID'); // Atur lokal ke bahasa Indonesia
         $timestamp = time(); // Dapatkan waktu saat ini
@@ -195,14 +183,11 @@ class Pengembalian extends BaseController
 
         // Gunakan dalam pesan flash data
         session()->setFlashData('pesanAddPengembalian', 'Pengembalian berhasil dilakukan oleh ' . $nama_peminjam . ' pada tanggal ' . $tanggal_waktu . '.');
-        // Redirect atau lakukan operasi lainnya setelah penyimpanan dan penghapusan
+        // Redirect ke halaman tertentu
         return redirect()->to('/kembali/riwayat');
     }
 
-
-
-    // Tambahkan metode hapusPeminjaman
-    protected function hapusPeminjaman($peminjamanId)
+    protected function hapusPeminjaman($peminjamanId, $barangIdsToDelete)
     {
         // Membuat instance model
         $peminjamanbarangModel = new \App\Models\PeminjamanbarangModel();
@@ -212,7 +197,7 @@ class Pengembalian extends BaseController
 
         if ($data_peminjaman) {
             // Jika peminjaman ditemukan, panggil fungsi hapusByPeminjamanId untuk menghapus data terkait
-            $peminjamanbarangModel->hapusByPeminjamanId($peminjamanId);
+            $peminjamanbarangModel->hapusByPeminjamanId($peminjamanId, $barangIdsToDelete);
 
             // Set pesan flash data untuk sukses
             session()->setFlashData('pesanHapusPeminjaman', 'Data Peminjaman berhasil dihapus.');
@@ -221,6 +206,9 @@ class Pengembalian extends BaseController
             session()->setFlashData('error', 'Data peminjaman tidak ditemukan.');
         }
     }
+
+
+
 
     public function hapus($id)
     {
@@ -249,5 +237,13 @@ class Pengembalian extends BaseController
 
         session()->setFlashData('flashData', $flashData);
         return redirect()->to('/kembali/riwayat'); // Ganti dengan URL yang sesuai dengan rute Anda.
+    }
+
+    public function hapusKembaliKode($kodeKembali)
+    {
+        // Panggil metode model untuk melakukan penghapusan berdasarkan kode kembali
+        $this->pengembalianbarangModel->hapusBerdasarkanKodeKembali($kodeKembali);
+        // Redirect kembali ke halaman yang sesuai
+        return redirect()->to(base_url('kembali/riwayat'));
     }
 }

@@ -159,6 +159,10 @@ $logo = $data_pengaturan['logo'];
                                     </div>
                                 </div>
 
+                                <div class="container-fluid mb-3">
+                                    <img id="previewImage" src="#" alt="Preview Image" style="max-width: 500px; max-height: 500px; display: none;">
+                                </div>
+
 
 
                             </div>
@@ -229,28 +233,33 @@ $logo = $data_pengaturan['logo'];
             const fileInput = document.querySelector("input[name='surat_permohonan_alat']");
             const submitButton = document.querySelector("button[type='submit']");
             const selectedFileName = document.querySelector("#selectedFileName");
-
+            const previewImage = document.querySelector("#previewImage");
 
             fileInput.addEventListener("change", function() {
-                const allowedExtensions = ['pdf'];
-                const fileName = this.files[0].name;
+                const allowedExtensions = ['pdf', 'jpg', 'png', 'jpeg'];
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                const file = this.files[0];
+                const fileName = file.name;
+                const fileSize = file.size;
                 const fileExtension = fileName.split('.').pop().toLowerCase();
-                if (allowedExtensions.includes(fileExtension)) {
+
+                if (allowedExtensions.includes(fileExtension) && fileSize <= maxSize) {
                     selectedFileName.textContent = fileName;
+                    previewImage.style.display = "block";
+                    previewImage.src = URL.createObjectURL(this.files[0]);
                     submitButton.disabled = false;
                 } else {
                     Swal.fire({
                         icon: "error",
-                        title: "Jenis File Tidak Diijinkan!",
-                        text: "Anda hanya dapat mengimpor file dengan ekstensi .pdf"
+                        title: "Jenis File atau Ukuran Tidak Diijinkan!",
+                        text: "Anda hanya dapat mengimpor file dengan ekstensi .pdf, .jpg, .png, .jpeg dan ukuran maksimum 5MB"
                     });
                     this.value = ''; // Clear the file input
-                    selectedFileName.textContent = "Pilih File Surat Permohonan Alat (.pdf)";
+                    selectedFileName.textContent = "Pilih File Surat Permohonan Alat (.pdf, .jpg, .png, .jpeg)";
+                    previewImage.style.display = "none";
                     submitButton.disabled = true;
                 }
             });
-
-
         });
 
         function submitForm() {
@@ -284,6 +293,7 @@ $logo = $data_pengaturan['logo'];
             }, 2000); // Simulasi waktu proses (2 detik)
         }
     </script>
+
 
 </body>
 

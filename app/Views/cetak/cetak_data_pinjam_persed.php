@@ -149,25 +149,30 @@
                 $counter = 1; // Initialize a counter variable
 
                 foreach ($peminjamanBarangDetails as $peminjamanBarangDetail) :
+                    // Split the values by comma
+                    $barang_dipinjam_values = explode(',', $peminjamanBarangDetail['barang_dipinjam']);
+                    $item_counter = 1; // Initialize a counter for each item
                 ?>
                     <tr>
-                        <td style=" text-align: center; vertical-align: middle;"><?= $counter; ?></td>
-                        <td style="text-align: center; vertical-align: middle;"><?= $peminjamanBarangDetail['nama_ruangan']; ?></td>
-                        <td style="text-align: center; vertical-align: middle;"><?= $peminjamanBarangDetail['keperluan']; ?></td>
-                        <td style="text-align: left;">
+                        <td style="text-align: center; vertical-align: middle;">
+                            <?= $counter; ?>
+                        </td>
+                        <td style="text-align: center; vertical-align: middle;" class="narrow-column"><?= $peminjamanBarangDetail['nama_ruangan']; ?></td>
+                        <td style="text-align: center; vertical-align: middle;" class="narrow-column"><?= $peminjamanBarangDetail['keperluan']; ?></td>
+                        <td style="text-align: left; vertical-align: middle;">
+                            <?php foreach ($barang_dipinjam_values as $value) : ?>
+                                <?= $item_counter . '. ' . $value; ?>
+                                <!-- Objek kotak yang lebih besar -->
+                                <div class="large-checkbox"></div>
+                                <br>
+                                <hr style="margin: 2px 0;"> <!-- HR untuk memisahkan data -->
                             <?php
-                            // Split the values by comma
-                            $barang_dipinjam_values = explode(',', $peminjamanBarangDetail['barang_dipinjam']);
-
-                            // Loop through the values and display each on a new line
-                            foreach ($barang_dipinjam_values as $value) {
-                                echo $counter . '. ' . $value . "<br>";
-                                $counter++;
-                            }
-                            ?>
+                                $item_counter++; // Increment item counter
+                            endforeach; ?>
                         </td>
                     </tr>
                 <?php
+                    $counter++;
                 endforeach;
                 ?>
             </tbody>
@@ -175,54 +180,56 @@
 
 
         <br>
-        <div class="underlined-text mb-2">
-            <h5>
-                <strong>Daftar Permintaan Barang Persediaan Laboratorium: </strong>
-            </h5>
-        </div>
-        <table class="table table-border">
-            <thead>
-                <tr>
-                    <th>Pengeluaran ID</th>
-                    <th>Nama Barang</th>
-                    <th>Ambil Barang</th>
-                    <!-- Add other table headers here -->
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($groupedPengeluaran) && array_key_exists(0, $groupedPengeluaran)) : ?>
-                    <?php foreach ($groupedPengeluaran as $pengeluaran) : ?>
-                        <tr>
-                            <td style="text-align: center;"><?= $pengeluaran->id; ?></td>
-                            <td><?= $pengeluaran->nama_barang; ?></td>
-                            <td style="text-align: center;"><?= $pengeluaran->ambil_barang; ?></td>
-                            <!-- Add other table data here -->
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+        <div class="col page-break">
+            <div class="underlined-text mb-2 col page-break">
+                <h5>
+                    <strong>Daftar Permintaan Barang Persediaan Laboratorium: </strong>
+                </h5>
+            </div>
+            <table class="table table-border">
+                <thead>
                     <tr>
-                        <td colspan="3" style="text-align: center; font-weight: bold;">
-                            Tidak Ada Permintaan Penggunaan Barang Habis Pakai Laboratorium Keperawatan
+                        <th>Pengeluaran ID</th>
+                        <th>Nama Barang</th>
+                        <th>Ambil Barang</th>
+                        <!-- Add other table headers here -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($groupedPengeluaran) && array_key_exists(0, $groupedPengeluaran)) : ?>
+                        <?php foreach ($groupedPengeluaran as $pengeluaran) : ?>
+                            <tr>
+                                <td style="text-align: center;"><?= $pengeluaran->id; ?></td>
+                                <td><?= $pengeluaran->nama_barang; ?></td>
+                                <td style="text-align: center;"><?= $pengeluaran->ambil_barang; ?></td>
+                                <!-- Add other table data here -->
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="3" style="text-align: center; font-weight: bold;">
+                                Tidak Ada Permintaan Penggunaan Barang Habis Pakai Laboratorium Keperawatan
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2" style="text-align: center; font-weight: bold;">T O T A L</td>
+                        <td style="text-align: center; font-weight: bold;">
+                            <?php
+                            // Calculate totalAmbilBarang
+                            $totalAmbilBarang = 0;
+                            foreach ($groupedPengeluaran as $pengeluaran) {
+                                $totalAmbilBarang += (int)$pengeluaran->ambil_barang;
+                            }
+                            echo $totalAmbilBarang;
+                            ?>
                         </td>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2" style="text-align: center; font-weight: bold;">T O T A L</td>
-                    <td style="text-align: center; font-weight: bold;">
-                        <?php
-                        // Calculate totalAmbilBarang
-                        $totalAmbilBarang = 0;
-                        foreach ($groupedPengeluaran as $pengeluaran) {
-                            $totalAmbilBarang += (int)$pengeluaran->ambil_barang;
-                        }
-                        echo $totalAmbilBarang;
-                        ?>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
+        </div>
 
 
 
@@ -231,7 +238,7 @@
     </div>
 
 
-    <div class="container mt-2">
+    <div class="container mt-2 mb-2">
         <div class="row">
             <div class="col page-break">
                 <p> </p>
@@ -269,7 +276,11 @@
         </div>
     </div>
 
-
+    Informasi :
+    <p> Data barang yang sudah tercentang adalah barang yang sudah dikembalikan.
+    <div class="custom-textbox">
+        <span class="additional-info">Keterangan/Catatan Tambahan: </span>
+    </div>
 </body>
 
 </html>

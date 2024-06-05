@@ -150,6 +150,7 @@ class PenerimaanPersediaanModel extends Model
                 'barang_id' => $persediaan['barang_id'],
                 'jumlah_barang' => $jumlahDiambil,
                 'harga_satuan' => $persediaan['harga_satuan'],
+                'satuan' => $persediaan['satuan'],
                 'jumlah_harga' => $jumlahDiambil * $persediaan['harga_satuan'],
                 'diambil' => $jumlahDiambil,
                 'cek_stok' => $persediaan['cek_stok'],
@@ -204,28 +205,28 @@ class PenerimaanPersediaanModel extends Model
 
     public function getDataByMonthAndYear($month, $year)
     {
-        return $this->select('tbl_persediaan_penerimaan.id as penerimaan_id, tbl_persediaan_penerimaan.tanggal_penerimaan, tbl_persediaan_penerimaan.jenis_perolehan, tbl_persediaan_penerimaan.petugas, tbl_persediaan_barang.kode_barang, tbl_persediaan_barang.nama_barang, tbl_persediaan_penerimaan_detail.harga_satuan, tbl_persediaan_penerimaan_detail.jumlah_barang, tbl_persediaan_penerimaan_detail.jumlah_harga')
+        return $this->select('tbl_persediaan_penerimaan.id as penerimaan_id, tbl_persediaan_penerimaan.tanggal_penerimaan, tbl_persediaan_penerimaan.jenis_perolehan, tbl_persediaan_penerimaan.petugas, tbl_persediaan_barang.kode_barang, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.satuan, tbl_persediaan_penerimaan_detail.harga_satuan, tbl_persediaan_penerimaan_detail.jumlah_barang, tbl_persediaan_penerimaan_detail.jumlah_harga')
             ->join('tbl_persediaan_penerimaan', 'tbl_persediaan_penerimaan.id = tbl_persediaan_penerimaan_detail.penerimaan_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_persediaan_penerimaan_detail.barang_id')
             ->where('MONTH(tbl_persediaan_penerimaan.tanggal_penerimaan)', $month)
             ->where('YEAR(tbl_persediaan_penerimaan.tanggal_penerimaan)', $year)
-            ->groupBy(['tbl_persediaan_penerimaan.id', 'tbl_persediaan_penerimaan.tanggal_penerimaan', 'tbl_persediaan_penerimaan.jenis_perolehan', 'tbl_persediaan_penerimaan.petugas', 'tbl_persediaan_barang.kode_barang', 'tbl_persediaan_barang.nama_barang', 'tbl_persediaan_penerimaan_detail.harga_satuan', 'tbl_persediaan_penerimaan_detail.jumlah_barang', 'tbl_persediaan_penerimaan_detail.jumlah_harga'])
+            ->groupBy(['tbl_persediaan_penerimaan.id', 'tbl_persediaan_penerimaan.tanggal_penerimaan', 'tbl_persediaan_penerimaan.jenis_perolehan', 'tbl_persediaan_penerimaan.petugas', 'tbl_persediaan_barang.kode_barang', 'tbl_persediaan_barang.nama_barang', 'tbl_persediaan_barang.satuan', 'tbl_persediaan_penerimaan_detail.harga_satuan', 'tbl_persediaan_penerimaan_detail.jumlah_barang', 'tbl_persediaan_penerimaan_detail.jumlah_harga'])
             ->findAll();
     }
 
     public function getDataBYear($year)
     {
-        return $this->select('tbl_persediaan_penerimaan.id as penerimaan_id, tbl_persediaan_penerimaan.tanggal_penerimaan, tbl_persediaan_penerimaan.jenis_perolehan, tbl_persediaan_penerimaan.petugas, tbl_persediaan_barang.kode_barang, tbl_persediaan_barang.nama_barang, tbl_persediaan_penerimaan_detail.harga_satuan, tbl_persediaan_penerimaan_detail.jumlah_barang, tbl_persediaan_penerimaan_detail.jumlah_harga')
+        return $this->select('tbl_persediaan_penerimaan.id as penerimaan_id, tbl_persediaan_penerimaan.tanggal_penerimaan, tbl_persediaan_penerimaan.jenis_perolehan, tbl_persediaan_penerimaan.petugas, tbl_persediaan_barang.kode_barang, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.satuan,tbl_persediaan_penerimaan_detail.harga_satuan, tbl_persediaan_penerimaan_detail.jumlah_barang, tbl_persediaan_penerimaan_detail.jumlah_harga')
             ->join('tbl_persediaan_penerimaan', 'tbl_persediaan_penerimaan.id = tbl_persediaan_penerimaan_detail.penerimaan_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_persediaan_penerimaan_detail.barang_id')
             ->where('YEAR(tbl_persediaan_penerimaan.tanggal_penerimaan)', $year)
-            ->groupBy(['tbl_persediaan_penerimaan.id', 'tbl_persediaan_penerimaan.tanggal_penerimaan', 'tbl_persediaan_penerimaan.jenis_perolehan', 'tbl_persediaan_penerimaan.petugas', 'tbl_persediaan_barang.kode_barang', 'tbl_persediaan_barang.nama_barang', 'tbl_persediaan_penerimaan_detail.harga_satuan', 'tbl_persediaan_penerimaan_detail.jumlah_barang', 'tbl_persediaan_penerimaan_detail.jumlah_harga'])
+            ->groupBy(['tbl_persediaan_penerimaan.id', 'tbl_persediaan_penerimaan.tanggal_penerimaan', 'tbl_persediaan_penerimaan.jenis_perolehan', 'tbl_persediaan_penerimaan.petugas', 'tbl_persediaan_barang.kode_barang', 'tbl_persediaan_barang.nama_barang', 'tbl_persediaan_barang.satuan', 'tbl_persediaan_penerimaan_detail.harga_satuan', 'tbl_persediaan_penerimaan_detail.jumlah_barang', 'tbl_persediaan_penerimaan_detail.jumlah_harga'])
             ->findAll();
     }
 
     public function getBarangDataByMonthAndYear($month, $year)
     {
-        return $this->select('tbl_persediaan_penerimaan_detail.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, SUM(tbl_persediaan_penerimaan_detail.jumlah_barang) as jumlah_barang')
+        return $this->select('tbl_persediaan_penerimaan_detail.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, tbl_persediaan_barang.satuan,SUM(tbl_persediaan_penerimaan_detail.jumlah_barang) as jumlah_barang')
             ->join('tbl_persediaan_penerimaan', 'tbl_persediaan_penerimaan.id = tbl_persediaan_penerimaan_detail.penerimaan_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_persediaan_penerimaan_detail.barang_id')
             ->where('MONTH(tbl_persediaan_penerimaan.tanggal_penerimaan)', $month)
@@ -236,7 +237,7 @@ class PenerimaanPersediaanModel extends Model
 
     public function getBarangDataByYear($year)
     {
-        return $this->select('tbl_persediaan_penerimaan_detail.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, SUM(tbl_persediaan_penerimaan_detail.jumlah_barang) as jumlah_barang')
+        return $this->select('tbl_persediaan_penerimaan_detail.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan,tbl_persediaan_barang.satuan, SUM(tbl_persediaan_penerimaan_detail.jumlah_barang) as jumlah_barang')
             ->join('tbl_persediaan_penerimaan', 'tbl_persediaan_penerimaan.id = tbl_persediaan_penerimaan_detail.penerimaan_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_persediaan_penerimaan_detail.barang_id')
             ->where('YEAR(tbl_persediaan_penerimaan.tanggal_penerimaan)', $year)
@@ -246,7 +247,7 @@ class PenerimaanPersediaanModel extends Model
 
     public function getAllBarangDataUntilYear($year)
     {
-        return $this->select('tbl_persediaan_penerimaan_detail.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, SUM(tbl_persediaan_penerimaan_detail.jumlah_barang) as jumlah_barang')
+        return $this->select('tbl_persediaan_penerimaan_detail.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, tbl_persediaan_barang.satuan, SUM(tbl_persediaan_penerimaan_detail.jumlah_barang) as jumlah_barang')
             ->join('tbl_persediaan_penerimaan', 'tbl_persediaan_penerimaan.id = tbl_persediaan_penerimaan_detail.penerimaan_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_persediaan_penerimaan_detail.barang_id')
             ->where('YEAR(tbl_persediaan_penerimaan.tanggal_penerimaan) <=', $year)

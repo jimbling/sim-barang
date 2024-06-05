@@ -144,29 +144,33 @@ class PeminjamanbarangModel extends Model
         return $this->find($id);
     }
 
-    public function hapusByPeminjamanId($peminjamanId)
+    public function hapusByPeminjamanId($peminjamanId, $barangIdsToDelete)
     {
-        // Ambil data barang_id yang terkait dengan peminjaman_id
-        $barangIds = $this->select('barang_id')->where('peminjaman_id', $peminjamanId)->findAll();
+        // Ambil model Barang
+        $barangModel = new \App\Models\BarangModel();
 
-        // Pindahkan data ke tbl_riwayat_peminjaman
-        $riwayatpeminjamanModel = new \App\Models\RiwayatPeminjamanModel();
-        foreach ($barangIds as $barangId) {
-            $riwayatData = [
-                'peminjaman_id' => $peminjamanId,
-                'barang_id' => $barangId['barang_id'],
+        // Periksa apakah masih ada barang tersisa dalam peminjaman
+        $remainingBarangIds = $this->select('barang_id')->where('peminjaman_id', $peminjamanId)->findAll();
+        $remainingBarangIds = array_column($remainingBarangIds, 'barang_id');
 
-            ];
-            $riwayatpeminjamanModel->insertRiwayatPeminjaman($riwayatData);
+        // Ambil daftar barang yang akan dihapus dan yang akan tetap ada
+        $barangIdsToKeep = array_diff($remainingBarangIds, $barangIdsToDelete);
+        $barangIdsToDelete = array_intersect($remainingBarangIds, $barangIdsToDelete);
+
+        // Ubah status_barang menjadi 0 pada barang-barang yang akan dihapus
+        $barangModel->whereIn('id', $barangIdsToDelete)->set(['status_barang' => 0])->update();
+
+        // Hapus data pada tabel tbl_peminjaman_barang berdasarkan peminjaman_id dan barang_ids yang ingin dihapus
+        $this->whereIn('barang_id', $barangIdsToDelete)->where('peminjaman_id', $peminjamanId)->delete();
+
+        // Jika masih ada barang tersisa dalam peminjaman
+        if (!empty($barangIdsToKeep)) {
+            // Perbarui status untuk barang-barang yang masih tersisa
+            $barangModel->whereIn('id', $barangIdsToKeep)->set(['status_barang' => 1])->update();
+        } else {
+            // Jika tidak ada barang tersisa dalam peminjaman, hapus juga entri peminjaman itu sendiri
+            $this->where('peminjaman_id', $peminjamanId)->delete();
         }
-
-        // Ubah status_barang menjadi 0 pada tabel tbl_barang untuk setiap barang_id
-        foreach ($barangIds as $barangId) {
-            $this->db->table('tbl_barang')->set('status_barang', 0)->where('id', $barangId['barang_id'])->update();
-        }
-
-        // Hapus data pada tabel tbl_peminjaman_barang berdasarkan peminjaman_id
-        return $this->where('peminjaman_id', $peminjamanId)->delete();
     }
 
     public function hapusDataPeminjaman($peminjamanId)

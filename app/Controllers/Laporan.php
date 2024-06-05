@@ -461,6 +461,8 @@ class Laporan extends BaseController
         // Menghitung stok barang
         $stockData = $this->calculateStock($combinedData);
 
+
+
         $data = [
             'judul' => 'Laporan Peminjaman | Akper "YKY" Yogyakarta',
             'currentYear' => $currentYear,
@@ -618,6 +620,8 @@ class Laporan extends BaseController
             $combinedData[$barangId]['jumlah_barang'] = $penerimaan['jumlah_barang'];
             $combinedData[$barangId]['ambil_barang'] = 0; // Set nilai default 0
             $combinedData[$barangId]['ambil_barang_murni'] = 0; // Set nilai default 0
+            // Tambahkan informasi satuan barang ke dalam array combinedData
+            $combinedData[$barangId]['satuan'] = $penerimaan['satuan']; // Anda harus memastikan bahwa informasi satuan tersedia dalam $penerimaanData
         }
 
         // Menggabungkan data pengeluaran
@@ -631,6 +635,8 @@ class Laporan extends BaseController
                 $combinedData[$barangId]['jumlah_barang'] = 0;
                 $combinedData[$barangId]['ambil_barang'] = 0;
                 $combinedData[$barangId]['ambil_barang_murni'] = 0;
+                // Tambahkan informasi satuan barang ke dalam array combinedData
+                $combinedData[$barangId]['satuan'] = $pengeluaran['satuan']; // Anda harus memastikan bahwa informasi satuan tersedia dalam $pengeluaranData
             }
 
             $combinedData[$barangId]['ambil_barang'] += $pengeluaran['ambil_barang'];
@@ -646,6 +652,8 @@ class Laporan extends BaseController
                 $combinedData[$barangId]['harga_satuan'] = $pengeluaranMurni['harga_satuan'];
                 $combinedData[$barangId]['jumlah_barang'] = 0;
                 $combinedData[$barangId]['ambil_barang'] = 0;
+                // Tambahkan informasi satuan barang ke dalam array combinedData
+                $combinedData[$barangId]['satuan'] = $pengeluaranMurni['satuan']; // Anda harus memastikan bahwa informasi satuan tersedia dalam $pengeluaranMurniData
             }
 
             $combinedData[$barangId]['ambil_barang'] += $pengeluaranMurni['ambil_barang_murni'];
@@ -653,6 +661,7 @@ class Laporan extends BaseController
 
         return $combinedData;
     }
+
 
 
 
@@ -669,6 +678,7 @@ class Laporan extends BaseController
                 'barang_id' => $barangData['barang_id'],
                 'nama_barang' => $barangData['nama_barang'],
                 'harga_satuan' => $barangData['harga_satuan'],
+                'satuan' => $barangData['satuan'],
                 'stok_barang' => $stokBarang,
             ];
         }

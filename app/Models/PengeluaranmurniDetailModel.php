@@ -100,28 +100,28 @@ class PengeluaranmurniDetailModel extends Model
 
     public function getDataByMonthAndYear($month, $year)
     {
-        return $this->select('tbl_pengeluaran_murni.id as pengguna_id, tbl_pengeluaran_murni.tanggal_penggunaan,  tbl_pengeluaran_murni.nama_pengguna_barang, tbl_pengeluaran_murni.keperluan,  tbl_persediaan_barang.nama_barang, tbl_pengeluaran_murni_detail.ambil_barang_murni')
+        return $this->select('tbl_pengeluaran_murni.id as pengguna_id, tbl_pengeluaran_murni.tanggal_penggunaan,  tbl_pengeluaran_murni.nama_pengguna_barang, tbl_pengeluaran_murni.keperluan,  tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.satuan, tbl_pengeluaran_murni_detail.ambil_barang_murni')
             ->join('tbl_pengeluaran_murni', 'tbl_pengeluaran_murni.id = tbl_pengeluaran_murni_detail.pengguna_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_pengeluaran_murni_detail.barang_id')
             ->where('MONTH(tbl_pengeluaran_murni.tanggal_penggunaan)', $month)
             ->where('YEAR(tbl_pengeluaran_murni.tanggal_penggunaan)', $year)
-            ->groupBy(['tbl_pengeluaran_murni.id', 'tbl_pengeluaran_murni.tanggal_penggunaan', 'tbl_pengeluaran_murni.nama_pengguna_barang', 'tbl_pengeluaran_murni.keperluan', 'tbl_persediaan_barang.nama_barang', 'tbl_pengeluaran_murni_detail.ambil_barang_murni'])
+            ->groupBy(['tbl_pengeluaran_murni.id', 'tbl_pengeluaran_murni.tanggal_penggunaan', 'tbl_pengeluaran_murni.nama_pengguna_barang', 'tbl_pengeluaran_murni.keperluan', 'tbl_persediaan_barang.nama_barang', 'tbl_persediaan_barang.satuan', 'tbl_pengeluaran_murni_detail.ambil_barang_murni'])
             ->findAll();
     }
 
     public function getDataByYear($year)
     {
-        return $this->select('tbl_pengeluaran_murni.id as pengguna_id, tbl_pengeluaran_murni.tanggal_penggunaan, tbl_pengeluaran_murni.nama_pengguna_barang, tbl_pengeluaran_murni.keperluan,  tbl_persediaan_barang.nama_barang, tbl_pengeluaran_murni_detail.ambil_barang_murni')
+        return $this->select('tbl_pengeluaran_murni.id as pengguna_id, tbl_pengeluaran_murni.tanggal_penggunaan, tbl_pengeluaran_murni.nama_pengguna_barang, tbl_pengeluaran_murni.keperluan,  tbl_persediaan_barang.nama_barang,  tbl_persediaan_barang.satuan, tbl_pengeluaran_murni_detail.ambil_barang_murni')
             ->join('tbl_pengeluaran_murni', 'tbl_pengeluaran_murni.id = tbl_pengeluaran_murni_detail.pengguna_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_pengeluaran_murni_detail.barang_id')
             ->where('YEAR(tbl_pengeluaran_murni.tanggal_penggunaan)', $year)
-            ->groupBy(['tbl_pengeluaran_murni.id', 'tbl_pengeluaran_murni.tanggal_penggunaan', 'tbl_pengeluaran_murni.nama_pengguna_barang', 'tbl_pengeluaran_murni.keperluan',  'tbl_persediaan_barang.nama_barang', 'tbl_pengeluaran_murni_detail.ambil_barang_murni'])
+            ->groupBy(['tbl_pengeluaran_murni.id', 'tbl_pengeluaran_murni.tanggal_penggunaan', 'tbl_pengeluaran_murni.nama_pengguna_barang', 'tbl_pengeluaran_murni.keperluan',  'tbl_persediaan_barang.nama_barang', 'tbl_persediaan_barang.satuan', 'tbl_pengeluaran_murni_detail.ambil_barang_murni'])
             ->findAll();
     }
 
     public function getBarangDataByMonthAndYear($month, $year)
     {
-        return $this->select('tbl_pengeluaran_murni_detail.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, SUM(tbl_pengeluaran_murni_detail.ambil_barang_murni) as ambil_barang_murni')
+        return $this->select('tbl_pengeluaran_murni_detail.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, tbl_persediaan_barang.satuan, SUM(tbl_pengeluaran_murni_detail.ambil_barang_murni) as ambil_barang_murni')
             ->join('tbl_pengeluaran_murni', 'tbl_pengeluaran_murni.id = tbl_pengeluaran_murni_detail.pengguna_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_pengeluaran_murni_detail.barang_id')
             ->where('MONTH(tbl_pengeluaran_murni.tanggal_penggunaan)', $month)
@@ -132,7 +132,7 @@ class PengeluaranmurniDetailModel extends Model
 
     public function getBarangDataByYear($year)
     {
-        return $this->select('tbl_pengeluaran_murni_detail.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, SUM(tbl_pengeluaran_murni_detail.ambil_barang_murni) as ambil_barang_murni')
+        return $this->select('tbl_pengeluaran_murni_detail.barang_id, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.harga_satuan, tbl_persediaan_barang.satuan, SUM(tbl_pengeluaran_murni_detail.ambil_barang_murni) as ambil_barang_murni')
             ->join('tbl_pengeluaran_murni', 'tbl_pengeluaran_murni.id = tbl_pengeluaran_murni_detail.pengguna_id')
             ->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_pengeluaran_murni_detail.barang_id')
             ->where('YEAR(tbl_pengeluaran_murni.tanggal_penggunaan)', $year)

@@ -168,4 +168,18 @@ $(function() {
       });
   }
 
+  if (window.location.pathname === '/kembali/riwayat') {
+
+    $('#daftarRiwayatPengembalian').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": false,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+        "serverSide": false,
+    });
+}
+
 });

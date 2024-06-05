@@ -109,7 +109,7 @@
                                 <td><?= $row['kode_barang']; ?></td>
                                 <td><?= $row['nama_barang']; ?></td>
                                 <td>Rp. <?= number_format($row['harga_satuan'], 0, ',', '.'); ?></td>
-                                <td><?= $row['jumlah_barang']; ?></td>
+                                <td><?= $row['jumlah_barang']; ?> <?= $row['satuan']; ?></td>
                                 <td>Rp. <?= number_format($row['jumlah_harga'], 0, ',', '.'); ?></td>
                             </tr>
 

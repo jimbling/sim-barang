@@ -107,7 +107,7 @@
                                     <?= $pengeluaranMurniBT['nama_barang']; ?>
                                 </td>
                                 <td style="text-align: left; vertical-align: middle; ">
-                                    <?= $pengeluaranMurniBT['ambil_barang_murni']; ?>
+                                    <?= $pengeluaranMurniBT['ambil_barang_murni']; ?> <?= $pengeluaranMurniBT['satuan']; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

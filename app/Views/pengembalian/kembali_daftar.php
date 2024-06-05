@@ -3,7 +3,7 @@
     /* CSS untuk mengatur ukuran font menjadi 13px */
     .table td,
     .table th {
-        font-size: 13px;
+        font-size: 14px;
     }
 </style>
 <div class="content-wrapper">
@@ -65,24 +65,58 @@
                                     </select>
                                 </form>
                             <?php endif; ?>
-                            <table id="daftarRiwayatPengembalian" class="table table-striped table-responsive table-sm table-hover">
-                                <thead class="thead-dark" style="font-size: 13px;">
+                            <table id="daftarRiwayatPengembalian" class="table table-striped table-sm table-hover">
+                                <thead class="thead-dark" style="font-size: 14px;">
                                     <tr>
                                         <th width='3%'>No</th>
                                         <th style="text-align: center; font-size: 13px;">Kode Kembali</th>
                                         <th style="text-align: center; font-size: 13px;">Nama Peminjam</th>
-                                        <th style="text-align: center; font-size: 13px;">Tanggal Pinjam</th>
-                                        <th style="text-align: center; font-size: 13px;">Tanggal Kembali</th>
+                                        <th style="text-align: center; font-size: 13px;">Tanggal</th>
                                         <th style="text-align: center; font-size: 13px;">Digunakan untuk</th>
                                         <th style="text-align: center; font-size: 13px;">Nama Barang</th>
                                         <th style="text-align: center; font-size: 13px;">AKSI</th>
                                     </tr>
                                 </thead>
-                                <div id="alertContainer" class="mt-3"></div>
                                 <tbody>
-
+                                    <?php
+                                    $counter = 1;
+                                    $bulanIndonesia = array(
+                                        'January' => 'Januari',
+                                        'February' => 'Februari',
+                                        'March' => 'Maret',
+                                        'April' => 'April',
+                                        'May' => 'Mei',
+                                        'June' => 'Juni',
+                                        'July' => 'Juli',
+                                        'August' => 'Agustus',
+                                        'September' => 'September',
+                                        'October' => 'Oktober',
+                                        'November' => 'November',
+                                        'December' => 'Desember'
+                                    );
+                                    ?>
+                                    <?php foreach ($groupedRiwayatPengembalian as $kodeKembali => $riwayat) : ?>
+                                        <?php $counterRow = 1; ?>
+                                        <tr>
+                                            <td><?= $counter++ ?></td>
+                                            <td><?= $riwayat['kode_kembali'] ?></td>
+                                            <td><?= explode('-', $riwayat['nama_peminjam'])[1] ?></td>
+                                            <td width='10%'>
+                                                <div class="badge bg-olive">Pinjam:<br><?= date('d', strtotime($riwayat['tanggal_pinjam'])) ?> <?= $bulanIndonesia[date('F', strtotime($riwayat['tanggal_pinjam']))] ?> <?= date('Y - H:i', strtotime($riwayat['tanggal_pinjam'])) ?> WIB</div><br>
+                                                <div class="badge bg-orange"> Kembali:<br><?= date('d', strtotime($riwayat['tanggal_kembali'])) ?> <?= $bulanIndonesia[date('F', strtotime($riwayat['tanggal_kembali']))] ?> <?= date('Y - H:i', strtotime($riwayat['tanggal_kembali'])) ?> WIB</div>
+                                            </td>
+                                            <td width='20%'><?= $riwayat['keperluan'] ?></td>
+                                            <td style="text-align: left; vertical-align: middle;">
+                                                <?php foreach ($riwayat['riwayat'] as $barang) : ?>
+                                                    <div><?= $counterRow++ ?>. <?= $barang['nama_barang'] ?> - <?= $barang['kode_barang'] ?></div>
+                                                <?php endforeach; ?>
+                                            </td>
+                                            <td>
+                                                <a href="<?= base_url('kembali/hapus_kode/' . $riwayat['kode_kembali']) ?>" class="btn btn-xs btn-danger mx-auto text-white" id="hapusButton">Hapus</a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
@@ -95,22 +129,6 @@
 
 
 
-<aside class="control-sidebar control-sidebar-dark">
-
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
-
-
-<aside class="control-sidebar control-sidebar-dark">
-
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
 
 
 <script>
@@ -190,115 +208,6 @@
     }
 </script>
 
-<script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
-<script>
-    $(document).ready(function() {
-        var table = $('#daftarRiwayatPengembalian').DataTable({
-            "processing": true,
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": false,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "ajax": {
-                "url": "<?= base_url('pengembalian/fetchData') ?>",
-                "type": "POST",
-                "data": function(d) {
-                    d.tahun = $('#tahun').val(); // Mengirim data filter ke server
-                }
-            },
-            "columns": [{
-                    "data": "no"
-                },
-                {
-                    "data": "kode_kembali"
-                },
-                {
-                    "data": "nama_peminjam"
-                },
-                {
-                    "data": "tanggal_pinjam",
-                    "render": function(data, type, row) {
-                        var tanggal = new Date(data);
-                        var bulan = {
-                            'January': 'Januari',
-                            'February': 'Februari',
-                            'March': 'Maret',
-                            'April': 'April',
-                            'May': 'Mei',
-                            'June': 'Juni',
-                            'July': 'Juli',
-                            'August': 'Agustus',
-                            'September': 'September',
-                            'October': 'Oktober',
-                            'November': 'November',
-                            'December': 'Desember',
-                        };
-                        var namaBulan = bulan[tanggal.toLocaleString('en-us', {
-                            month: 'long'
-                        })];
-                        var waktu = tanggal.getDate() + ' ' + namaBulan + ' ' + tanggal.getFullYear() + ' - ' + ('0' + tanggal.getHours()).slice(-2) + ':' + ('0' + tanggal.getMinutes()).slice(-2) + ' WIB';
-                        return waktu;
-                    }
-                },
-                {
-                    "data": "tanggal_kembali",
-                    "render": function(data, type, row) {
-                        var tanggal = new Date(data);
-                        var bulan = {
-                            'January': 'Januari',
-                            'February': 'Februari',
-                            'March': 'Maret',
-                            'April': 'April',
-                            'May': 'Mei',
-                            'June': 'Juni',
-                            'July': 'Juli',
-                            'August': 'Agustus',
-                            'September': 'September',
-                            'October': 'Oktober',
-                            'November': 'November',
-                            'December': 'Desember',
-                        };
-                        var namaBulan = bulan[tanggal.toLocaleString('en-us', {
-                            month: 'long'
-                        })];
-                        var waktu = tanggal.getDate() + ' ' + namaBulan + ' ' + tanggal.getFullYear() + ' - ' + ('0' + tanggal.getHours()).slice(-2) + ':' + ('0' + tanggal.getMinutes()).slice(-2) + ' WIB';
-                        return waktu;
-                    }
-                },
-                {
-                    "data": "keperluan"
-                },
-                {
-                    "data": "nama_barang",
-                    "className": "text-left",
-                    "render": function(data, type, row) {
-                        var barangs = data.split(',');
-                        var html = '';
-                        barangs.forEach(function(barang, index) {
-                            html += (index + 1) + '. ' + barang + '<br>';
-                        });
-                        return html;
-                    }
-                },
-                {
-                    "data": null,
-                    "className": "text-center",
-                    "render": function(data, type, row) {
-                        return '<a onclick="hapus_data(' + row.riwayat_id + ')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>';
-                    }
-                }
-            ],
-            "rowCallback": function(row, data, index) {
-                var pageInfo = table.page.info();
-                $('td:eq(0)', row).html(pageInfo.start + index + 1);
-            }
-        });
 
-
-    });
-</script>
 
 <?php echo view('tema/footer.php'); ?>

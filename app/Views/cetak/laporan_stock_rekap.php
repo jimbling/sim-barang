@@ -60,6 +60,7 @@
                         <th>Nama Barang</th>
                         <th>Harga Satuan</th>
                         <th>Jumlah Barang</th>
+                        <th>Satuan</th>
                     </tr>
                 </thead>
                 <tbody class="table-border">
@@ -77,6 +78,7 @@
                                 <td style="text-align: left;"><?= $data['nama_barang']; ?></td>
                                 <td style="text-align: right;">Rp. <?= number_format($data['harga_satuan'], 0, ',', '.'); ?></td>
                                 <td><?= $data['stok_barang']; ?></td>
+                                <td><?= $data['satuan']; ?></td>
 
                             </tr>
                             <?php $totalStok += $data['stok_barang']; ?>

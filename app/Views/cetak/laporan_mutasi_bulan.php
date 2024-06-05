@@ -60,6 +60,7 @@
                         <th style="font-size: 14px;">Pengeluaran Dengan Peminjaman</th>
                         <th style="font-size: 14px;">Pengeluaran Tanpa Peminjaman</th>
                         <th style="font-size: 14px;">Sisa Stok</th>
+                        <th style="font-size: 14px;">Satuan</th>
                     </tr>
 
                 </thead>
@@ -122,6 +123,7 @@
                             <td width="15%"><?= $jumlahPengeluaranMurni; ?></td>
                             <!-- Kolom untuk Sisa Stok -->
                             <td><?= $sisaStok; ?></td>
+                            <td><?= $penerimaanIndex !== false ? $data_penerimaan[$penerimaanIndex]['satuan'] : ($pengeluaranIndex !== false ? $data_pengeluaran[$pengeluaranIndex]['satuan'] : ''); ?></td>
                         </tr>
                     <?php endfor; ?>
                 </tbody>
@@ -166,10 +168,10 @@
                     <!-- Isi tabel sesuai kebutuhan -->
                 </tbody>
             </table>
-        </div>
 
 
-        <div class="container">
+
+
             <table class="table table-no-border text-center">
                 <thead>
                     <tr>

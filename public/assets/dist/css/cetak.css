@@ -1,5 +1,5 @@
 @media print {
-  
+
 @page {
   size: A4 portrait;
   margin: 10mm; /* Atur margin ke 15mm */
@@ -113,12 +113,55 @@ table.table-no-border td br {
   .table-border th,
   .table-border td {
     border: 1px solid black !important;
+
   }
+
+  hr {
+    border: none;
+    border-top: 1px solid black; /* Atur garis atas dengan ketebalan 1px */
+}
+
+/* CSS untuk objek kotak */
+.large-checkbox {
+  width: 30px; /* Lebar kotak */
+  height: 30px; /* Tinggi kotak */
+  border: 1px solid black; /* Garis tepi */
+  display: inline-block; /* Tampilkan sebagai inline block */
+  margin-left: 10px; /* Jarak kanan antara kotak dan teks */
+}
+
+ /* CSS untuk menyesuaikan lebar kolom "Keperluan" */
+ .narrow-column {
+  width: 200px; /* Atur lebar kolom sesuai kebutuhan Anda */
+}
+
+.custom-textbox {
+  position: relative;
+  width: calc(100%);
+  height: 300px;
+  border: 1px solid black;
+  padding: 5px;
+  box-sizing: border-box;
+}
+.additional-info {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 12px;
+  color: rgb(0, 0, 0);
+}
+
 
   .table-border thead {
     background-color: #9b9b9b; /* Warna abu-abu lebih gelap */
     color: #000000; /* Warna teks putih untuk kontras yang baik */
   }
+
+   /* CSS untuk menghilangkan garis tengah horizontal */
+   .table-border td,
+   .table-border th {
+       border-bottom: none;
+   }
 }
 
 @media print {
