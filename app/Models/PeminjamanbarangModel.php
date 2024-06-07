@@ -54,10 +54,10 @@ class PeminjamanbarangModel extends Model
     public function countUniquePeminjamanByDate($userId)
     {
         // Kueri untuk menghitung jumlah peminjaman unik berdasarkan ID dengan kondisi tanggal_pengembalian
-        $query = $this->select('COUNT(DISTINCT tbl_peminjaman.id) as jumlah_peminjaman, tbl_peminjaman.kode_pinjam')
+        $query = $this->select('COUNT(*) as jumlah_peminjaman, tbl_peminjaman.kode_pinjam, GROUP_CONCAT(tbl_peminjaman.id) as peminjaman_ids')
             ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_peminjaman_barang.peminjaman_id')
             ->where('tbl_peminjaman.user_id', $userId) // Filter berdasarkan user_id
-            ->where("(DATE(tbl_peminjaman.tanggal_pengembalian) = CURDATE() OR DATE(tbl_peminjaman.tanggal_pengembalian) < CURDATE())")
+            ->where("(tbl_peminjaman.tanggal_pengembalian <= NOW())")
             ->groupBy('tbl_peminjaman.kode_pinjam'); // Group by kode_pinjam
 
         $results = $query->findAll(); // Ambil semua hasil dari kueri
@@ -148,14 +148,23 @@ class PeminjamanbarangModel extends Model
     {
         // Ambil model Barang
         $barangModel = new \App\Models\BarangModel();
-
-        // Periksa apakah masih ada barang tersisa dalam peminjaman
-        $remainingBarangIds = $this->select('barang_id')->where('peminjaman_id', $peminjamanId)->findAll();
-        $remainingBarangIds = array_column($remainingBarangIds, 'barang_id');
+        $riwayatPeminjamanModel = new \App\Models\RiwayatPeminjamanModel();
 
         // Ambil daftar barang yang akan dihapus dan yang akan tetap ada
+        $remainingBarangIds = $this->select('barang_id')->where('peminjaman_id', $peminjamanId)->findAll();
+        $remainingBarangIds = array_column($remainingBarangIds, 'barang_id');
         $barangIdsToKeep = array_diff($remainingBarangIds, $barangIdsToDelete);
         $barangIdsToDelete = array_intersect($remainingBarangIds, $barangIdsToDelete);
+
+        // Simpan terlebih dahulu peminjaman_id dan barang_id yang terpilih ke dalam riwayat peminjaman
+        foreach ($barangIdsToDelete as $barangId) {
+            $riwayatPeminjamanModel->insert([
+                'peminjaman_id' => $peminjamanId,
+                'barang_id' => $barangId,
+                'aksi' => 'hapus',
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+        }
 
         // Ubah status_barang menjadi 0 pada barang-barang yang akan dihapus
         $barangModel->whereIn('id', $barangIdsToDelete)->set(['status_barang' => 0])->update();

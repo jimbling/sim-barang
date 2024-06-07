@@ -164,7 +164,7 @@
                     <th>Tempat Penggunaan</th>
                     <th>Keperluan</th>
                     <th>Nama Barang Yang Akan Dipinjam</th>
-                    <th>Action</th>
+
                 </tr>
             </thead>
             <tbody class="table-border">
@@ -176,7 +176,7 @@
                     <tr>
                         <td style="text-align: center; vertical-align: middle;"><?= $counter; ?></td>
                         <td style="text-align: center; vertical-align: middle;"><?= $peminjamanBarangDetail['nama_ruangan']; ?></td>
-                        <td style="text-align: center; vertical-align: middle;"><?= $peminjamanBarangDetail['keperluan']; ?></td>
+                        <td width='30%' style="text-align: center; vertical-align: middle;"><?= $peminjamanBarangDetail['keperluan']; ?></td>
                         <td style="text-align: left;">
                             <?php
                             // Split the values by comma
@@ -189,9 +189,7 @@
                             }
                             ?>
                         </td>
-                        <td style="text-align: center; vertical-align: middle;">
-                            <input type="checkbox" name="barang[]" value="<?= $peminjamanBarangDetail['id_barang']; ?>">
-                        </td>
+
                     </tr>
                 <?php
                 endforeach;

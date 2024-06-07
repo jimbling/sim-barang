@@ -16,7 +16,7 @@ use App\Models\PengeluaranModel;
 use App\Models\BarangPersediaanModel;
 use App\Models\PengaturanModel;
 use App\Models\DosenTendikModel;
-
+use App\Models\PengembalianbarangModel;
 
 class Peminjaman extends BaseController
 {
@@ -96,25 +96,130 @@ class Peminjaman extends BaseController
 
     public function riwayat()
     {
-        $riwayatpeminjamanModel = new RiwayatPeminjamanModel();
+        $riwayatPeminjamanModel = new RiwayatPeminjamanModel();
+        $pengembalianBarang = new PengembalianbarangModel();
+
         // Mengambil tahun dari inputan pengguna, jika tidak ada maka gunakan tahun saat ini
         $selectedYear = $this->request->getVar('tahun') ?? date('Y');
+
         // Mengambil tahun-tahun unik dari tanggal_kembali di tabel
-        $availableYears = $riwayatpeminjamanModel->getAvailableYears();
+        $availableYears = $riwayatPeminjamanModel->getAvailableYears();
+
         // Mendapatkan data berdasarkan tahun yang dipilih
         $namaKampus = $this->settingsService->getNamaKampus();
 
-        $barangByStatus = $riwayatpeminjamanModel->getRiwayatPinjamBarang();
+        // Mendapatkan semua data dengan relasi
+        $semuaData = $pengembalianBarang->getAllDataWithRelations();
+
+        // Kelompokkan data berdasarkan kode_pinjam
+        $groupedData = [];
+        foreach ($semuaData as $data) {
+            $kodePinjam = $data['kode_pinjam'];
+            if (!isset($groupedData[$kodePinjam])) {
+                $groupedData[$kodePinjam] = [];
+            }
+            $groupedData[$kodePinjam][] = $data;
+        }
+
         $data = [
             'judul' => "Daftar Pinjam | $namaKampus",
             'currentYear' => $selectedYear,
             'selectedYear' => $selectedYear,
             'availableYears' => $availableYears,
-
+            'grouped_data' => $groupedData,
         ];
 
-        // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
+        // Kirim data ke tampilan
         return view('peminjaman/pinjam_riwayat', $data);
+    }
+
+    // public function detailKodeKembali($kodeKembali)
+    // {
+    //     $pengembalianBarang = new PengembalianbarangModel();
+    //     $groupedData = $pengembalianBarang->getAllDataWithRelationsByKodePinjam($kodeKembali); // Menggunakan metode yang sesuai
+
+    //     // Kirim data detail ke klien dalam format JSON
+    //     return $this->response->setJSON($groupedData);
+    // }
+
+    public function riwayatKodePinjam($kodeKembali)
+    {
+        $riwayatPeminjamanModel = new RiwayatPeminjamanModel();
+        $pengembalianBarang = new PengembalianbarangModel();
+
+        // Mengambil tahun dari inputan pengguna, jika tidak ada maka gunakan tahun saat ini
+        $selectedYear = $this->request->getVar('tahun') ?? date('Y');
+
+        // Mengambil tahun-tahun unik dari tanggal_kembali di tabel
+        $availableYears = $riwayatPeminjamanModel->getAvailableYears();
+
+        // Mendapatkan data berdasarkan tahun yang dipilih
+        $namaKampus = $this->settingsService->getNamaKampus();
+
+        // Mendapatkan semua data dengan relasi
+        $semuaData = $pengembalianBarang->getAllDataWithRelationsByKodePinjam($kodeKembali);
+
+        // Kelompokkan data berdasarkan kode_pinjam
+        $groupedData = [];
+        foreach ($semuaData as $data) {
+            $kodePinjam = $data['kode_pinjam'];
+            if (!isset($groupedData[$kodePinjam])) {
+                $groupedData[$kodePinjam] = [];
+            }
+            $groupedData[$kodePinjam][] = $data;
+        }
+
+        $data = [
+            'judul' => "Daftar Pinjam | $namaKampus",
+            'currentYear' => $selectedYear,
+            'selectedYear' => $selectedYear,
+            'availableYears' => $availableYears,
+            'grouped_data' => $groupedData,
+        ];
+
+        // Kirim data ke tampilan
+        return view('peminjaman/kembali_kode', $data);
+    }
+
+    public function cetakDetailPinjam($kodeKembali)
+    {
+        $riwayatPeminjamanModel = new RiwayatPeminjamanModel();
+        $pengembalianBarang = new PengembalianbarangModel();
+        $pengaturanModel = new PengaturanModel();
+        $dataPengaturan = $pengaturanModel->getDataById(1);
+        // Mengambil tahun dari inputan pengguna, jika tidak ada maka gunakan tahun saat ini
+        $selectedYear = $this->request->getVar('tahun') ?? date('Y');
+
+        // Mengambil tahun-tahun unik dari tanggal_kembali di tabel
+        $availableYears = $riwayatPeminjamanModel->getAvailableYears();
+
+        // Mendapatkan data berdasarkan tahun yang dipilih
+        $namaKampus = $this->settingsService->getNamaKampus();
+
+        // Mendapatkan semua data dengan relasi
+        $semuaData = $pengembalianBarang->getAllDataWithRelationsByKodePinjam($kodeKembali);
+
+        // Kelompokkan data berdasarkan kode_pinjam
+        $groupedData = [];
+        foreach ($semuaData as $data) {
+            $kodePinjam = $data['kode_pinjam'];
+            if (!isset($groupedData[$kodePinjam])) {
+                $groupedData[$kodePinjam] = [];
+            }
+            $groupedData[$kodePinjam][] = $data;
+        }
+
+        $data = [
+            'judul' => "Daftar Pinjam | $namaKampus",
+            'currentYear' => $selectedYear,
+            'selectedYear' => $selectedYear,
+            'availableYears' => $availableYears,
+            'grouped_data' => $groupedData,
+            'dataPengaturan' => $dataPengaturan,
+        ];
+
+        // Kirim data ke tampilan
+        return view('cetak/cetak_detail_peminjaman', $data);
     }
 
     public function getRiwayatPeminjaman()
@@ -315,6 +420,27 @@ class Peminjaman extends BaseController
         }
     }
 
+    public function hapusRiwayat($peminjamanId)
+    {
+        // Membuat instance model
+        $riwayatPeminjamanModel = new \App\Models\RiwayatPeminjamanModel();
+
+        // Memanggil fungsi hapusDataPeminjaman() dari model untuk menghapus data
+        $deleted = $riwayatPeminjamanModel->deleteByPeminjamanId($peminjamanId);
+
+        // Memeriksa apakah penghapusan berhasil
+        if ($deleted === true) {
+            // Jika berhasil, set pesan flash data untuk sukses
+            session()->setFlashData('pesanHapusPeminjaman', 'Data Peminjaman berhasil dihapus.');
+
+            // Redirect kembali ke halaman /pinjam/daftar setelah penghapusan
+            return redirect()->to('/pinjam/daftar');
+        } else {
+            // Jika gagal, kirim pesan kesalahan sebagai respons HTTP
+            return $this->response->setJSON(['error' => $deleted]);
+        }
+    }
+
 
     public function getDataBarang()
     {
@@ -374,6 +500,47 @@ class Peminjaman extends BaseController
         // You can now use $groupedPengeluaran and $peminjamanBarangDetails in your view or further processing
         // For example, passing them to a view
         return view('cetak/cetak_data_pinjam_persed', [
+            'groupedPengeluaran' => $groupedPengeluaran,
+            'peminjamanBarangDetails' => $peminjamanBarangDetails,
+            'dataPengaturan' => $dataPengaturan,
+        ]);
+    }
+
+    public function cetakFormPengembalian($peminjamanId)
+    {
+        $pengeluaranModel = new PengeluaranModel();
+        $peminjamanbarangModel = new PeminjamanbarangModel();
+        $pengaturanModel = new PengaturanModel();
+        $dataPengaturan = $pengaturanModel->getDataById(1);
+
+        // Get data pengeluaran based on peminjaman_id
+        $groupedPengeluaran = $this->getGroupedPengeluaran($peminjamanId);
+
+        // Get peminjaman barang data by peminjaman_id
+        $peminjamanBarangDetails = $peminjamanbarangModel->getPeminjamanBarangByPeminjamanId($peminjamanId);
+
+        // Check if $groupedPengeluaran is not empty and has at least one element
+        if (!empty($groupedPengeluaran) && array_key_exists(0, $groupedPengeluaran)) {
+            // Fetch additional information related to barangPersediaan and peminjaman
+            foreach ($groupedPengeluaran as &$pengeluaran) {
+                $barangPersediaanModel = new BarangPersediaanModel();
+                $barangPersediaan = $barangPersediaanModel->find($pengeluaran->barang_id);
+
+                // Attach additional information to the pengeluaran data
+                $pengeluaran->barangPersediaan = $barangPersediaan;
+            }
+        } else {
+            // If $groupedPengeluaran is empty or does not have an index 0, proceed with printing peminjaman data only
+            return view('cetak/cetak_form_kembali', [
+                'groupedPengeluaran' => [],
+                'peminjamanBarangDetails' => $peminjamanBarangDetails,
+                'dataPengaturan' => $dataPengaturan,
+            ]);
+        }
+
+        // You can now use $groupedPengeluaran and $peminjamanBarangDetails in your view or further processing
+        // For example, passing them to a view
+        return view('cetak/cetak_form_kembali', [
             'groupedPengeluaran' => $groupedPengeluaran,
             'peminjamanBarangDetails' => $peminjamanBarangDetails,
             'dataPengaturan' => $dataPengaturan,

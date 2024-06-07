@@ -8,6 +8,7 @@
 </style>
 <div class="content-wrapper">
     <div class="flash-data" data-flashdata="<?= (session()->getFlashData('pesanAddPengembalian')); ?>"></div><!-- Page Heading -->
+
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -99,7 +100,10 @@
                                         <?php $counterRow = 1; ?>
                                         <tr>
                                             <td><?= $counter++ ?></td>
-                                            <td><?= $riwayat['kode_kembali'] ?></td>
+                                            <td><?= $riwayat['kode_kembali'] ?>
+                                                <br>
+                                                <div class="badge badge-secondary"><?= $riwayat['kode_pinjam'] ?></div>
+                                            </td>
                                             <td><?= explode('-', $riwayat['nama_peminjam'])[1] ?></td>
                                             <td width='10%'>
                                                 <div class="badge bg-olive">Pinjam:<br><?= date('d', strtotime($riwayat['tanggal_pinjam'])) ?> <?= $bulanIndonesia[date('F', strtotime($riwayat['tanggal_pinjam']))] ?> <?= date('Y - H:i', strtotime($riwayat['tanggal_pinjam'])) ?> WIB</div><br>
@@ -111,8 +115,11 @@
                                                     <div><?= $counterRow++ ?>. <?= $barang['nama_barang'] ?> - <?= $barang['kode_barang'] ?></div>
                                                 <?php endforeach; ?>
                                             </td>
-                                            <td>
-                                                <a href="<?= base_url('kembali/hapus_kode/' . $riwayat['kode_kembali']) ?>" class="btn btn-xs btn-danger mx-auto text-white" id="hapusButton">Hapus</a>
+                                            <td style="text-align: center; vertical-align: middle;">
+                                                <button class="btn btn-xs btn-info mx-auto text-white batalButton spaced-icon" onclick="batal_data('<?= $riwayat['kode_kembali'] ?>')">Batal</button>
+                                                <button class="btn btn-xs btn-danger mx-auto text-white spaced-icon" id="hapusButton" onclick="hapus_data('<?= $riwayat['kode_kembali'] ?>')">Hapus</button>
+
+
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -133,16 +140,11 @@
 
 <script>
     function showLoading() {
-        let timerInterval
         Swal.fire({
             title: 'Sedang memproses data ....',
             timerProgressBar: true,
             didOpen: () => {
-                Swal.showLoading()
-                const b = Swal.getHtmlContainer().querySelector('b')
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                }, 100)
+                Swal.showLoading();
             }
         });
     }
@@ -151,8 +153,8 @@
         Swal.close();
     }
 
-    function hapus_data(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id);
+    function hapus_data(kodeKembali) {
+        console.log('Kode Kembali yang akan dihapus:', kodeKembali);
 
         // Pemeriksaan level pengguna di sisi klien
         let userLevel = '<?= session()->get("level") ?>';
@@ -177,10 +179,10 @@
             if (result.isConfirmed) {
                 showLoading();
 
-                // Lakukan permintaan penghapusan ke server, misalnya dengan AJAX.
+                // Lakukan permintaan penghapusan ke server dengan menggunakan AJAX
                 $.ajax({
-                    type: 'POST',
-                    url: '/kembali/hapus/' + data_id,
+                    type: 'GET', // Menggunakan metode GET
+                    url: '<?= base_url('kembali/hapus_kode') ?>/' + kodeKembali, // Menambahkan kode_kembali sebagai bagian dari URL
                     success: function(response) {
                         hideLoading();
                         Swal.fire({
@@ -190,7 +192,7 @@
                             timer: 2000,
                             showConfirmButton: false,
                         }).then(() => {
-                            window.location.replace("/kembali/riwayat");
+                            window.location.replace("<?= base_url('/kembali/riwayat') ?>");
                         });
                     },
                     error: function(xhr, status, error) {
@@ -203,6 +205,62 @@
                         });
                     }
                 });
+            }
+        });
+    }
+</script>
+
+<script>
+    function batal_data(kodeKembali) {
+        // Menggunakan SweetAlert untuk konfirmasi
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda tidak dapat mengembalikan perubahan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, batalkan!',
+            cancelButtonText: 'Tidak'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Jika pengguna mengonfirmasi, lanjutkan dengan permintaan fetch
+                fetch('<?= base_url('/pengembalian/batal') ?>', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-Token': '<?= csrf_hash() ?>' // Pastikan token CSRF ditambahkan
+                        },
+                        body: JSON.stringify({
+                            kode_kembali: kodeKembali
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire(
+                                'Dibatalkan!',
+                                'Data berhasil dibatalkan.',
+                                'success'
+                            ).then(() => {
+                                location.reload(); // Memuat ulang halaman untuk memperbarui tampilan
+                            });
+                        } else {
+                            Swal.fire(
+                                'Gagal!',
+                                'Gagal membatalkan data: ' + data.message,
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire(
+                            'Error!',
+                            'Terjadi kesalahan dalam membatalkan data.',
+                            'error'
+                        );
+                    });
             }
         });
     }

@@ -152,18 +152,16 @@ class Reservasi extends BaseController
     {
         // Validasi input
         $validationRules = [
-
             'nama_peminjam' => 'required',
             'nama_ruangan' => 'required',
             'nama_dosen' => 'required',
             'keperluan' => 'required',
             'barang' => 'required',
             'tanggal_penggunaan' => 'required',
-            'tanggal_pengembalian' => 'required',
+
         ];
 
         $validationMessages = [
-
             'nama_peminjam' => [
                 'required' => 'Nama Peminjam harus diisi.',
             ],
@@ -182,9 +180,7 @@ class Reservasi extends BaseController
             'tanggal_penggunaan' => [
                 'required' => 'Pilih minimal satu barang.',
             ],
-            'tanggal_pengembalian' => [
-                'required' => 'Pilih minimal satu barang.',
-            ],
+
         ];
 
         if (!$this->validate($validationRules, $validationMessages)) {
@@ -194,11 +190,22 @@ class Reservasi extends BaseController
 
         try {
             $tanggalPenggunaan = new \DateTime($this->request->getPost('tanggal_penggunaan'));
-            $tanggalKembali = new \DateTime($this->request->getPost('tanggal_pengembalian'));
+
+            // Inisialisasi tanggal pengembalian dengan tanggal penggunaan
+            $tanggalKembali = clone $tanggalPenggunaan;
+
+            // Jika keperluan adalah "Praktek Pembelajaran", tambahkan 170 menit ke tanggal pengembalian
+            if ($this->request->getPost('keperluan') === "Praktek Pembelajaran") {
+                $tanggalKembali->add(new \DateInterval('PT170M')); // Menambahkan 170 menit
+            } else {
+                // Jika keperluan bukan "Praktek Pembelajaran", gunakan tanggal pengembalian dari form
+                $tanggalKembali = new \DateTime($this->request->getPost('tanggal_pengembalian'));
+            }
         } catch (\Exception $e) {
             // Tanggal tidak valid, tampilkan pesan kesalahan
             return redirect()->to(base_url('reservasi/tambah'))->withInput()->with('errorMessages', 'Format tanggal tidak valid.');
         }
+
         // Ambil data dari formulir
         // Ambil ID pengguna yang sedang login dari sesi
         $session = session();
@@ -231,6 +238,7 @@ class Reservasi extends BaseController
         if (!empty($materiPembelajaran)) {
             $keperluan .= ' - ' . $materiPembelajaran;
         }
+
         // Tambahkan nilai keperluan ke dalam data peminjaman
         $dataPeminjaman['keperluan'] = $keperluan;
 
@@ -254,13 +262,14 @@ class Reservasi extends BaseController
             // Update status_barang menjadi 1 pada tbl_barang
             $this->barangModel->update($barangId, ['status_barang' => 1]);
         }
+
         // Pengiriman email ke admin
         $this->kirimPesanWhatsApp($reservasiId);
-        // JANGAN DULU DIAKTIFKAN SUPAYA NOMOR WA TIDAK TERBANNED
 
         // Redirect atau tampilkan pesan sukses
         return redirect()->to('reservasi')->with('success', 'Peminjaman berhasil!');
     }
+
 
     // private function kirimEmailAdmin($reservasiId)
     // {
@@ -469,9 +478,12 @@ class Reservasi extends BaseController
         $reservasibarangModel = new ReservasibarangModel();
         // Get peminjaman barang data by peminjaman_id
         $reservasiPeminjamanDetails = $reservasibarangModel->getReservasiPeminjamanByReservasiId($reservasiId);
+        $pengaturanModel = new PengaturanModel();
+        $dataPengaturan = $pengaturanModel->getDataById(1);
 
         $data = [
             'data_reservasi' => $reservasiPeminjamanDetails,
+            'dataPengaturan' => $dataPengaturan,
 
         ];
 

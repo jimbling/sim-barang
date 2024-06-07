@@ -9,9 +9,56 @@ class PengembalianbarangModel extends Model
     protected $table = 'tbl_riwayat_pengembalian';
     protected $primaryKey = 'id'; // Nama kolom primary key
     protected $useAutoIncrement = true; // Pastikan ini true
-    protected $allowedFields = ['id', 'peminjaman_id', 'barang_id', 'kode_kembali', 'tanggal_kembali', 'keterangan', 'nama_barang'];
+    protected $allowedFields = ['id', 'peminjaman_id', 'barang_id', 'kode_kembali', 'tanggal_kembali', 'keterangan'];
 
+    public function findPeminjamanBarangIdsByKodeKembali($kodeKembali)
+    {
+        $result = $this->where('kode_kembali', $kodeKembali)->findAll();
 
+        if (empty($result)) {
+            return null;
+        }
+
+        $peminjamanIds = [];
+        $barangIds = [];
+
+        foreach ($result as $row) {
+            $peminjamanIds[] = $row['peminjaman_id'];
+            $barangIds[] = $row['barang_id'];
+        }
+
+        return [
+            'peminjaman_ids' => $peminjamanIds,
+            'barang_ids' => $barangIds
+        ];
+    }
+
+    public function getAllDataWithRelations()
+    {
+        // Menggunakan query builder untuk melakukan join tabel
+        $builder = $this->db->table($this->table);
+        $builder->select('tbl_riwayat_pengembalian.*, tbl_peminjaman.*, tbl_barang.*');
+        $builder->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_pengembalian.peminjaman_id');
+        $builder->join('tbl_barang', 'tbl_barang.id = tbl_riwayat_pengembalian.barang_id');
+        $query = $builder->get();
+
+        // Mengembalikan hasil query dalam bentuk array
+        return $query->getResultArray();
+    }
+
+    public function getAllDataWithRelationsByKodePinjam($kodePinjam)
+    {
+        // Menggunakan query builder untuk melakukan join tabel
+        $builder = $this->db->table($this->table);
+        $builder->select('tbl_riwayat_pengembalian.*, tbl_peminjaman.*, tbl_barang.*');
+        $builder->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_pengembalian.peminjaman_id');
+        $builder->join('tbl_barang', 'tbl_barang.id = tbl_riwayat_pengembalian.barang_id');
+        $builder->where('tbl_peminjaman.kode_pinjam', $kodePinjam);
+        $query = $builder->get();
+
+        // Mengembalikan hasil query dalam bentuk array
+        return $query->getResultArray();
+    }
     public function savePengembalian($peminjamanId, $barangIds, $kodeKembali, $tanggalKembali, $keterangan)
     {
         // Mulai transaksi
@@ -81,18 +128,20 @@ class PengembalianbarangModel extends Model
         $isAdmin = $this->isAdmin($userId);
 
         $this->select('ROW_NUMBER() OVER() AS no, 
-               tbl_riwayat_pengembalian.id as riwayat_id, 
-               tbl_peminjaman.id as peminjaman_id, 
-               tbl_peminjaman.kode_pinjam, 
-               tbl_peminjaman.user_id, 
-               tbl_peminjaman.nama_peminjam, 
-               tbl_peminjaman.tanggal_pinjam, 
-               tbl_peminjaman.keperluan, 
-               kode_kembali, 
-               tanggal_kembali, 
-               keterangan, 
-               tbl_barang.nama_barang,
-               tbl_barang.kode_barang'); // Memilih nama_barang dari tbl_barang
+           tbl_riwayat_pengembalian.id as riwayat_id, 
+           tbl_peminjaman.id as peminjaman_id, 
+           tbl_peminjaman.kode_pinjam, 
+           tbl_peminjaman.user_id, 
+           tbl_peminjaman.nama_peminjam, 
+           tbl_peminjaman.tanggal_pinjam, 
+           tbl_peminjaman.keperluan, 
+           kode_kembali, 
+           tanggal_kembali, 
+           keterangan, 
+           tbl_barang.nama_barang,
+           tbl_barang.kode_barang,
+           tbl_riwayat_pengembalian.peminjaman_id,
+           tbl_riwayat_pengembalian.barang_id'); // Memilih peminjaman_id dan barang_id dari tbl_riwayat_pengembalian
 
         $this->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_pengembalian.peminjaman_id');
         $this->join('tbl_barang', 'tbl_barang.id = tbl_riwayat_pengembalian.barang_id'); // Join dengan tbl_barang
@@ -109,6 +158,7 @@ class PengembalianbarangModel extends Model
 
         return $result;
     }
+
 
 
     public function hapusBerdasarkanKodeKembali($kodeKembali)
@@ -180,8 +230,11 @@ class PengembalianbarangModel extends Model
         // Menggunakan metode join untuk menggabungkan tbl_riwayat_pengembalian dengan tbl_peminjaman
         $this->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_pengembalian.peminjaman_id');
 
+        // Tambahkan join ke tbl_barang
+        $this->join('tbl_barang', 'tbl_barang.id = tbl_riwayat_pengembalian.barang_id');
+
         // Memberikan alias untuk kolom id dari setiap tabel
-        $this->select('tbl_riwayat_pengembalian.id as riwayat_id, tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam, tbl_peminjaman.nama_dosen, tbl_peminjaman.nama_ruangan, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.keperluan, kode_kembali, tanggal_kembali, keterangan, nama_barang');
+        $this->select('tbl_riwayat_pengembalian.id as riwayat_id, tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam, tbl_peminjaman.nama_dosen, tbl_peminjaman.nama_ruangan, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.keperluan, kode_kembali, tanggal_kembali, keterangan, tbl_barang.nama_barang, tbl_barang.kode_barang');
 
         // Menambahkan filter berdasarkan bulan dan tahun
         $this->where('MONTH(tbl_riwayat_pengembalian.tanggal_kembali)', $month);
@@ -201,19 +254,25 @@ class PengembalianbarangModel extends Model
         $userId = $session->get('id');
         $level = $session->get('level');
 
-        // Kueri untuk mendapatkan data berdasarkan tahun
-        $query = $this->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_pengembalian.peminjaman_id')
-            ->select('tbl_riwayat_pengembalian.id as riwayat_id, tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam, tbl_peminjaman.nama_dosen, tbl_peminjaman.nama_ruangan, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.keperluan, kode_kembali, tanggal_kembali, keterangan, nama_barang')
-            ->where('YEAR(tbl_riwayat_pengembalian.tanggal_kembali)', $year)
-            ->orderBy('tanggal_kembali', 'DESC');
+        // Menggunakan metode join untuk menggabungkan tbl_riwayat_pengembalian dengan tbl_peminjaman
+        $this->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_pengembalian.peminjaman_id');
+
+        // Tambahkan join ke tbl_barang
+        $this->join('tbl_barang', 'tbl_barang.id = tbl_riwayat_pengembalian.barang_id');
+
+        // Memberikan alias untuk kolom id dari setiap tabel
+        $this->select('tbl_riwayat_pengembalian.id as riwayat_id, tbl_peminjaman.id as peminjaman_id, tbl_peminjaman.kode_pinjam, tbl_peminjaman.nama_peminjam, tbl_peminjaman.nama_dosen, tbl_peminjaman.nama_ruangan, tbl_peminjaman.tanggal_pinjam, tbl_peminjaman.keperluan, kode_kembali, tanggal_kembali, keterangan, tbl_barang.nama_barang, tbl_barang.kode_barang');
+
+        // Menambahkan filter berdasarkan tahun
+        $this->where('YEAR(tbl_riwayat_pengembalian.tanggal_kembali)', $year);
 
         // Jika pengguna yang sedang login bukan admin, terapkan filter berdasarkan user_id
         if ($level !== 'Admin') {
-            $query->where('tbl_peminjaman.user_id', $userId);
+            $this->where('tbl_peminjaman.user_id', $userId);
         }
 
         // Mengambil data yang dibutuhkan
-        $result = $query->findAll();
+        $result = $this->findAll();
 
         return $result;
     }

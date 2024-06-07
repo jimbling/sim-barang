@@ -15,6 +15,7 @@ use App\Models\PenggunaanModel;
 
 
 
+
 class Pengembalian extends BaseController
 {
     protected $barangModel;
@@ -91,18 +92,24 @@ class Pengembalian extends BaseController
             $groupedData[$kodeKembali]['tanggal_pinjam'] = $riwayat['tanggal_pinjam'];
             $groupedData[$kodeKembali]['tanggal_kembali'] = $riwayat['tanggal_kembali'];
             $groupedData[$kodeKembali]['keperluan'] = $riwayat['keperluan'];
+            $groupedData[$kodeKembali]['kode_pinjam'] = $riwayat['kode_pinjam'];
             $groupedData[$kodeKembali]['riwayat'][] = [
                 'nama_barang' => $riwayat['nama_barang'],
-                'kode_barang' => $riwayat['kode_barang'] // Tambahkan kode_barang di sini
+                'kode_barang' => $riwayat['kode_barang'],
+                // Tambahkan kode_barang di sini
             ];
         }
+
+        $kodeKembali = 'K-YKY-LAB-00100'; // Ganti dengan kode_kembali yang sesuai
+        $peminjamanBarangIds = $pengembalianbarangModel->findPeminjamanBarangIdsByKodeKembali($kodeKembali);
 
         $data = [
             'judul' => "Daftar Pinjam | $namaKampus",
             'currentYear' => $selectedYear,
             'selectedYear' => $selectedYear,
             'availableYears' => $availableYears,
-            'groupedRiwayatPengembalian' => $groupedData, // Gunakan data yang telah dikelompokkan
+            'groupedRiwayatPengembalian' => $groupedData,
+            'kode' =>  $peminjamanBarangIds // Gunakan data yang telah dikelompokkan
         ];
 
         return view('pengembalian/kembali_daftar', $data);
@@ -187,6 +194,68 @@ class Pengembalian extends BaseController
         return redirect()->to('/kembali/riwayat');
     }
 
+    public function batal()
+    {
+        $this->response->setContentType('application/json');
+
+        // Mendapatkan input dari permintaan POST
+        $input = $this->request->getJSON();
+        $kodeKembali = $input->kode_kembali;
+
+        // Memeriksa apakah kode_kembali valid
+        if (empty($kodeKembali)) {
+            return $this->response->setStatusCode(400)->setJSON(['success' => false, 'message' => 'Kode kembali tidak valid']);
+        }
+
+        // Memanggil model untuk mendapatkan data berdasarkan kode_kembali
+        $pengembalianbarangModel = new PengembalianbarangModel();
+        $data = $pengembalianbarangModel->findPeminjamanBarangIdsByKodeKembali($kodeKembali);
+
+        if (is_null($data)) {
+            return $this->response->setStatusCode(404)->setJSON(['success' => false, 'message' => 'Data tidak ditemukan']);
+        }
+
+        // Mulai transaksi
+        $db = \Config\Database::connect();
+        $db->transBegin();
+
+        try {
+            // Ubah status_barang menjadi 0 pada tabel tbl_barang untuk setiap barang_id
+            $barangModel = new BarangModel();
+            $barangModel->updateStatusBarang($data['barang_ids'], 0);
+
+            // Menyimpan data ke tabel tbl_peminjaman_barang
+            $peminjamanBarangModel = new PeminjamanbarangModel();
+            foreach ($data['peminjaman_ids'] as $key => $peminjamanId) {
+                $barangId = $data['barang_ids'][$key];
+
+                $peminjamanBarangModel->insert([
+                    'peminjaman_id' => $peminjamanId,
+                    'barang_id' => $barangId
+                ]);
+            }
+
+            // Commit transaksi jika semua berhasil
+            $db->transCommit();
+
+            // Setelah transaksi berhasil, panggil fungsi untuk menghapus data pengembalian
+            $this->hapusKembaliKode($kodeKembali);
+
+            // Hapus riwayat peminjaman berdasarkan peminjaman_id
+            foreach ($data['peminjaman_ids'] as $peminjamanId) {
+                $this->hapusRiwayatBatal($peminjamanId); // Panggilan metode protected
+            }
+        } catch (\Exception $e) {
+            // Rollback transaksi jika ada yang gagal
+            $db->transRollback();
+            return $this->response->setStatusCode(500)->setJSON(['success' => false, 'message' => 'Terjadi kesalahan saat memproses data']);
+        }
+
+        // Mengirimkan respons sukses
+        return $this->response->setStatusCode(200)->setJSON(['success' => true]);
+    }
+
+
     protected function hapusPeminjaman($peminjamanId, $barangIdsToDelete)
     {
         // Membuat instance model
@@ -206,6 +275,8 @@ class Pengembalian extends BaseController
             session()->setFlashData('error', 'Data peminjaman tidak ditemukan.');
         }
     }
+
+
 
 
 
@@ -241,9 +312,46 @@ class Pengembalian extends BaseController
 
     public function hapusKembaliKode($kodeKembali)
     {
-        // Panggil metode model untuk melakukan penghapusan berdasarkan kode kembali
-        $this->pengembalianbarangModel->hapusBerdasarkanKodeKembali($kodeKembali);
+        // Memeriksa izin penghapusan berdasarkan level pengguna
+        $userLevel = session()->get('level');
+        $flashData = [];
+
+        if ($userLevel == 'Admin') {
+            // Cari data pengembalian berdasarkan kode kembali
+            $dataKembali = $this->pengembalianbarangModel->where('kode_kembali', $kodeKembali)->findAll();
+
+            // Jika data pengembalian ditemukan
+            if ($dataKembali) {
+                // Panggil metode model untuk melakukan penghapusan berdasarkan kode_kembali
+                $this->pengembalianbarangModel->where('kode_kembali', $kodeKembali)->delete();
+
+                // Set pesan sukses untuk flash data
+                $flashData['status'] = 'success';
+                $flashData['message'] = 'Semua data pengembalian dengan kode ' . $kodeKembali . ' telah dihapus.';
+            } else {
+                // Set pesan error jika data pengembalian tidak ditemukan
+                $flashData['status'] = 'error';
+                $flashData['message'] = 'Data pengembalian dengan kode ' . $kodeKembali . ' tidak ditemukan.';
+            }
+        } else {
+            // Jika pengguna bukan admin, berikan pesan error bahwa penghapusan tidak diizinkan
+            $flashData['status'] = 'error';
+            $flashData['message'] = 'Anda tidak memiliki izin untuk menghapus data pengembalian.';
+        }
+
+        // Set flash data
+        session()->setFlashData('flashData', $flashData);
+
         // Redirect kembali ke halaman yang sesuai
         return redirect()->to(base_url('kembali/riwayat'));
+    }
+
+    protected function hapusRiwayatBatal($peminjamanId)
+    {
+        // Membuat instance model
+        $riwayatPeminjamanModel = new \App\Models\RiwayatPeminjamanModel();
+
+        // Memanggil fungsi hapusDataPeminjaman() dari model untuk menghapus data
+        $riwayatPeminjamanModel->where('peminjaman_id', $peminjamanId)->delete();
     }
 }

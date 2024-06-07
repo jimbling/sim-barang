@@ -64,85 +64,73 @@
                         <th>Barang</th>
                     </tr>
                 </thead>
-                <tbody class="table-border ">
-                    <?php if (empty($data_pengeluaran)) : ?>
+                <?php
+                // Definisikan array nama bulan
+                $nama_bulan = [
+                    'January' => 'Januari',
+                    'February' => 'Februari',
+                    'March' => 'Maret',
+                    'April' => 'April',
+                    'May' => 'Mei',
+                    'June' => 'Juni',
+                    'July' => 'Juli',
+                    'August' => 'Agustus',
+                    'September' => 'September',
+                    'October' => 'Oktober',
+                    'November' => 'November',
+                    'December' => 'Desember',
+                ];
+                ?>
+                <tbody class="table-border">
+                    <?php if (empty($groupedData)) : ?>
                         <tr>
-                            <td colspan="9" style="text-align: center;">Tidak Ada Data Pengembalian Barang Laboratorium Keperawatan pada <strong>Bulan: <?= $namaBulan ?> Tahun: <?= $tahun ?> </strong></td>
+                            <td colspan="9" style="text-align: center;">Tidak ada data pengembalian pada bulan: <?= $namaBulan ?> Tahun: <?= $tahun ?></td>
                         </tr>
                     <?php else : ?>
-                        <?php $i = 1; // Deklarasi di luar loop foreach 
-                        ?>
-                        <?php foreach ($data_pengeluaran as $data) : ?>
+                        <?php $number = 1; ?>
+                        <?php foreach ($groupedData as $kodeKembali => $items) : ?>
+                            <?php $firstItem = reset($items); ?>
                             <tr>
-                                <th class="text-center" scope="row" style="vertical-align: middle; font-size: 13px;"><?= $i++; ?></th>
-                                <td><?= $data['kode_pinjam']; ?></td>
-                                <td width="12%"><?= $data['nama_peminjam']; ?></td>
-                                <td width="12%"><?= $data['nama_dosen']; ?></td>
-                                <td width="12%"><?= $data['nama_ruangan']; ?></td>
-                                <td width="12%"> <?php
-                                                    $tanggal_pinjam = \CodeIgniter\I18n\Time::parse($data['tanggal_pinjam'])
-                                                        ->setTimezone('Asia/Jakarta');
-
-                                                    $nama_bulan = [
-                                                        'January' => 'Januari',
-                                                        'February' => 'Februari',
-                                                        'March' => 'Maret',
-                                                        'April' => 'April',
-                                                        'May' => 'Mei',
-                                                        'June' => 'Juni',
-                                                        'July' => 'Juli',
-                                                        'August' => 'Agustus',
-                                                        'September' => 'September',
-                                                        'October' => 'Oktober',
-                                                        'November' => 'November',
-                                                        'December' => 'Desember',
-                                                    ];
-
-                                                    $bulan = $nama_bulan[$tanggal_pinjam->format('F')];
-
-                                                    echo $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y - H:i') . ' WIB';
-                                                    ?>
-
-                                </td>
-                                <td width="12%"> <?php
-                                                    $tanggal_kembali = \CodeIgniter\I18n\Time::parse($data['tanggal_kembali'])
-                                                        ->setTimezone('Asia/Jakarta');
-
-                                                    $nama_bulan = [
-                                                        'January' => 'Januari',
-                                                        'February' => 'Februari',
-                                                        'March' => 'Maret',
-                                                        'April' => 'April',
-                                                        'May' => 'Mei',
-                                                        'June' => 'Juni',
-                                                        'July' => 'Juli',
-                                                        'August' => 'Agustus',
-                                                        'September' => 'September',
-                                                        'October' => 'Oktober',
-                                                        'November' => 'November',
-                                                        'December' => 'Desember',
-                                                    ];
-
-                                                    $bulan = $nama_bulan[$tanggal_kembali->format('F')];
-
-                                                    echo $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y - H:i') . ' WIB';
-                                                    ?>
-
-                                </td>
-                                <td width="15%"><?= $data['keperluan']; ?></td>
-                                <td style="text-align: left;">
-
+                                <td><?= $number; ?></td>
+                                <td><?= $firstItem['kode_kembali']; ?></td>
+                                <td><?= $firstItem['nama_peminjam']; ?></td>
+                                <td><?= $firstItem['nama_dosen']; ?></td>
+                                <td><?= $firstItem['nama_ruangan']; ?></td>
+                                <td>
                                     <?php
-                                    // Pisahkan string nama_barang berdasarkan koma
-                                    $barangArray = explode(",", $data['nama_barang']);
-
-                                    // Tampilkan setiap barang dengan nomor urut menggunakan <p>
-                                    foreach ($barangArray as $key => $barang) {
-                                        echo '<p>' . ($key + 1) . '. ' . htmlspecialchars($barang) . '</p>';
-                                    }
+                                    $tanggal_pinjam = \CodeIgniter\I18n\Time::parse($firstItem['tanggal_pinjam'])
+                                        ->setTimezone('Asia/Jakarta');
+                                    $bulan = $nama_bulan[$tanggal_pinjam->format('F')];
+                                    echo $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y - H:i') . ' WIB';
                                     ?>
                                 </td>
+                                <td>
+                                    <?php
+                                    $tanggal_kembali = \CodeIgniter\I18n\Time::parse($firstItem['tanggal_kembali'])
+                                        ->setTimezone('Asia/Jakarta');
+                                    $bulan = $nama_bulan[$tanggal_kembali->format('F')];
+                                    echo $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y - H:i') . ' WIB';
+                                    ?>
+                                </td>
+                                <td width='12%'><?= $firstItem['keperluan']; ?></td>
+                                <td style="text-align: left;">
+                                    <?php $barangNumber = 1; ?>
+                                    <?php foreach ($items as $item) : ?>
+                                        <?php
+                                        // Pisahkan string nama_barang dan kode_barang berdasarkan koma
+                                        $barangArray = explode(",", $item['nama_barang']);
+                                        $kodeBarangArray = explode(",", $item['kode_barang']);
+
+                                        // Tampilkan setiap barang dengan nomor urut menggunakan <p>
+                                        foreach ($barangArray as $key => $barang) {
+                                            echo '<p>' . $barangNumber++ . '. ' . htmlspecialchars($barang) . ' - ' . htmlspecialchars($kodeBarangArray[$key]) . '</p>';
+                                        }
+                                        ?>
+                                    <?php endforeach; ?>
+                                </td>
                             </tr>
+                            <?php $number++; // Increment the number for the next group 
+                            ?>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
@@ -177,27 +165,28 @@
                     <!-- Isi tabel sesuai kebutuhan -->
                 </tbody>
             </table>
-        </div>
 
 
-        <div class="container">
-            <table class="table table-no-border text-center">
-                <thead>
-                    <tr>
-                        <th style="width: 100%;">
-                            <p>Mengetahui
-                            <p><?php echo $dataPengaturan['ttd_4'] ?>
-                            <p class="jarak-ttd"></p>
 
-                            <p class="underlined-text"><b> <?php echo $dataPengaturan['nama_ttd_4'] ?></b>
-                            <p>NIK. <?php echo $dataPengaturan['id_ttd_4'] ?></p>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Isi tabel sesuai kebutuhan -->
-                </tbody>
-            </table>
+            <div class="container">
+                <table class="table table-no-border text-center">
+                    <thead>
+                        <tr>
+                            <th style="width: 100%;">
+                                <p>Mengetahui
+                                <p><?php echo $dataPengaturan['ttd_4'] ?>
+                                <p class="jarak-ttd"></p>
+
+                                <p class="underlined-text"><b> <?php echo $dataPengaturan['nama_ttd_4'] ?></b>
+                                <p>NIK. <?php echo $dataPengaturan['id_ttd_4'] ?></p>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Isi tabel sesuai kebutuhan -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
 

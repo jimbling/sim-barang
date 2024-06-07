@@ -154,9 +154,11 @@ class Home extends BaseController
         $userId = session()->get('id'); // Ambil user_id dari sesi
         $jumlahPeminjaman = $peminjamanbarangModel->countUniquePeminjamanByDate($userId);
 
+        // Menghitung jumlah baris dari hasil peminjaman
+        $jumlahBaris = count($jumlahPeminjaman);
+
         $pengeluaranModel = new PengeluaranModel();
         $dataPengeluaran = $pengeluaranModel->getAllPengeluaran();
-
 
         $data = [
             'judul' => "SIM Lab | $namaKampus",
@@ -164,7 +166,7 @@ class Home extends BaseController
             'data_peminjaman' => $barangByStatus,
             'data_pengeluaran' =>  $dataPengeluaran,
             'jumlah_peminjaman' => $jumlahPeminjaman,
-
+            'jumlah_baris' => $jumlahBaris, // Menambahkan jumlah baris ke dalam data
         ];
 
         // Kirim data ke view atau lakukan hal lain sesuai kebutuhan
@@ -205,6 +207,14 @@ class Home extends BaseController
     }
 
     public function get_data_peminjaman($id)
+    {
+        $peminjamanModel = new PeminjamanModel();
+        $data = $peminjamanModel->find($id); // Mengambil data berdasarkan ID
+
+        return $this->response->setJSON($data); // Mengembalikan data dalam format JSON
+    }
+
+    public function getTanggalKembali($id)
     {
         $peminjamanModel = new PeminjamanModel();
         $data = $peminjamanModel->find($id); // Mengambil data berdasarkan ID

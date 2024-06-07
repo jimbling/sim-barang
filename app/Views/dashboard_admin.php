@@ -190,7 +190,7 @@
                                                 // Tampilkan badge "Baru" jika selisih waktu kurang dari 60 menit
                                                 if ($selisih_detik < 60 * 60) : // 60 detik * 60 menit = 1 jam
                                                 ?>
-                                                    <span class="badge badge-danger float-left">BARU</span>
+                                                    <span class="badge badge-primary float-left">BARU</span>
                                                 <?php endif; ?>
                                             </td>
                                             <td width="20%" style="text-align: center; vertical-align: middle; font-size: 13px;">
@@ -218,7 +218,7 @@
                                                 echo $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y - H:i') . ' WIB';
                                                 ?>
                                             </td>
-                                            <td width="20%" style="text-align: center; vertical-align: middle; font-size: 13px;">
+                                            <td width='20%' style="text-align: left; vertical-align: middle; font-size: 13px;">
                                                 <?php
                                                 $tanggal_kembali = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
 
@@ -240,9 +240,18 @@
                                                 $bulan = $nama_bulan[$tanggal_kembali->format('F')];
                                                 $waktu = $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y - H:i') . ' WIB';
 
-                                                // Jika tanggal pengembalian adalah hari ini atau melebihi tanggal saat ini, tambahkan badge "JATUH TEMPO"
-                                                if ($tanggal_kembali->toDateString() === date('Y-m-d') || $tanggal_kembali < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
-                                                    $waktu .= '<br><span class="badge badge-danger ">JATUH TEMPO</span>';
+                                                // Mendapatkan waktu sekarang dengan timezone Asia/Jakarta
+                                                $now = \CodeIgniter\I18n\Time::now('Asia/Jakarta');
+
+                                                // Membandingkan apakah tanggal pengembalian sama dengan hari ini
+                                                if ($tanggal_kembali->toDateString() === $now->toDateString()) {
+                                                    // Mendapatkan selisih waktu dalam menit antara waktu sekarang dan tanggal pengembalian
+                                                    $selisihMenit = $now->difference($tanggal_kembali)->getMinutes();
+
+                                                    // Jika selisih waktu kurang dari atau sama dengan 0, maka tanggal pengembalian telah lewat
+                                                    if ($selisihMenit <= 0) {
+                                                        $waktu .= '<br><span class="badge badge-danger">JATUH TEMPO</span>';
+                                                    }
                                                 }
 
                                                 echo $waktu;
@@ -257,8 +266,8 @@
                                                 <?php
                                                 $tanggal_pengembalian = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
 
-                                                // Periksa apakah tanggal pengembalian adalah hari ini atau sudah melebihi tanggal saat ini
-                                                if ($tanggal_pengembalian->toDateString() === date('Y-m-d') || $tanggal_pengembalian < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
+                                                // Periksa apakah tanggal pengembalian adalah hari ini atau sudah melebihi tanggal dan waktu saat ini
+                                                if ($tanggal_pengembalian->toDateTimeString() <= \CodeIgniter\I18n\Time::now('Asia/Jakarta')->toDateTimeString()) {
                                                 ?>
                                                     <button class="btn editBtn" data-id="<?= $dataPinjam['peminjaman_id']; ?>" data-toggle="modal" data-target="#editModal">
                                                         <i class='fas fa-retweet' style='color:#1D24CA' data-toggle="tooltip" data-placement="top" title="Perpanjang"></i>
@@ -419,18 +428,13 @@
 </div>
 
 
-<aside class="control-sidebar control-sidebar-dark">
 
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
 <script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
 <script>
     // Fungsi yang dipicu saat tombol edit ditekan
     $('.editBtn').click(function() {
         var id = $(this).data('id');
+        console.log("ID yang diambil:", id); // Menambahkan log ke konsol
 
         // Menggunakan AJAX untuk memuat data dari server
         $.ajax({
@@ -453,6 +457,16 @@
 
     // Fungsi untuk menyimpan perubahan
     function updateTanggalKembali() {
+        // Tampilkan pesan loading sementara
+        Swal.fire({
+            title: 'Mohon tunggu...',
+            onBeforeOpen: () => {
+                Swal.showLoading();
+            },
+            allowOutsideClick: false,
+            showConfirmButton: false
+        });
+
         var id = $('#editId').val();
         var tanggalKembali = $('#editTanggalKembali').val();
 
@@ -470,7 +484,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
-                    text: 'Tanggal kembali berhasil diperbarui.',
+                    text: 'Peminjaman berhasil diperpanjang.',
                 }).then((result) => {
                     // Lakukan reload halaman setelah SweetAlert ditutup
                     location.reload();

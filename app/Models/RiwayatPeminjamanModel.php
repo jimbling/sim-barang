@@ -31,6 +31,11 @@ class RiwayatPeminjamanModel extends Model
             ->findAll();
     }
 
+    public function deleteByPeminjamanId($peminjamanId)
+    {
+        return $this->where('peminjaman_id', $peminjamanId)->delete();
+    }
+
     public function getRiwayatPeminjaman($year)
     {
         return $this->select('
@@ -99,5 +104,35 @@ class RiwayatPeminjamanModel extends Model
         }
 
         return $years;
+    }
+
+    public function batalkanKembalikanByPeminjamanId($peminjamanId, $barangIdsToRestore)
+    {
+        // Ambil model RiwayatPeminjaman
+        $riwayatPeminjamanModel = new \App\Models\RiwayatPeminjamanModel();
+
+        // Ambil data pengembalian yang ingin dibatalkan
+        $existingReturns = $riwayatPeminjamanModel->where('peminjaman_id', $peminjamanId)
+            ->whereIn('barang_id', $barangIdsToRestore)
+            ->where('aksi', 'kembalikan') // Menyesuaikan dengan aksi pengembalian
+            ->findAll();
+
+        if (empty($existingReturns)) {
+            // Tidak ada pengembalian yang sesuai untuk dibatalkan
+            return false; // Atau berikan pesan error sesuai kebutuhan
+        }
+
+        // Hapus entri pengembalian dari tabel riwayat peminjaman
+        foreach ($existingReturns as $return) {
+            $riwayatPeminjamanModel->where('id', $return['id'])->delete();
+        }
+
+        // Kembalikan barang-barang ke tabel peminjaman barang
+        foreach ($existingReturns as $return) {
+            $this->db->table('tbl_peminjaman_barang')->where('peminjaman_id', $peminjamanId)
+                ->where('barang_id', $return['barang_id'])->delete();
+        }
+
+        return true;
     }
 }

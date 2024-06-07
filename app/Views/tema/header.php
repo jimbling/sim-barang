@@ -40,6 +40,7 @@ $favicon = $data_pengaturan['favicon'];
     <link rel="stylesheet" href="../../assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="../../assets/dist/css/cetak.css" rel="stylesheet" type="text/css">
     <style>
         #updateButton,
         #batalButton {
@@ -162,36 +163,17 @@ $level = $session->get('level');
                                     </p>
                                 </a>
                             </li>
-                            <li class="nav-item menu-close ">
-                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/kembali/riwayat' || $_SERVER['REQUEST_URI'] == '/pengeluaran/tambahBaru' || $_SERVER['REQUEST_URI'] == '/pengeluaran/daftar' || $_SERVER['REQUEST_URI'] == '/kembali/tambah') ? 'active' : '' ?>">
-                                    <i class="nav-icon fas fa-people-carry"></i>
+
+
+                            <li class="nav-item">
+                                <a href="/pinjam/daftar" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
+                                    <i class="fas fa-dolly nav-icon"></i>
                                     <p>
-                                        Sirkulasi
-                                        <i class="right fas fa-angle-left"></i>
+                                        Peminjaman
                                     </p>
                                 </a>
-
-                                <ul class="nav nav-treeview">
-
-                                    <li class="nav-item">
-                                        <a href="/pinjam/daftar" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pinjam/daftar') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
-                                            <i class="fas fa-dolly sub-item spaced-icon"></i>
-                                            <p>
-                                                Peminjaman
-                                            </p>
-                                        </a>
-                                        <a href="/kembali/riwayat" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/kembali/riwayat') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
-                                            <i class="fas fa-clipboard-check sub-item spaced-icon"></i>
-                                            <p>
-                                                Pengembalian
-                                            </p>
-                                        </a>
-
-
-                                    </li>
-
-                                </ul>
                             </li>
+
                             <li class="nav-item menu-close">
                                 <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/barang/daftar') !== false || $_SERVER['REQUEST_URI'] == '/barang/master' || $_SERVER['REQUEST_URI'] == '/barang/rusak') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-box"></i>

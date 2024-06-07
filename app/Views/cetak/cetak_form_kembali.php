@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form_<?php foreach ($peminjamanBarangDetails as $peminjamanBarangDetail) : ?>
+    <title>Form Pengembalian_<?php foreach ($peminjamanBarangDetails as $peminjamanBarangDetail) : ?>
         <?= $peminjamanBarangDetails[0]['kode_pinjam']; ?>
     <?php endforeach; ?>
     </title>
@@ -31,7 +31,7 @@
 
                         </h4>
                         <h5>
-                            <center><b>PEMINJAMAN BARANG LABORATORIUM KEPERAWATAN DAN PERMINTAAN BARANG PERSEDIAAN
+                            <center><b>PENGEMBALIAN BARANG LABORATORIUM KEPERAWATAN
                                 </b></CENTER>
                         </h5>
         </div>
@@ -163,7 +163,7 @@
                             <?php foreach ($barang_dipinjam_values as $value) : ?>
                                 <?= $item_counter . '. ' . $value; ?>
                                 <!-- Objek kotak yang lebih besar -->
-
+                                <div class="large-checkbox"></div>
                                 <br>
                                 <hr style="margin: 2px 0;"> <!-- HR untuk memisahkan data -->
                             <?php
@@ -180,56 +180,7 @@
 
 
         <br>
-        <div class="col page-break">
-            <div class="underlined-text mb-2 col page-break">
-                <h5>
-                    <strong>Daftar Permintaan Barang Persediaan Laboratorium: </strong>
-                </h5>
-            </div>
-            <table class="table table-border">
-                <thead>
-                    <tr>
-                        <th>Pengeluaran ID</th>
-                        <th>Nama Barang</th>
-                        <th>Ambil Barang</th>
-                        <!-- Add other table headers here -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($groupedPengeluaran) && array_key_exists(0, $groupedPengeluaran)) : ?>
-                        <?php foreach ($groupedPengeluaran as $pengeluaran) : ?>
-                            <tr>
-                                <td style="text-align: center;"><?= $pengeluaran->id; ?></td>
-                                <td><?= $pengeluaran->nama_barang; ?></td>
-                                <td style="text-align: center;"><?= $pengeluaran->ambil_barang; ?></td>
-                                <!-- Add other table data here -->
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else : ?>
-                        <tr>
-                            <td colspan="3" style="text-align: center; font-weight: bold;">
-                                Tidak Ada Permintaan Penggunaan Barang Habis Pakai Laboratorium Keperawatan
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="2" style="text-align: center; font-weight: bold;">T O T A L</td>
-                        <td style="text-align: center; font-weight: bold;">
-                            <?php
-                            // Calculate totalAmbilBarang
-                            $totalAmbilBarang = 0;
-                            foreach ($groupedPengeluaran as $pengeluaran) {
-                                $totalAmbilBarang += (int)$pengeluaran->ambil_barang;
-                            }
-                            echo $totalAmbilBarang;
-                            ?>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+
 
 
 
@@ -237,6 +188,24 @@
 
     </div>
 
+
+
+    <br>
+    <p> Pada hari ini ........................................ tanggal ........................................ bulan ........................................ tahun ........................................
+    <p> telah dikembalikan barang laboratoirum keperawatan oleh : <u><?php
+                                                                        // Contoh data
+                                                                        $peminjamanData = $peminjamanBarangDetails[0]['nama_peminjam'];
+
+                                                                        // Memisahkan string berdasarkan tanda "-"
+                                                                        $splitData = explode('-', $peminjamanData);
+
+                                                                        // Mengambil elemen kedua setelah pemisahan
+                                                                        $namaPeminjam = isset($splitData[1]) ? trim($splitData[1]) : '';
+
+                                                                        // Menampilkan nama peminjam
+                                                                        echo $namaPeminjam;
+                                                                        ?></u>, berupa data barang-barang yang sudah terceklis pada formulir diatas.
+    <p>Barang-barang tersebut telah diterima dalam keadaan Baik/Rusak oleh : <u><?php echo $dataPengaturan['nama_laboran'] ?></u>.
 
     <div class="container mt-2 mb-2">
         <div class="row">
@@ -275,7 +244,12 @@
             </div>
         </div>
     </div>
-
+    <br>
+    <br>
+    <br>
+    <p> Data barang yang sudah terceklis adalah barang yang sudah dikembalikan.
+        <br>
+    <p>Catatan / Keterangan Tambahan :
 
 </body>
 

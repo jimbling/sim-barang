@@ -13,6 +13,18 @@ class BarangModel extends Model
     protected $useSoftDeletes = true;
     protected $allowedFields = ['id', 'kode_barang', 'nama_barang', 'slug', 'jumlah_barang', 'status_barang', 'kondisi_barang', 'disewakan', 'harga_sewa', 'created_at', 'updated_at', 'deleted_at'];
 
+    public function getAllDataWithRelations()
+    {
+        // Menggunakan query builder untuk melakukan join tabel
+        $builder = $this->db->table($this->table);
+        $builder->select('tbl_riwayat_pengembalian.*, tbl_peminjaman.*, tbl_barang.*');
+        $builder->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_pengembalian.peminjaman_id');
+        $builder->join('tbl_barang', 'tbl_barang.id = tbl_riwayat_pengembalian.barang_id');
+        $query = $builder->get();
+
+        // Mengembalikan hasil query dalam bentuk array
+        return $query->getResultArray();
+    }
 
     public function getBarangDisewakan()
     {
@@ -102,5 +114,12 @@ class BarangModel extends Model
     public function hitungJumlahBarangBaik()
     {
         return $this->where('kondisi_barang', 'baik')->countAllResults();
+    }
+
+    public function updateStatusBarang($barangIds, $status)
+    {
+        return $this->set('status_barang', $status)
+            ->whereIn('id', $barangIds)
+            ->update();
     }
 }

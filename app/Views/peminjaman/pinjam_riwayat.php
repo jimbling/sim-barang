@@ -28,6 +28,7 @@
     <div class="content">
         <div class="container-fluid">
 
+
             <div class="row">
                 <div class="col-md-12 col-12">
                     <div class="card card-primary card-outline shadow-lg">
@@ -55,7 +56,7 @@
                                         <th style="text-align: center; font-size: 13px;">Digunakan di</th>
                                         <th style="text-align: center; font-size: 13px;">Digunakan untuk</th>
                                         <th style="text-align: center; font-size: 13px;">Nama Barang</th>
-
+                                        <th style="text-align: center; font-size: 13px;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <div id="alertContainer" class="mt-3"></div>
@@ -75,94 +76,15 @@
 
 
 
-<aside class="control-sidebar control-sidebar-dark">
-
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
 
 
-<aside class="control-sidebar control-sidebar-dark">
 
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
-
-
-<script>
-    function showLoading() {
-        let timerInterval
-        Swal.fire({
-            title: 'Sedang memproses data ....',
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading()
-                const b = Swal.getHtmlContainer().querySelector('b')
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                }, 100)
-            }
-        });
-    }
-
-    function hideLoading() {
-        Swal.close();
-    }
-
-    function hapus_data(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id); // Tambahkan baris ini
-        Swal.fire({
-            title: 'HAPUS?',
-            text: "Yakin akan menghapus data ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, Hapus!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Tampilkan pesan loading saat permintaan sedang dijalankan
-                showLoading();
-                // Lakukan permintaan penghapusan ke server, misalnya dengan AJAX.
-                // Jika penghapusan berhasil, maka lakukan redirect ke halaman /siswa.
-                // Contoh penggunaan jQuery untuk permintaan penghapusan:
-                $.ajax({
-                    type: 'POST',
-                    url: '/pinjam/hapus/' + data_id, // Ganti URL sesuai dengan URL yang benar
-                    success: function(response) {
-                        // Sembunyikan pesan loading saat permintaan selesai
-                        hideLoading();
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Data berhasil dihapus.',
-                            icon: 'success',
-                            timer: 2000, // Durasi tampilan dalam milidetik (misalnya, 5000 milidetik = 5 detik)
-                            showConfirmButton: false, // Sembunyikan tombol OK (jika tidak diinginkan)
-                        }).then(() => {
-                            // Arahkan pengguna ke halaman baru setelah SweetAlert ditutup
-                            window.location.replace("/pinjam/daftar");
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        // Sembunyikan pesan loading saat ada kesalahan dalam penghapusan
-                        hideLoading();
-                        // Handle error here, jika ada kesalahan dalam penghapusan
-                        console.log(error);
-                    }
-                });
-            }
-        });
-    }
-</script>
 <script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
 <script>
     $(document).ready(function() {
         var table = $('#daftarRiwayatPeminjamanTable').DataTable({
             "processing": true,
+            "responsive": true, // Menambahkan opsi responsive
             "ajax": {
                 "url": "<?= base_url('peminjaman/fetchData') ?>",
                 "type": "POST",
@@ -223,6 +145,15 @@
                         });
                         return html;
                     }
+                },
+                {
+                    "data": null, // Menggunakan null karena kita membutuhkan lebih dari satu properti
+                    "render": function(data, type, row) {
+                        return `
+                            <button type="button" class="btn btn-primary btn-xs detailBtn" data-kodepinjam="${row.kode_pinjam}">Detail</button>
+                            <button type="button" class="btn btn-danger btn-xs hapusBtn" data-id="${row.peminjaman_id}">Hapus</button>
+                        `;
+                    }
                 }
             ]
         });
@@ -236,6 +167,106 @@
                 cell.innerHTML = i + 1;
             });
         }).draw();
+
+        // Event listener untuk tombol Detail
+        $('#daftarRiwayatPeminjamanTable').on('click', '.detailBtn', function() {
+            var kode_pinjam = $(this).data('kodepinjam');
+            // Implementasi detail sesuai kebutuhan, misalnya membuka modal atau mengarahkan ke halaman detail
+            console.log('Detail untuk kode pinjam:', kode_pinjam);
+            // Contoh pengalihan ke halaman detail
+            // window.location.href = '/pinjam/detail/' + kode_pinjam;
+        });
+
+        // Event listener untuk tombol Edit
+        $('#daftarRiwayatPeminjamanTable').on('click', '.editBtn', function() {
+            var kode_pinjam = $(this).data('kodepinjam');
+            // Implementasi edit sesuai kebutuhan, misalnya membuka modal edit atau mengarahkan ke halaman edit
+            console.log('Edit untuk kode pinjam:', kode_pinjam);
+            // Contoh pengalihan ke halaman edit
+            // window.location.href = '/pinjam/edit/' + kode_pinjam;
+        });
+
+        // Event listener untuk tombol Hapus
+        $('#daftarRiwayatPeminjamanTable').on('click', '.hapusBtn', function() {
+            var data_id = $(this).data('id');
+            hapus_data(data_id);
+        });
+    });
+
+    // Fungsi untuk menampilkan pesan loading
+    function showLoading() {
+        let timerInterval
+        Swal.fire({
+            title: 'Sedang memproses data ....',
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+    }
+
+    // Fungsi untuk menyembunyikan pesan loading
+    function hideLoading() {
+        Swal.close();
+    }
+
+    // Fungsi untuk menghapus data berdasarkan id
+    function hapus_data(data_id) {
+        console.log('Data ID yang akan dihapus:', data_id);
+        Swal.fire({
+            title: 'HAPUS?',
+            text: "Yakin akan menghapus data ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Hapus!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Tampilkan pesan loading saat permintaan sedang dijalankan
+                showLoading();
+                // Lakukan permintaan penghapusan ke server
+                $.ajax({
+                    type: 'POST',
+                    url: '/pinjam/hapus_riwayat/' + data_id, // Ganti URL sesuai dengan URL yang benar
+                    success: function(response) {
+                        // Sembunyikan pesan loading saat permintaan selesai
+                        hideLoading();
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Data berhasil dihapus.',
+                            icon: 'success',
+                            timer: 2000, // Durasi tampilan dalam milidetik
+                            showConfirmButton: false, // Sembunyikan tombol OK
+                        }).then(() => {
+                            // Arahkan pengguna ke halaman baru setelah SweetAlert ditutup
+                            window.location.replace("/pinjam/riwayat");
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Sembunyikan pesan loading saat ada kesalahan dalam penghapusan
+                        hideLoading();
+                        // Tampilkan pesan error jika ada kesalahan
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat menghapus data.',
+                            icon: 'error',
+                        });
+                        console.log(error);
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+
+
+
+<script>
+    $(document).on('click', '.detailBtn', function() {
+        var kodePinjam = $(this).data('kodepinjam');
+        window.location.href = "http://localhost:8080/kode_kembali/detail/" + kodePinjam;
     });
 </script>
 <?php echo view('tema/footer.php'); ?>

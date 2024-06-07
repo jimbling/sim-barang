@@ -332,6 +332,7 @@ class Laporan extends BaseController
         $bulan = $this->request->getGet('bulan');
         $year = $this->request->getGet('tahun');
 
+        // Mendapatkan nama bulan berdasarkan nilai bulan dari array
         $bulanOptions = [
             '01' => 'Januari',
             '02' => 'Februari',
@@ -348,21 +349,31 @@ class Laporan extends BaseController
         ];
 
         $month = str_pad($bulan, 2, '0', STR_PAD_LEFT);
-
-        // Mendapatkan nama bulan berdasarkan nilai bulan dari array
         $namaBulan = $bulanOptions[$month];
+
+        // Mendapatkan data dari model berdasarkan bulan dan tahun
         $pengembalianbarangModel = new PengembalianbarangModel();
         $dataByMonthYear = $pengembalianbarangModel->getDataByMonthAndYear($month, $year);
 
+        // Inisialisasi array untuk mengelompokkan data berdasarkan kode_kembali
+        $groupedData = [];
+
+        // Mengelompokkan data berdasarkan kode_kembali
+        foreach ($dataByMonthYear as $data) {
+            $kodeKembali = $data['kode_kembali'];
+            $groupedData[$kodeKembali][] = $data;
+        }
+
+        // Mengirimkan data ke view
         $data = [
             'judul' => 'Daftar Pinjam | Akper "YKY" Yogyakarta',
-            'data_pengeluaran' => $dataByMonthYear,
+            'groupedData' => $groupedData, // Mengirimkan data yang telah dikelompokkan
             'dataPengaturan' => $dataPengaturan,
             'namaBulan' => $namaBulan,
             'tahun' => $year,
         ];
 
-        // Load view laporan_peminjaman_bulan.php
+        // Load view laporan_pengembalian_bulan.php dengan data yang dikirimkan
         return view('cetak/laporan_pengembalian_bulan', $data);
     }
 
@@ -376,10 +387,19 @@ class Laporan extends BaseController
 
         $pengembalianbarangModel = new PengembalianbarangModel();
         $dataByYear = $pengembalianbarangModel->getDataByYear($year);
+        // Inisialisasi array untuk mengelompokkan data berdasarkan kode_kembali
+        $groupedData = [];
+
+        // Mengelompokkan data berdasarkan kode_kembali
+        foreach ($dataByYear as $data) {
+            $kodeKembali = $data['kode_kembali'];
+            $groupedData[$kodeKembali][] = $data;
+        }
+
 
         $data = [
             'judul' => 'Daftar Pinjam | Akper "YKY" Yogyakarta',
-            'data_pengeluaran' => $dataByYear,
+            'groupedDataByYear' => $groupedData, // Mengirimkan data yang telah dikelompokkan
             'dataPengaturan' => $dataPengaturan,
             'tahun' => $year,
         ];

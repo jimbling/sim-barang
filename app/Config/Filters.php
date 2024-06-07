@@ -68,6 +68,16 @@ class Filters extends BaseConfig
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
     public $filters = [
-        'auth' => ['before' => ['/dashboard', '/adminpanel', 'barang/*', 'mahasiswa/*', 'data/*', 'kembali/*', 'pinjam/*', 'pengembalian/*', 'peminjaman/*', 'cetak/*', 'penerimaan/*', 'get_detail/*', 'pengeluaran/*', 'pengaturan/*', 'laporan/*', 'cetak/mutasi/*', 'pengeluaran_murni/*', 'reservasi', 'reservasi/*', 'pemeliharaan']],
+        'auth' => ['before' => [
+            '/dashboard', '/adminpanel', 'barang/*', 'mahasiswa/*', 'data/*',
+            'kembali/*', 'pinjam/*', 'pengembalian/*', 'peminjaman/*', 'cetak/*',
+            'penerimaan/*', 'get_detail/*', 'pengeluaran/*', 'pengaturan/*', 'laporan/*',
+            'cetak/mutasi/*', 'pengeluaran_murni/*', 'reservasi', 'reservasi/*', 'pemeliharaan',
+            '/ambil_tanggal/*', '/form_kembali/*', '/kembali/hapus_kode/*', '/backup/all', '/backup/latest',
+            '/alert/getNotificationsToShow', '/upload/*', '/peminjaman/get_detail/*', '/backup/unduh/*',
+            '/backup', '/get-user-by-id/*', '/profile', '/dosen_tendik/get_detail/*', '/persediaan/opname/export',
+            '/kode_kembali/*'
+
+        ]],
     ];
 }

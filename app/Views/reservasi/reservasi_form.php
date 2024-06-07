@@ -198,6 +198,7 @@
 <!-- Tambahkan script JavaScript -->
 <script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
 
+
 <script>
     $(document).ready(function() {
         const keperluanSelect = $('#pinjam_keperluan');
@@ -205,6 +206,7 @@
         const pembelajaranSelect = $('#pembelajaran');
         const formMateriPembelajaran = $('#form-materi-pembelajaran');
         const materiPembelajaranTextarea = $('#materi_pembelajaran');
+        const tanggalPengembalianInput = $('input[name="tanggal_pengembalian"]');
 
         keperluanSelect.change(function() {
             const selectedValue = $(this).val();
@@ -213,11 +215,15 @@
                 pembelajaranSelect.prop('disabled', false); // Aktifkan form pembelajaran
                 formMateriPembelajaran.show();
                 materiPembelajaranTextarea.prop('disabled', false); // Aktifkan form textarea
+                // Menonaktifkan form tanggal pengembalian
+                tanggalPengembalianInput.prop('disabled', true);
             } else {
                 formPembelajaran.hide();
                 pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran
                 formMateriPembelajaran.hide();
                 materiPembelajaranTextarea.prop('disabled', true); // Nonaktifkan form textarea
+                // Mengaktifkan form tanggal pengembalian
+                tanggalPengembalianInput.prop('disabled', false);
             }
         });
 
@@ -228,6 +234,7 @@
         materiPembelajaranTextarea.prop('disabled', true); // Nonaktifkan form textarea awal
     });
 </script>
+
 
 
 <script>
@@ -283,12 +290,7 @@
                 return; // Berhenti jika validasi gagal
             }
 
-            // Validasi pinjam_keperluan
-            var tanggal_pengembalian = $("#reservationkembali").val();
-            if (keperluan === '') {
-                toastr.error('Tanggal Pengembalian harus diisi!');
-                return; // Berhenti jika validasi gagal
-            }
+
 
             // Validasi barang[]
             var selectedBarang = $("select[name='barang[]']").val();

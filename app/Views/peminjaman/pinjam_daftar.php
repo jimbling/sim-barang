@@ -123,9 +123,18 @@
                                                 $bulan = $nama_bulan[$tanggal_kembali->format('F')];
                                                 $waktu = $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y - H:i') . ' WIB';
 
-                                                // Jika tanggal pengembalian adalah hari ini atau sudah melebihi tanggal saat ini, tambahkan badge "JATUH TEMPO"
-                                                if ($tanggal_kembali->toDateString() === date('Y-m-d') || $tanggal_kembali < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
-                                                    $waktu .= '<br><span class="badge badge-danger">JATUH TEMPO</span>';
+                                                // Mendapatkan waktu sekarang dengan timezone Asia/Jakarta
+                                                $now = \CodeIgniter\I18n\Time::now('Asia/Jakarta');
+
+                                                // Membandingkan apakah tanggal pengembalian sama dengan hari ini
+                                                if ($tanggal_kembali->toDateString() === $now->toDateString()) {
+                                                    // Mendapatkan selisih waktu dalam menit antara waktu sekarang dan tanggal pengembalian
+                                                    $selisihMenit = $now->difference($tanggal_kembali)->getMinutes();
+
+                                                    // Jika selisih waktu kurang dari atau sama dengan 0, maka tanggal pengembalian telah lewat
+                                                    if ($selisihMenit <= 0) {
+                                                        $waktu .= '<br><span class="badge badge-danger">JATUH TEMPO</span>';
+                                                    }
                                                 }
 
                                                 echo $waktu;
@@ -147,13 +156,14 @@
                                             <td width='5%' class="text-center" style="text-align: center; vertical-align: middle;">
                                                 <a onclick=" hapus_data('<?= $dataPinjam['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>
                                                 <a class="btn btn-xs btn-info mx-auto text-white" href="<?= base_url('cetak_pinjam/' . $dataPinjam['peminjaman_id']); ?>" target="_blank">
-                                                    Cetak
+                                                    F. Pinjam
                                                 </a>
+
                                                 <?php
                                                 $tanggal_pengembalian = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
 
-                                                // Periksa apakah tanggal pengembalian adalah hari ini atau sudah melebihi tanggal saat ini
-                                                if ($tanggal_pengembalian->toDateString() === date('Y-m-d') || $tanggal_pengembalian < \CodeIgniter\I18n\Time::now('Asia/Jakarta')) {
+                                                // Periksa apakah tanggal pengembalian adalah hari ini atau sudah melebihi tanggal dan waktu saat ini
+                                                if ($tanggal_pengembalian->toDateTimeString() <= \CodeIgniter\I18n\Time::now('Asia/Jakarta')->toDateTimeString()) {
                                                 ?>
                                                     <button class="btn btn-xs editBtn btn-warning mx-auto text-dark" data-id="<?= $dataPinjam['peminjaman_id']; ?>" data-toggle="modal" data-target="#editModal">
                                                         Perpanjang
@@ -161,6 +171,13 @@
                                                 <?php
                                                 }
                                                 ?>
+
+
+                                                <a class="btn btn-xs btn-success mx-auto text-white" href="<?= base_url('form_kembali/' . $dataPinjam['peminjaman_id']); ?>" target="_blank">
+                                                    F. Kembali
+                                                </a>
+
+
                                             </td>
 
                                         </tr>
@@ -177,6 +194,8 @@
     </div>
 
 </div>
+
+
 
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -216,18 +235,15 @@
     </div>
 </div>
 
-<aside class="control-sidebar control-sidebar-dark">
 
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
 
 
 
 
 <script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
+
+
+
 <script>
     $(document).ready(function() {
         <?php if (!empty($jumlah_peminjaman)) : ?>
@@ -258,66 +274,7 @@
     });
 </script>
 
-<script>
-    // Fungsi yang dipicu saat tombol edit ditekan
-    $('.editBtn').click(function() {
-        var id = $(this).data('id');
 
-        // Menggunakan AJAX untuk memuat data dari server
-        $.ajax({
-            url: '/peminjaman/get_detail/' + id, // Ganti dengan URL yang sesuai
-            method: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                // Memasukkan data ke dalam input modal
-                $('#editId').val(response.id);
-                $('#editTanggalKembali').val(response.tanggal_pengembalian);
-
-                // Set minDate for the datepicker
-                $('#editTanggalKembali').datetimepicker('minDate', moment(response.tanggal_pengembalian).add(1, 'days'));
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    });
-
-    // Fungsi untuk menyimpan perubahan
-    function updateTanggalKembali() {
-        var id = $('#editId').val();
-        var tanggalKembali = $('#editTanggalKembali').val();
-
-        $.ajax({
-            url: 'update_tanggal_kembali/' + id,
-            method: 'POST',
-            data: {
-                tanggalKembali: tanggalKembali
-            },
-            success: function(response) {
-                // Tutup modal setelah berhasil disimpan
-                $('#editModal').modal('hide');
-
-                // Tampilkan SweetAlert berhasil
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: 'Peminjaman berhasil diperpanjang.',
-                }).then((result) => {
-                    // Lakukan reload halaman setelah SweetAlert ditutup
-                    location.reload();
-                });
-            },
-            error: function(xhr, status, error) {
-                // Tampilkan SweetAlert gagal jika terjadi error
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: 'Gagal memperbarui tanggal kembali.',
-                });
-            }
-        });
-    }
-</script>
 
 <script>
     function showLoading() {
@@ -463,4 +420,75 @@
         });
     </script>
 <?php endif; ?>
+
+<script>
+    // Fungsi yang dipicu saat tombol edit ditekan
+    $('.editBtn').click(function() {
+        var id = $(this).data('id');
+
+        // Menggunakan AJAX untuk memuat data dari server
+        $.ajax({
+            url: '/ambil_tanggal/' + id, // Ganti dengan URL yang sesuai
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                // Memasukkan data ke dalam input modal
+                $('#editId').val(response.id);
+                $('#editTanggalKembali').val(response.tanggal_pengembalian);
+
+                // Set minDate for the datepicker
+                $('#editTanggalKembali').datetimepicker('minDate', moment(response.tanggal_pengembalian).add(1, 'days'));
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+    // Fungsi untuk menyimpan perubahan
+    function updateTanggalKembali() {
+        // Tampilkan pesan loading sementara
+        Swal.fire({
+            title: 'Mohon tunggu...',
+            onBeforeOpen: () => {
+                Swal.showLoading();
+            },
+            allowOutsideClick: false,
+            showConfirmButton: false
+        });
+
+        var id = $('#editId').val();
+        var tanggalKembali = $('#editTanggalKembali').val();
+
+        $.ajax({
+            url: '/update_tanggal_kembali/' + id,
+            method: 'POST',
+            data: {
+                tanggalKembali: tanggalKembali
+            },
+            success: function(response) {
+                // Tutup modal setelah berhasil disimpan
+                $('#editModal').modal('hide');
+
+                // Tampilkan SweetAlert berhasil
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Peminjaman berhasil diperpanjang.',
+                }).then((result) => {
+                    // Lakukan reload halaman setelah SweetAlert ditutup
+                    location.reload();
+                });
+            },
+            error: function(xhr, status, error) {
+                // Tampilkan SweetAlert gagal jika terjadi error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Gagal memperbarui tanggal kembali.',
+                });
+            }
+        });
+    }
+</script>
 <?php echo view('tema/footer.php'); ?>

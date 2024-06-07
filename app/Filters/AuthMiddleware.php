@@ -24,7 +24,7 @@ class AuthMiddleware implements FilterInterface
         $adminOnlyPages = [
             'adminpanel', 'barang/master', 'mahasiswa/*', 'data/*', 'kembali/*',
             'pinjam/*', 'pengembalian/*', 'peminjaman/*', 'pengeluaran/*', 'cetak/*', 'cetak_invoice/*', 'barang/disewakan',
-            'pengaturan/*', 'laporan/*', 'pemeliharaan'
+            'pengaturan/*', 'laporan/*', 'pemeliharaan', 'kembali/riwayat', 'kembali/tambah'
         ];
 
         // Periksa apakah pengguna adalah 'User' dan mencoba mengakses halaman yang terbatas

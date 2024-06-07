@@ -27,6 +27,8 @@ $(function() {
   }
 
 
+
+
   if (window.location.pathname === '/penerimaan/daftar') {
       $('#daftarPenerimaanPersediaanTable').DataTable({
           "paging": true,
