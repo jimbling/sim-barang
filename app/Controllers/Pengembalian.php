@@ -310,7 +310,8 @@ class Pengembalian extends BaseController
         return redirect()->to('/kembali/riwayat'); // Ganti dengan URL yang sesuai dengan rute Anda.
     }
 
-    public function hapusKembaliKode($kodeKembali)
+
+    protected function hapusKembaliKode($kodeKembali)
     {
         // Memeriksa izin penghapusan berdasarkan level pengguna
         $userLevel = session()->get('level');
@@ -328,6 +329,57 @@ class Pengembalian extends BaseController
                 // Set pesan sukses untuk flash data
                 $flashData['status'] = 'success';
                 $flashData['message'] = 'Semua data pengembalian dengan kode ' . $kodeKembali . ' telah dihapus.';
+            } else {
+                // Set pesan error jika data pengembalian tidak ditemukan
+                $flashData['status'] = 'error';
+                $flashData['message'] = 'Data pengembalian dengan kode ' . $kodeKembali . ' tidak ditemukan.';
+            }
+        } else {
+            // Jika pengguna bukan admin, berikan pesan error bahwa penghapusan tidak diizinkan
+            $flashData['status'] = 'error';
+            $flashData['message'] = 'Anda tidak memiliki izin untuk menghapus data pengembalian.';
+        }
+
+        // Set flash data
+        session()->setFlashData('flashData', $flashData);
+
+        // Redirect kembali ke halaman yang sesuai
+        return redirect()->to(base_url('kembali/riwayat'));
+    }
+
+
+    // Untuk melakukan penghapusan data kembali dan data peminjaman
+    public function penghapusanKodeKembali($kodeKembali)
+    {
+        // Memeriksa izin penghapusan berdasarkan level pengguna
+        $userLevel = session()->get('level');
+        $flashData = [];
+
+        if ($userLevel == 'Admin') {
+            // Gunakan metode model untuk menemukan ID peminjaman dan barang berdasarkan kode_kembali
+            $ids = $this->pengembalianbarangModel->findPeminjamanBarangIdsByKodeKembali($kodeKembali);
+
+            // Jika data ditemukan
+            if ($ids !== null) {
+                // Hapus data dari tabel pengembalianbarang berdasarkan kode_kembali
+                $this->pengembalianbarangModel->where('kode_kembali', $kodeKembali)->delete();
+
+                // Hapus data dari tabel tbl_peminjaman_barang berdasarkan peminjaman_id dan barang_id
+                if (!empty($ids['peminjaman_ids']) && !empty($ids['barang_ids'])) {
+                    foreach ($ids['peminjaman_ids'] as $index => $peminjaman_id) {
+                        $barang_id = $ids['barang_ids'][$index];
+
+                        // Menghapus data dari tabel tbl_peminjaman_barang berdasarkan peminjaman_id dan barang_id
+                        $this->peminjamanbarangModel->where([
+                            'peminjaman_id' => $peminjaman_id,
+                            'barang_id' => $barang_id
+                        ])->delete();
+                    }
+                }
+
+                // Set pesan sukses untuk flash data
+                $flashData['status'] = 'success';
+                $flashData['message'] = 'Semua data pengembalian dengan kode ' . $kodeKembali . ' telah dihapus beserta data terkait dari tabel tbl_peminjaman_barang.';
             } else {
                 // Set pesan error jika data pengembalian tidak ditemukan
                 $flashData['status'] = 'error';

@@ -204,12 +204,12 @@ $routes->post('/generate-kode-pinjam', 'Pengaturan::generateKodePinjam');
 $routes->get('backup/all', 'Pemeliharaan::getAllBackups');
 $routes->get('backup/latest', 'Pemeliharaan::getLatestBackups');
 
-$routes->get('/kembali/hapus_kode/(:segment)', 'Pengembalian::hapusKembaliKode/$1');
+
 $routes->get('form_kembali/(:num)', 'Peminjaman::cetakFormPengembalian/$1');
 $routes->get('/ambil_tanggal/(:num)', 'Home::get_data_peminjaman/$1');
 $routes->get('/kode_kembali/detail/(:segment)', 'Peminjaman::riwayatKodePinjam/$1');
 $routes->get('cetak/detail_pinjam/(:segment)', 'Peminjaman::cetakDetailPinjam/$1');
-$routes->get('/kembali/hapus_kode/(:segment)', 'Pengembalian::hapusKembaliKode/$1');
+$routes->get('/kembali/hapus_kode/(:segment)', 'Pengembalian::penghapusanKodeKembali/$1');
 $routes->post('/pengembalian/batal', 'Pengembalian::batal');
 
 
