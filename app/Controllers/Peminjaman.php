@@ -169,12 +169,24 @@ class Peminjaman extends BaseController
             $groupedData[$kodePinjam][] = $data;
         }
 
+        // Membuat instance dari model yang dibutuhkan
+        $riwayatPeminjamanModel = new RiwayatPeminjamanModel();
+        $peminjamanBarangModel = new PeminjamanbarangModel();
+
+        // Mendapatkan data dari masing-masing model berdasarkan kode pinjam
+        $dataRiwayat = $riwayatPeminjamanModel->getRiwayatPeminjamanData($kodePinjam);
+        $dataPeminjamanBarang = $peminjamanBarangModel->getPeminjamanBarangData($kodePinjam);
+
+        // Gabungkan data dari kedua tabel menjadi satu array
+        $combinedData = array_merge($dataRiwayat, $dataPeminjamanBarang);
+
         $data = [
             'judul' => "Daftar Pinjam | $namaKampus",
             'currentYear' => $selectedYear,
             'selectedYear' => $selectedYear,
             'availableYears' => $availableYears,
             'grouped_data' => $groupedData,
+            'semua_data' => $combinedData,
         ];
 
         // Kirim data ke tampilan
@@ -209,6 +221,18 @@ class Peminjaman extends BaseController
             $groupedData[$kodePinjam][] = $data;
         }
 
+        // Membuat instance dari model yang dibutuhkan
+        $riwayatPeminjamanModel = new RiwayatPeminjamanModel();
+        $peminjamanBarangModel = new PeminjamanbarangModel();
+
+        // Mendapatkan data dari masing-masing model berdasarkan kode pinjam
+        $dataRiwayat = $riwayatPeminjamanModel->getRiwayatPeminjamanData($kodePinjam);
+        $dataPeminjamanBarang = $peminjamanBarangModel->getPeminjamanBarangData($kodePinjam);
+
+        // Gabungkan data dari kedua tabel menjadi satu array
+        $combinedData = array_merge($dataRiwayat, $dataPeminjamanBarang);
+
+
         $data = [
             'judul' => "Daftar Pinjam | $namaKampus",
             'currentYear' => $selectedYear,
@@ -216,11 +240,14 @@ class Peminjaman extends BaseController
             'availableYears' => $availableYears,
             'grouped_data' => $groupedData,
             'dataPengaturan' => $dataPengaturan,
+            'semua_data' => $combinedData,
+
         ];
 
         // Kirim data ke tampilan
         return view('cetak/cetak_detail_peminjaman', $data);
     }
+
 
     public function getRiwayatPeminjaman()
     {
@@ -403,20 +430,49 @@ class Peminjaman extends BaseController
     {
         // Membuat instance model
         $peminjamanbarangModel = new \App\Models\PeminjamanbarangModel();
+        $pengembalianbarangModel = new \App\Models\PengembalianbarangModel();
+        $peminjamanModel = new \App\Models\PeminjamanModel(); // Model peminjaman untuk mencari kode_pinjam
 
-        // Memanggil fungsi hapusDataPeminjaman() dari model untuk menghapus data
-        $deleted = $peminjamanbarangModel->hapusDataPeminjaman($peminjamanId);
+        try {
+            // Cek apakah ada data di tbl_riwayat_pengembalian yang terkait dengan peminjaman_id
+            $pengembalianTerkait = $pengembalianbarangModel->where('peminjaman_id', $peminjamanId)->findAll();
 
-        // Memeriksa apakah penghapusan berhasil
-        if ($deleted === true) {
-            // Jika berhasil, set pesan flash data untuk sukses
-            session()->setFlashData('pesanHapusPeminjaman', 'Data Peminjaman berhasil dihapus.');
+            if (!empty($pengembalianTerkait)) {
+                // Jika ada data terkait, batalkan penghapusan dan kirim pesan error
 
-            // Redirect kembali ke halaman /pinjam/daftar setelah penghapusan
-            return redirect()->to('/pinjam/daftar');
-        } else {
-            // Jika gagal, kirim pesan kesalahan sebagai respons HTTP
-            return $this->response->setJSON(['error' => $deleted]);
+                // Mengambil kode_pinjam berdasarkan peminjaman_id
+                $peminjaman = $peminjamanModel->find($peminjamanId);
+                $kodePinjam = $peminjaman['kode_pinjam']; // Ambil kode_pinjam dari hasil query
+
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Masih ada data pada pengembalian. Hapus terlebih dahulu data pengembalian, dengan Kode Pinjam: ' . $kodePinjam . '.'
+                ]);
+            }
+
+            // Jika tidak ada data pengembalian terkait, lanjutkan dengan penghapusan data peminjaman
+            $deleted = $peminjamanbarangModel->hapusDataPeminjaman($peminjamanId);
+
+            // Memeriksa apakah penghapusan berhasil
+            if ($deleted === true) {
+                // Jika berhasil, set pesan flash data untuk sukses
+                session()->setFlashData('pesanHapusPeminjaman', 'Data Peminjaman berhasil dihapus.');
+
+                // Redirect kembali ke halaman /pinjam/daftar setelah penghapusan
+                return redirect()->to('/pinjam/daftar');
+            } else {
+                // Jika gagal, kirim pesan kesalahan sebagai respons HTTP
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Gagal menghapus data Peminjaman.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Jika terjadi exception, kirim pesan kesalahan sebagai respons HTTP
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage()
+            ]);
         }
     }
 
@@ -424,22 +480,49 @@ class Peminjaman extends BaseController
     {
         // Membuat instance model
         $riwayatPeminjamanModel = new \App\Models\RiwayatPeminjamanModel();
+        $pengembalianbarangModel = new \App\Models\PengembalianbarangModel();
+        $peminjamanModel = new \App\Models\PeminjamanModel(); // Tambahkan model peminjaman
 
-        // Memanggil fungsi hapusDataPeminjaman() dari model untuk menghapus data
-        $deleted = $riwayatPeminjamanModel->deleteByPeminjamanId($peminjamanId);
+        try {
+            // Cek apakah ada data di tbl_riwayat_pengembalian yang terkait dengan peminjaman_id
+            $pengembalianTerkait = $pengembalianbarangModel->where('peminjaman_id', $peminjamanId)->findAll();
 
-        // Memeriksa apakah penghapusan berhasil
-        if ($deleted === true) {
-            // Jika berhasil, set pesan flash data untuk sukses
-            session()->setFlashData('pesanHapusPeminjaman', 'Data Peminjaman berhasil dihapus.');
+            if (!empty($pengembalianTerkait)) {
+                // Jika ada data terkait, batalkan penghapusan dan kirim pesan error
 
-            // Redirect kembali ke halaman /pinjam/daftar setelah penghapusan
-            return redirect()->to('/pinjam/daftar');
-        } else {
-            // Jika gagal, kirim pesan kesalahan sebagai respons HTTP
-            return $this->response->setJSON(['error' => $deleted]);
+                // Mengambil kode_pinjam berdasarkan peminjaman_id
+                $peminjaman = $peminjamanModel->find($peminjamanId);
+                $kodePinjam = $peminjaman['kode_pinjam']; // Ambil kode_pinjam dari hasil query
+
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Masih ada data pada pengembalian. Hapus terlebih dahulu data pengembalian, dengan Kode Pinjam: ' . $kodePinjam . '.'
+                ]);
+            }
+
+            // Menghapus data dari tabel riwayat peminjaman
+            $deletedRiwayat = $riwayatPeminjamanModel->deleteByPeminjamanId($peminjamanId);
+
+            // Memeriksa apakah penghapusan dari riwayat peminjaman berhasil
+            if ($deletedRiwayat) {
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'message' => 'Data Peminjaman berhasil dihapus.'
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Gagal menghapus data Peminjaman.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage()
+            ]);
         }
     }
+
 
 
     public function getDataBarang()

@@ -11,6 +11,14 @@ class PengembalianbarangModel extends Model
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $allowedFields = ['id', 'peminjaman_id', 'barang_id', 'kode_kembali', 'tanggal_kembali', 'keterangan'];
 
+
+
+    public function deleteByPeminjamanId($peminjamanId)
+    {
+        // Hapus data dari tabel berdasarkan peminjaman_id
+        return $this->where('peminjaman_id', $peminjamanId)->delete();
+    }
+
     public function findPeminjamanBarangIdsByKodeKembali($kodeKembali)
     {
         $result = $this->where('kode_kembali', $kodeKembali)->findAll();

@@ -7,7 +7,7 @@
     }
 </style>
 <div class="content-wrapper">
-    <div class="flash-data" data-flashdata="<?= (session()->getFlashData('pesanAddPeminjaman')); ?>"></div><!-- Page Heading -->
+
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -195,12 +195,12 @@
 
     // Fungsi untuk menampilkan pesan loading
     function showLoading() {
-        let timerInterval
+        let timerInterval;
         Swal.fire({
             title: 'Sedang memproses data ....',
             timerProgressBar: true,
             didOpen: () => {
-                Swal.showLoading()
+                Swal.showLoading();
             }
         });
     }
@@ -232,27 +232,79 @@
                     success: function(response) {
                         // Sembunyikan pesan loading saat permintaan selesai
                         hideLoading();
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Data berhasil dihapus.',
-                            icon: 'success',
-                            timer: 2000, // Durasi tampilan dalam milidetik
-                            showConfirmButton: false, // Sembunyikan tombol OK
-                        }).then(() => {
-                            // Arahkan pengguna ke halaman baru setelah SweetAlert ditutup
-                            window.location.replace("/pinjam/riwayat");
-                        });
+
+                        // Periksa respon dari server
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: response.message,
+                                icon: 'success',
+                                timer: 2000, // Durasi tampilan dalam milidetik
+                                showConfirmButton: false, // Sembunyikan tombol OK
+                            }).then(() => {
+                                // Arahkan pengguna ke halaman baru setelah SweetAlert ditutup
+                                window.location.replace("/pinjam/riwayat");
+                            });
+                        } else {
+                            // Periksa apakah pesan error mengandung kode_pinjam untuk ditampilkan dengan tombol Copy
+                            if (response.message.includes('Kode Pinjam:')) {
+                                // Ekstrak kode pinjam dan bersihkan dari karakter tidak diinginkan
+                                let kodePinjam = response.message.split('Kode Pinjam: ')[1].trim();
+                                // Hilangkan titik di akhir jika ada
+                                kodePinjam = kodePinjam.replace(/\.$/, '');
+
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    html: response.message + '<br><br><button id="copyKodePinjam" class="btn btn-primary">Copy</button>',
+                                    icon: 'error',
+                                    showConfirmButton: false // Sembunyikan tombol OK
+                                });
+
+                                // Event listener untuk tombol Copy
+                                $(document).on('click', '#copyKodePinjam', function() {
+                                    navigator.clipboard.writeText(kodePinjam)
+                                        .then(() => {
+                                            Swal.fire({
+                                                title: 'Copied!',
+                                                text: 'Kode Pinjam berhasil disalin.',
+                                                icon: 'success',
+                                                timer: 2000,
+                                                showConfirmButton: false
+                                            }).then(() => {
+                                                Swal.close(); // Tutup SweetAlert setelah menyalin
+                                            });
+                                        })
+                                        .catch((err) => {
+                                            Swal.fire({
+                                                title: 'Error!',
+                                                text: 'Gagal menyalin Kode Pinjam.',
+                                                icon: 'error'
+                                            });
+                                            console.error('Could not copy text: ', err);
+                                        });
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: response.message,
+                                    icon: 'error',
+                                });
+                            }
+                        }
                     },
                     error: function(xhr, status, error) {
                         // Sembunyikan pesan loading saat ada kesalahan dalam penghapusan
                         hideLoading();
-                        // Tampilkan pesan error jika ada kesalahan
+                        // Tampilkan pesan error yang diterima dari server
+                        let errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Terjadi kesalahan saat menghapus data.';
                         Swal.fire({
                             title: 'Gagal!',
-                            text: 'Terjadi kesalahan saat menghapus data.',
+                            text: errorMessage,
                             icon: 'error',
                         });
-                        console.log(error);
+                        console.log('AJAX Error:', xhr);
+                        console.log('Status:', status);
+                        console.log('Error:', error);
                     }
                 });
             }
@@ -269,4 +321,17 @@
         window.location.href = "http://localhost:8080/kode_kembali/detail/" + kodePinjam;
     });
 </script>
+
+<?php if (session()->has('errorHapusPeminjaman')) : ?>
+    <div class="alert alert-danger">
+        <?= session('errorHapusPeminjaman') ?>
+    </div>
+<?php endif; ?>
+
+<!-- Tampilkan pesan sukses -->
+<?php if (session()->has('pesanHapusPeminjaman')) : ?>
+    <div class="alert alert-success">
+        <?= session('pesanHapusPeminjaman') ?>
+    </div>
+<?php endif; ?>
 <?php echo view('tema/footer.php'); ?>

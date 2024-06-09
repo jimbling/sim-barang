@@ -296,84 +296,160 @@
         Swal.close();
     }
 
-    function hapus_data(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id);
+    function hapus_data(peminjamanId) {
+        console.log('Data ID yang akan dihapus:', peminjamanId);
 
-        // Check if $dataPinjam is set
-        <?php if (isset($dataPinjam) && $dataPinjam !== null) : ?>
-            let userLevel = "<?= session()->get('level') ?>";
+        Swal.fire({
+            title: 'Konfirmasi',
+            text: 'Apakah Anda yakin ingin menghapus data ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                showLoading();
 
-            if (userLevel === "User") {
-                let currentTime = <?= time() ?>;
-                let createdTime = <?= strtotime($dataPinjam['created_at']) ?>;
-                let timeDifference = currentTime - createdTime;
-                let timeLimit = 24 * 3600;
+                $.ajax({
+                    type: 'POST',
+                    url: '/pinjam/hapus/' + peminjamanId,
+                    success: function(response) {
+                        hideLoading();
 
-                if (timeDifference > timeLimit) {
-                    Swal.fire({
-                        title: 'Gagal!',
-                        text: 'Batas waktu 1x24 jam untuk menghapus data telah terlampaui. Silahkan hubungi Laboran',
-                        icon: 'error',
-                        timer: 3000,
-                        showConfirmButton: false,
-                    });
-                    return;
-                }
-            }
+                        if (response.status === 'error') {
+                            let errorMessage = response.message;
+                            let kodePinjam = errorMessage.match(/Kode Pinjam: ([\w-]+)/);
+                            kodePinjam = kodePinjam ? kodePinjam[1] : '';
 
-            // Menampilkan pesan konfirmasi sebelum menghapus data
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah Anda yakin ingin menghapus data ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoading();
+                            if (kodePinjam) {
+                                // Jika pesan error mengandung Kode Pinjam, tampilkan tombol Copy
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    html: errorMessage + '<br><br><button id="copyErrorMessage" class="btn btn-primary">Copy Kode Pinjam</button>',
+                                    icon: 'error',
+                                    showConfirmButton: false // Sembunyikan tombol OK
+                                });
 
-                    $.ajax({
-                        type: 'POST',
-                        url: '/pinjam/hapus/' + data_id,
-                        success: function(response) {
-                            hideLoading();
+                                // Event listener untuk tombol Copy
+                                $(document).on('click', '#copyErrorMessage', function() {
+                                    navigator.clipboard.writeText(kodePinjam)
+                                        .then(() => {
+                                            Swal.fire({
+                                                title: 'Copied!',
+                                                text: 'Kode Pinjam berhasil disalin: ' + kodePinjam,
+                                                icon: 'success',
+                                                timer: 2000,
+                                                showConfirmButton: false
+                                            }).then(() => {
+                                                Swal.close(); // Menutup SweetAlert setelah pesan berhasil disalin
+                                            });
+                                        })
+                                        .catch((err) => {
+                                            Swal.fire({
+                                                title: 'Error!',
+                                                text: 'Gagal menyalin Kode Pinjam.',
+                                                icon: 'error'
+                                            });
+                                            console.error('Could not copy text: ', err);
+                                        });
+                                });
+                            } else {
+                                // Jika tidak ada Kode Pinjam, tampilkan tombol OK
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: errorMessage,
+                                    icon: 'error',
+                                    showConfirmButton: true // Tampilkan tombol OK
+                                });
+                            }
+                        } else {
                             Swal.fire({
                                 title: 'Berhasil!',
                                 text: 'Data berhasil dihapus.',
                                 icon: 'success',
                                 timer: 2000,
-                                showConfirmButton: false,
+                                showConfirmButton: false
                             }).then(() => {
                                 window.location.replace("/pinjam/daftar");
                             });
-                        },
-                        error: function(xhr, status, error) {
-                            console.log('AJAX Error:', xhr); // Memeriksa objek XHR
-                            console.log('Status:', status); // Memeriksa status HTTP
-                            console.log('Error:', error); // Memeriksa pesan error
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('AJAX Error:', xhr);
+                        console.log('Status:', status);
+                        console.log('Error:', error);
 
-                            hideLoading();
-                            let errorMessage = xhr.responseText; // Mengambil pesan kesalahan dari respons
+                        hideLoading();
 
+                        let errorMessage = xhr.responseJSON.message || 'Terjadi kesalahan saat menghapus data.';
+
+                        // Ekstraksi kode_pinjam dari pesan kesalahan
+                        let kodePinjam = errorMessage.match(/Kode Pinjam: ([\w-]+)/);
+                        kodePinjam = kodePinjam ? kodePinjam[1] : '';
+
+                        if (kodePinjam) {
+                            // Jika pesan error mengandung Kode Pinjam, tampilkan tombol Copy
                             Swal.fire({
                                 title: 'Gagal!',
-                                text: 'Tidak dapat menghapus data. Hapus dahulu Pengeluaran Persediaan yang terkait!', // Menampilkan pesan kesalahan dari server
+                                html: errorMessage + '<br><br><button id="copyErrorMessage" class="btn btn-primary">Copy Kode Pinjam</button>',
                                 icon: 'error',
-                                timer: 3000,
-                                showConfirmButton: false,
+                                showConfirmButton: false // Sembunyikan tombol OK
+                            });
+
+                            // Event listener untuk tombol Copy
+                            $(document).on('click', '#copyErrorMessage', function() {
+                                navigator.clipboard.writeText(kodePinjam)
+                                    .then(() => {
+                                        Swal.fire({
+                                            title: 'Copied!',
+                                            text: 'Kode Pinjam berhasil disalin: ' + kodePinjam,
+                                            icon: 'success',
+                                            timer: 2000,
+                                            showConfirmButton: false
+                                        }).then(() => {
+                                            Swal.close(); // Menutup SweetAlert setelah pesan berhasil disalin
+                                        });
+                                    })
+                                    .catch((err) => {
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: 'Gagal menyalin Kode Pinjam.',
+                                            icon: 'error'
+                                        });
+                                        console.error('Could not copy text: ', err);
+                                    });
+                            });
+                        } else {
+                            // Jika tidak ada Kode Pinjam, tampilkan tombol OK
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: errorMessage,
+                                icon: 'error',
+                                showConfirmButton: true // Tampilkan tombol OK
                             });
                         }
-                    });
-                }
-            });
-        <?php else : ?>
-            // Handle the case where $dataPinjam is not set (no data available)
-            console.log('No data available for dataPinjam');
-            // Optionally, you can display a message to the user or perform other actions
-        <?php endif; ?>
+                    }
+                });
+            }
+        });
+    }
+
+    // Fungsi untuk menampilkan pesan loading
+    function showLoading() {
+        Swal.fire({
+            title: 'Sedang memproses data ....',
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+    }
+
+    // Fungsi untuk menyembunyikan pesan loading
+    function hideLoading() {
+        Swal.close();
     }
 </script>
 
@@ -491,4 +567,6 @@
         });
     }
 </script>
+
+
 <?php echo view('tema/footer.php'); ?>

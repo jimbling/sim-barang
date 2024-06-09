@@ -1,0 +1,351 @@
+INFO - 2024-06-09 04:30:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:30:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:30:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:30:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:30:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:30:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:30:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:30:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:30:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:30:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:34:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:35:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:35:39 --> Call to undefined method App\Models\PeminjamanbarangModel::getRiwayatPeminjamanData
+in SYSTEMPATH\Model.php on line 840.
+ 1 APPPATH\Controllers\Peminjaman.php(213): CodeIgniter\Model->__call('getRiwayatPeminjamanData', [...])
+ 2 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 3 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 4 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:35:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:36:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:36:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:37:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:39:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:39:36 --> Undefined variable $peminjamanBarangData
+in APPPATH\Controllers\Peminjaman.php on line 212.
+ 1 APPPATH\Controllers\Peminjaman.php(212): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $peminjamanBarangData', 'APPPATH\\Controllers\\Peminjaman.php', 212)
+ 2 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 3 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 4 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:40:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:40:50 --> Call to undefined method App\Models\PeminjamanbarangModel::getAllData
+in SYSTEMPATH\Model.php on line 840.
+ 1 APPPATH\Controllers\Peminjaman.php(214): CodeIgniter\Model->__call('getAllData', [])
+ 2 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 3 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 4 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:41:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:44:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:44:09 --> Undefined variable $combined
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 91.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(91): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $combined', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 91)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(229): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:44:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:44:24 --> Undefined array key "kode_pinjam"
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 115.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(115): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "kode_pinjam"', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 115)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(229): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:46:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:46:41 --> Undefined array key "kode_pinjam"
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 115.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(115): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "kode_pinjam"', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 115)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(230): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:47:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:48:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:48:02 --> Cannot access offset of type string on string
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 93.
+ 1 SYSTEMPATH\View\View.php(213): include()
+ 2 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 4 APPPATH\Controllers\Peminjaman.php(230): view('cetak/cetak_detail_peminjaman', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 6 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 7 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:48:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:48:20 --> Cannot access offset of type string on string
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 115.
+ 1 SYSTEMPATH\View\View.php(213): include()
+ 2 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 4 APPPATH\Controllers\Peminjaman.php(230): view('cetak/cetak_detail_peminjaman', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 6 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 7 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:48:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:48:44 --> Undefined array key "kode_kembali"
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 137.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(137): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "kode_kembali"', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 137)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(230): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:48:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:49:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:52:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:52:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:52:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:52:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:52:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:52:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:52:26 --> Undefined array key "kode_pinjam"
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 98.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(98): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "kode_pinjam"', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 98)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(226): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:54:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 04:59:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:59:12 --> Undefined variable $combined
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 100.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(100): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $combined', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 100)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 04:59:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 04:59:25 --> Undefined variable $combined
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 100.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(100): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $combined', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 100)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 05:00:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 05:00:14 --> Undefined variable $combined
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 100.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(100): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $combined', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 100)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 05:00:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:00:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 05:00:45 --> Undefined variable $combined
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 100.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(100): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $combined', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 100)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 05:01:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 05:01:06 --> Cannot access offset of type string on string
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 160.
+ 1 SYSTEMPATH\View\View.php(213): include()
+ 2 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 4 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 6 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 7 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 05:01:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:16:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 05:16:13 --> Undefined array key "peminjaman_barang"
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 100.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(100): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "peminjaman_barang"', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 100)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 05:16:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 05:16:45 --> Cannot access offset of type string on string
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 135.
+ 1 SYSTEMPATH\View\View.php(213): include()
+ 2 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 4 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 6 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 7 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 05:17:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:19:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:19:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:21:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:21:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:21:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:21:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:22:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:22:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:23:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:23:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:23:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:25:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:25:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:25:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:26:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:29:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 05:29:05 --> Undefined variable $peminjamanBarangDetails
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 67.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(67): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $peminjamanBarangDetails', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 67)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 05:29:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 05:29:35 --> Undefined variable $tanggalPinjamObj
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 91.
+ 1 APPPATH\Views\cetak\cetak_detail_peminjaman.php(91): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $tanggalPinjamObj', 'APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php', 91)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_detail_peminjaman.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 05:30:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 05:30:14 --> Class "Time" not found
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 73.
+ 1 SYSTEMPATH\View\View.php(213): include()
+ 2 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 4 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 6 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 7 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 05:30:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:31:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:34:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:35:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-09 05:35:55 --> Call to undefined function convertToIndonesianMonth()
+in APPPATH\Views\cetak\cetak_detail_peminjaman.php on line 212.
+ 1 SYSTEMPATH\View\View.php(213): include()
+ 2 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_detail_peminjaman', [], true)
+ 4 APPPATH\Controllers\Peminjaman.php(236): view('cetak/cetak_detail_peminjaman', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakDetailPinjam('P-YKY-LAB-00196')
+ 6 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 7 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 05:36:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:48:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:49:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:49:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:49:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:49:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:50:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:50:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 05:50:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 06:00:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 06:00:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:13:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:13:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:13:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:13:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:13:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:18:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:18:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:18:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:18:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:18:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:39:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:39:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:43:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:54:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:54:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2024-06-09 17:54:12 --> [DEPRECATED] Function strftime() is deprecated in APPPATH\Controllers\Pengembalian.php on line 188.
+ 1 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Pengembalian->prosesPengembalian()
+ 2 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pengembalian))
+ 3 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-09 17:54:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:54:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:54:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:54:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:54:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:54:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:54:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:55:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:55:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 17:55:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 18:36:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 18:37:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 18:42:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 18:42:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 18:42:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 18:57:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 18:57:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-09 18:57:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

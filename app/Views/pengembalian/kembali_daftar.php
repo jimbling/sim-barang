@@ -114,16 +114,21 @@
                                                 <?php foreach ($riwayat['riwayat'] as $barang) : ?>
                                                     <div><?= $counterRow++ ?>. <?= $barang['nama_barang'] ?> - <?= $barang['kode_barang'] ?></div>
                                                 <?php endforeach; ?>
+                                                <!-- Tampilkan peminjaman_id di sini -->
+
                                             </td>
                                             <td style="text-align: center; vertical-align: middle;">
-                                                <button class="btn btn-xs btn-info mx-auto text-white batalButton spaced-icon" onclick="batal_data('<?= $riwayat['kode_kembali'] ?>')">Batal</button>
-                                                <button class="btn btn-xs btn-danger mx-auto text-white spaced-icon" id="hapusButton" onclick="hapus_data('<?= $riwayat['kode_kembali'] ?>')">Hapus</button>
-
-
+                                                <?php if ($riwayat['peminjaman_exists']) : ?>
+                                                    <!-- Jangan tampilkan tombol Hapus jika peminjaman_id masih ada -->
+                                                    <button class="btn btn-xs btn-info mx-auto text-white batalButton spaced-icon" onclick="batal_data('<?= $riwayat['kode_kembali'] ?>')">Batal</button>
+                                                <?php else : ?>
+                                                    <button class="btn btn-xs btn-danger mx-auto text-white spaced-icon" id="hapusButton" onclick="hapus_data('<?= $riwayat['kode_kembali'] ?>')">Hapus</button>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -168,8 +173,8 @@
         }
 
         Swal.fire({
-            title: 'HAPUS?',
-            text: "Yakin akan menghapus data ini?",
+            title: 'Apakah anda yakin?',
+            text: "Data pengembalian akan dihapus beserta data Peminjaman, gunakan Batal jika ingin membatalkan transaksi!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -215,7 +220,7 @@
         // Menggunakan SweetAlert untuk konfirmasi
         Swal.fire({
             title: 'Apakah Anda yakin?',
-            text: "Anda tidak dapat mengembalikan perubahan ini!",
+            text: "Data akan dikembalikan ke data Peminjaman",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

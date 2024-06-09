@@ -77,6 +77,7 @@ class Pengembalian extends BaseController
     public function riwayat()
     {
         $pengembalianbarangModel = new PengembalianbarangModel();
+        $peminjamanbarangModel = new PeminjamanbarangModel();
         $namaKampus = $this->settingsService->getNamaKampus();
         $selectedYear = $this->request->getVar('tahun') ?? date('Y');
         $availableYears = $pengembalianbarangModel->getAvailableYears();
@@ -93,15 +94,16 @@ class Pengembalian extends BaseController
             $groupedData[$kodeKembali]['tanggal_kembali'] = $riwayat['tanggal_kembali'];
             $groupedData[$kodeKembali]['keperluan'] = $riwayat['keperluan'];
             $groupedData[$kodeKembali]['kode_pinjam'] = $riwayat['kode_pinjam'];
+            $groupedData[$kodeKembali]['peminjaman_id'] = $riwayat['peminjaman_id'];
             $groupedData[$kodeKembali]['riwayat'][] = [
                 'nama_barang' => $riwayat['nama_barang'],
                 'kode_barang' => $riwayat['kode_barang'],
-                // Tambahkan kode_barang di sini
             ];
-        }
 
-        $kodeKembali = 'K-YKY-LAB-00100'; // Ganti dengan kode_kembali yang sesuai
-        $peminjamanBarangIds = $pengembalianbarangModel->findPeminjamanBarangIdsByKodeKembali($kodeKembali);
+            // Periksa apakah peminjaman_id masih ada dalam tabel peminjaman_barang
+            $isPeminjamanExist = $peminjamanbarangModel->checkPeminjamanExists($riwayat['peminjaman_id']);
+            $groupedData[$kodeKembali]['peminjaman_exists'] = $isPeminjamanExist;
+        }
 
         $data = [
             'judul' => "Daftar Pinjam | $namaKampus",
@@ -109,11 +111,12 @@ class Pengembalian extends BaseController
             'selectedYear' => $selectedYear,
             'availableYears' => $availableYears,
             'groupedRiwayatPengembalian' => $groupedData,
-            'kode' =>  $peminjamanBarangIds // Gunakan data yang telah dikelompokkan
         ];
 
         return view('pengembalian/kembali_daftar', $data);
     }
+
+
 
     public function addKembali()
     {

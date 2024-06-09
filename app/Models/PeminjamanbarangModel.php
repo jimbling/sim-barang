@@ -233,4 +233,34 @@ class PeminjamanbarangModel extends Model
             ->groupBy('peminjaman_id')
             ->findAll();
     }
+
+    public function getPeminjamanBarangData($kodePinjam)
+    {
+        return $this->select('
+                tbl_peminjaman_barang.*,
+                tbl_peminjaman.kode_pinjam,
+                tbl_peminjaman.nama_peminjam,
+                tbl_peminjaman.nama_ruangan,
+                tbl_barang.kode_barang,
+                tbl_barang.nama_barang
+            ')
+            ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_peminjaman_barang.peminjaman_id')
+            ->join('tbl_barang', 'tbl_barang.id = tbl_peminjaman_barang.barang_id')
+            ->where('tbl_peminjaman.kode_pinjam', $kodePinjam)
+            ->findAll();
+    }
+
+
+
+    public function checkPeminjamanExists($peminjamanId)
+    {
+        // Hitung jumlah baris yang memiliki peminjaman_id yang diberikan
+        $count = $this->where('peminjaman_id', $peminjamanId)->countAllResults();
+
+        // Debugging: Tampilkan peminjaman_id dan hasil pengecekan
+        // echo "Checking peminjaman_id: " . $peminjamanId . " - Count: " . $count . "<br>";
+
+        // Mengembalikan true jika ada baris dengan peminjaman_id tersebut, false jika tidak ada
+        return $count > 0;
+    }
 }

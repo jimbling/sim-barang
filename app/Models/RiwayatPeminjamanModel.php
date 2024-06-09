@@ -135,4 +135,20 @@ class RiwayatPeminjamanModel extends Model
 
         return true;
     }
+
+    public function getRiwayatPeminjamanData($kodePinjam)
+    {
+        return $this->select('
+                tbl_riwayat_peminjaman.*,
+                tbl_peminjaman.kode_pinjam,
+                tbl_peminjaman.nama_peminjam,
+                tbl_peminjaman.nama_ruangan,
+                tbl_barang.kode_barang,
+                tbl_barang.nama_barang
+            ')
+            ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_peminjaman.peminjaman_id')
+            ->join('tbl_barang', 'tbl_barang.id = tbl_riwayat_peminjaman.barang_id')
+            ->where('tbl_peminjaman.kode_pinjam', $kodePinjam)
+            ->findAll();
+    }
 }

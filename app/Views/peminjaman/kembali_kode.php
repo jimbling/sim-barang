@@ -53,7 +53,35 @@
                                         <tr>
                                             <td width="20%" style="text-align: left; vertical-align: middle;">Tanggal Peminjaman </td>
                                             <td width="5%" style="text-align: left; vertical-align: middle;">:</td>
-                                            <td style="text-align: left; vertical-align: middle;"><?php echo $data[0]['tanggal_pinjam']; ?></td>
+                                            <td style="text-align: left; vertical-align: middle;">
+                                                <?php
+                                                $tanggal_pinjam = \CodeIgniter\I18n\Time::parse($data[0]['tanggal_pinjam'])
+                                                    ->setTimezone('Asia/Jakarta');
+
+                                                $nama_bulan = [
+                                                    'January' => 'Januari',
+                                                    'February' => 'Februari',
+                                                    'March' => 'Maret',
+                                                    'April' => 'April',
+                                                    'May' => 'Mei',
+                                                    'June' => 'Juni',
+                                                    'July' => 'Juli',
+                                                    'August' => 'Agustus',
+                                                    'September' => 'September',
+                                                    'October' => 'Oktober',
+                                                    'November' => 'November',
+                                                    'December' => 'Desember',
+                                                ];
+
+                                                $bulan = $nama_bulan[$tanggal_pinjam->format('F')];
+
+                                                // Format the date without using Carbon
+                                                $formattedDate = $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y - H:i') . ' WIB';
+
+                                                echo $formattedDate;
+                                                ?>
+
+                                            </td>
                                         </tr>
 
                                         <tr>
@@ -95,18 +123,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($data as $item) : ?>
+                                    <?php foreach ($semua_data as $data_pinjam) : ?>
                                         <tr>
-                                            <td><?php echo $item['kode_pinjam']; ?></td>
-                                            <td><?php echo $item['nama_barang']; ?></td>
-                                            <td><?php echo $item['kode_barang']; ?></td>
+                                            <td class="center"><?= $data_pinjam['kode_pinjam']; ?></td>
+                                            <td class="center"><?= $data_pinjam['nama_barang']; ?></td>
+                                            <td class="center"><?= $data_pinjam['kode_barang']; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                                 <tfoot>
                                     <tr>
-
-                                        <td colspan="3" class="bg-secondary">JUMLAH BARANG DIPINJAM: <?php echo count($data); ?></td>
+                                        <td colspan="3" class="bg-secondary center">JUMLAH BARANG DIPINJAM: <?php echo count($semua_data); ?></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -141,7 +168,26 @@
                                                 <td rowspan="<?= count(array_filter($data, function ($row) use ($item) {
                                                                     return $row['kode_kembali'] == $item['kode_kembali'];
                                                                 })) ?>">
-                                                    <?php echo $item['tanggal_kembali']; ?>
+                                                    <?php
+                                                    $timestamp = strtotime($item['tanggal_kembali']);
+                                                    $bulan = date('F', $timestamp);
+                                                    $bulanIndonesia = [
+                                                        'January' => 'Januari',
+                                                        'February' => 'Februari',
+                                                        'March' => 'Maret',
+                                                        'April' => 'April',
+                                                        'May' => 'Mei',
+                                                        'June' => 'Juni',
+                                                        'July' => 'Juli',
+                                                        'August' => 'Agustus',
+                                                        'September' => 'September',
+                                                        'October' => 'Oktober',
+                                                        'November' => 'November',
+                                                        'December' => 'Desember'
+                                                    ];
+                                                    $bulan = isset($bulanIndonesia[$bulan]) ? $bulanIndonesia[$bulan] : $bulan;
+                                                    echo date('d ', $timestamp) . $bulan . date(' Y H.i T', $timestamp);
+                                                    ?>
                                                 </td>
                                                 <?php $prevKodeKembali = $item['kode_kembali']; ?>
                                             <?php endif; ?>
