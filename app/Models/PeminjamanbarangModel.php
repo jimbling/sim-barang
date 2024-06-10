@@ -263,4 +263,9 @@ class PeminjamanbarangModel extends Model
         // Mengembalikan true jika ada baris dengan peminjaman_id tersebut, false jika tidak ada
         return $count > 0;
     }
+
+    public function deleteByPeminjamanId($peminjamanId)
+    {
+        return $this->where('peminjaman_id', $peminjamanId)->delete();
+    }
 }

@@ -154,73 +154,73 @@
             </tfoot>
         </table>
 
+        <div class="container page-break"> <br>
+            <br>
+            <div class="underlined-text mb-2">
+                <h5>
+                    <strong>Daftar pengembalian barang: </strong>
+                </h5>
+            </div>
 
-        <br>
-        <br>
-        <div class="underlined-text mb-2">
-            <h5>
-                <strong>Daftar pengembalian barang: </strong>
-            </h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Kode Kembali</th>
+                        <th>Tanggal Pengembalian</th>
+                        <th>Nama Barang</th>
+                        <th>Kode Barang</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $prevKodeKembali = ''; ?>
+                    <?php foreach ($data as $item) : ?>
+                        <?php if ($item['kode_kembali'] != $prevKodeKembali) : ?>
+                            <tr>
+                                <td rowspan="<?= count(array_filter($data, function ($row) use ($item) {
+                                                    return $row['kode_kembali'] == $item['kode_kembali'];
+                                                })) ?>">
+                                    <?php echo $item['kode_kembali']; ?>
+                                </td>
+
+                                <td rowspan="<?= count(array_filter($data, function ($row) use ($item) {
+                                                    return $row['kode_kembali'] == $item['kode_kembali'];
+                                                })) ?>">
+                                    <?php
+                                    $timestamp = strtotime($item['tanggal_kembali']);
+                                    $bulan = date('F', $timestamp);
+                                    $bulanIndonesia = [
+                                        'January' => 'Januari',
+                                        'February' => 'Februari',
+                                        'March' => 'Maret',
+                                        'April' => 'April',
+                                        'May' => 'Mei',
+                                        'June' => 'Juni',
+                                        'July' => 'Juli',
+                                        'August' => 'Agustus',
+                                        'September' => 'September',
+                                        'October' => 'Oktober',
+                                        'November' => 'November',
+                                        'December' => 'Desember'
+                                    ];
+                                    $bulan = isset($bulanIndonesia[$bulan]) ? $bulanIndonesia[$bulan] : $bulan;
+                                    echo date('d ', $timestamp) . $bulan . date(' Y H.i T', $timestamp);
+                                    ?>
+                                </td>
+                                <?php $prevKodeKembali = $item['kode_kembali']; ?>
+                            <?php endif; ?>
+                            <td><?php echo $item['nama_barang']; ?></td>
+                            <td><?php echo $item['kode_barang']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="bg-secondary center">JUMLAH BARANG YANG DIKEMBALIKAN: <?php echo count($data); ?></td> <!-- Menghitung total barang -->
+                    </tr>
+                </tfoot>
+            </table>
+            <br>
         </div>
-
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    <th>Kode Kembali</th>
-                    <th>Tanggal Pengembalian</th>
-                    <th>Nama Barang</th>
-                    <th>Kode Barang</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $prevKodeKembali = ''; ?>
-                <?php foreach ($data as $item) : ?>
-                    <?php if ($item['kode_kembali'] != $prevKodeKembali) : ?>
-                        <tr>
-                            <td rowspan="<?= count(array_filter($data, function ($row) use ($item) {
-                                                return $row['kode_kembali'] == $item['kode_kembali'];
-                                            })) ?>">
-                                <?php echo $item['kode_kembali']; ?>
-                            </td>
-
-                            <td rowspan="<?= count(array_filter($data, function ($row) use ($item) {
-                                                return $row['kode_kembali'] == $item['kode_kembali'];
-                                            })) ?>">
-                                <?php
-                                $timestamp = strtotime($item['tanggal_kembali']);
-                                $bulan = date('F', $timestamp);
-                                $bulanIndonesia = [
-                                    'January' => 'Januari',
-                                    'February' => 'Februari',
-                                    'March' => 'Maret',
-                                    'April' => 'April',
-                                    'May' => 'Mei',
-                                    'June' => 'Juni',
-                                    'July' => 'Juli',
-                                    'August' => 'Agustus',
-                                    'September' => 'September',
-                                    'October' => 'Oktober',
-                                    'November' => 'November',
-                                    'December' => 'Desember'
-                                ];
-                                $bulan = isset($bulanIndonesia[$bulan]) ? $bulanIndonesia[$bulan] : $bulan;
-                                echo date('d ', $timestamp) . $bulan . date(' Y H.i T', $timestamp);
-                                ?>
-                            </td>
-                            <?php $prevKodeKembali = $item['kode_kembali']; ?>
-                        <?php endif; ?>
-                        <td><?php echo $item['nama_barang']; ?></td>
-                        <td><?php echo $item['kode_barang']; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4" class="bg-secondary center">JUMLAH BARANG YANG DIKEMBALIKAN: <?php echo count($data); ?></td> <!-- Menghitung total barang -->
-                </tr>
-            </tfoot>
-        </table>
-        <br>
 
     </div>
     </div>

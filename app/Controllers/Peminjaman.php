@@ -431,7 +431,7 @@ class Peminjaman extends BaseController
         // Membuat instance model
         $peminjamanbarangModel = new \App\Models\PeminjamanbarangModel();
         $pengembalianbarangModel = new \App\Models\PengembalianbarangModel();
-        $peminjamanModel = new \App\Models\PeminjamanModel(); // Model peminjaman untuk mencari kode_pinjam
+        $peminjamanModel = new \App\Models\PeminjamanModel(); // Tambahkan model peminjaman
 
         try {
             // Cek apakah ada data di tbl_riwayat_pengembalian yang terkait dengan peminjaman_id
@@ -450,25 +450,32 @@ class Peminjaman extends BaseController
                 ]);
             }
 
-            // Jika tidak ada data pengembalian terkait, lanjutkan dengan penghapusan data peminjaman
-            $deleted = $peminjamanbarangModel->hapusDataPeminjaman($peminjamanId);
+            // Menghapus data dari tabel riwayat peminjaman
+            $deletedDataPinjam = $peminjamanbarangModel->deleteByPeminjamanId($peminjamanId);
 
-            // Memeriksa apakah penghapusan berhasil
-            if ($deleted === true) {
-                // Jika berhasil, set pesan flash data untuk sukses
-                session()->setFlashData('pesanHapusPeminjaman', 'Data Peminjaman berhasil dihapus.');
+            // Memeriksa apakah penghapusan dari riwayat peminjaman berhasil
+            if ($deletedDataPinjam) {
+                // Hapus data dari tabel peminjaman juga
+                $deletedPeminjaman = $peminjamanModel->delete($peminjamanId);
 
-                // Redirect kembali ke halaman /pinjam/daftar setelah penghapusan
-                return redirect()->to('/pinjam/daftar');
+                if ($deletedPeminjaman) {
+                    return $this->response->setJSON([
+                        'status' => 'success',
+                        'message' => 'Data Peminjaman berhasil dihapus.'
+                    ]);
+                } else {
+                    return $this->response->setJSON([
+                        'status' => 'error',
+                        'message' => 'Gagal menghapus data Peminjaman.'
+                    ]);
+                }
             } else {
-                // Jika gagal, kirim pesan kesalahan sebagai respons HTTP
                 return $this->response->setJSON([
                     'status' => 'error',
                     'message' => 'Gagal menghapus data Peminjaman.'
                 ]);
             }
         } catch (\Exception $e) {
-            // Jika terjadi exception, kirim pesan kesalahan sebagai respons HTTP
             return $this->response->setJSON([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage()

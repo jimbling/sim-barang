@@ -56,8 +56,8 @@
 
 
                         <div class="card-body">
-                            <table id="dataBarangTable" class="table table-striped table-responsive table-sm">
-                                <thead class="thead-grey" style="font-size: 14px;">
+                            <table id="dataBarangTable" class="table table-striped table-responsive table-sm" width="100%">
+                                <thead class=" thead-grey" style="font-size: 14px;">
                                     <tr>
                                         <th width='3%' style="text-align: center; vertical-align: middle; font-size: 14px;">No</th>
                                         <th style="text-align: center; vertical-align: middle; font-size: 14px;">Kode Barang</th>
@@ -489,6 +489,29 @@
             "columns": [{
                     "data": null,
                     "className": "text-center",
+                    "responsive": {
+                        "breakpoints": [{
+                                "name": 'bigdesktop',
+                                "width": Infinity
+                            },
+                            {
+                                "name": 'desktop',
+                                "width": 1280
+                            },
+                            {
+                                "name": 'tablet',
+                                "width": 1024
+                            },
+                            {
+                                "name": 'fablet',
+                                "width": 768
+                            },
+                            {
+                                "name": 'phone',
+                                "width": 480
+                            }
+                        ]
+                    },
                     "orderable": false,
                     "render": function(data, type, row, meta) {
                         // Mengatur nomor urut di kolom pertama
@@ -533,7 +556,8 @@
                         return editButton;
                     }
                 }
-            ]
+            ],
+            "responsive": true // Tambahkan ini
         });
 
         // Checkbox item

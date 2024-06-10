@@ -46,7 +46,7 @@
                                 </select>
                             </form>
 
-                            <table id="daftarRiwayatPeminjamanTable" class="table table-striped table-sm table-hover">
+                            <table id="daftarRiwayatPeminjamanTable" class="table table-striped table-sm table-hover" width="100%">
                                 <thead class="thead-dark" style="font-size: 13px;">
                                     <tr>
                                         <th width='3%'>No</th>
@@ -84,6 +84,7 @@
     $(document).ready(function() {
         var table = $('#daftarRiwayatPeminjamanTable').DataTable({
             "processing": true,
+            "ordering": false,
             "responsive": {
                 "breakpoints": [{
                         "name": 'bigdesktop',
@@ -123,10 +124,12 @@
                     "data": "kode_pinjam"
                 },
                 {
-                    "data": "nama_peminjam"
+                    "data": "nama_peminjam",
+                    "width": "80px"
                 },
                 {
                     "data": "tanggal_pinjam",
+                    "width": "100px",
                     "render": function(data, type, row) {
                         var tanggal = new Date(data);
                         var bulan = {
@@ -151,7 +154,8 @@
                     }
                 },
                 {
-                    "data": "keperluan"
+                    "data": "keperluan",
+                    "width": "150px"
                 },
                 {
                     "data": "barang_dipinjam",
@@ -167,11 +171,12 @@
                 },
                 {
                     "data": null,
+                    "width": "150px",
                     "render": function(data, type, row) {
                         return `
-                        <button type="button" class="btn btn-primary btn-xs detailBtn" data-kodepinjam="${row.kode_pinjam}">Detail</button>
-                        <button type="button" class="btn btn-danger btn-xs hapusBtn" data-id="${row.peminjaman_id}">Hapus</button>
-                        <a class="btn btn-xs btn-success mx-auto text-white kembaliBtn" href="<?= base_url('form_kembali/riwayat') ?>/${row.peminjaman_id}" target="_blank">F. Kembali</a>
+                        <button type="button" class="btn btn-primary btn-xs detailBtn mt-1" data-kodepinjam="${row.kode_pinjam}">Detail</button>
+                        <button type="button" class="btn btn-danger btn-xs hapusBtn mt-1" data-id="${row.peminjaman_id}">Hapus</button>
+                        <a class="btn btn-xs btn-success mx-auto text-white kembaliBtn mt-1" href="<?= base_url('form_kembali/riwayat') ?>/${row.peminjaman_id}" target="_blank">F. Kembali</a>
                     `;
                     }
                 }
@@ -342,16 +347,5 @@
     });
 </script>
 
-<?php if (session()->has('errorHapusPeminjaman')) : ?>
-    <div class="alert alert-danger">
-        <?= session('errorHapusPeminjaman') ?>
-    </div>
-<?php endif; ?>
 
-<!-- Tampilkan pesan sukses -->
-<?php if (session()->has('pesanHapusPeminjaman')) : ?>
-    <div class="alert alert-success">
-        <?= session('pesanHapusPeminjaman') ?>
-    </div>
-<?php endif; ?>
 <?php echo view('tema/footer.php'); ?>
