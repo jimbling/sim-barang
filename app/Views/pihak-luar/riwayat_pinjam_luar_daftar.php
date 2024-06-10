@@ -115,7 +115,7 @@
                                                 ?>
                                             </td>
                                             <td width='10%' class="text-center" style="text-align: center; vertical-align: middle;">
-                                                <a onclick=" hapus_data('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>
+                                                <a onclick=" hapus_data('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button"><i class="fas fa-print "></i>Hapus</a>
                                                 <a href=" <?= ('/cetak/invoice/' . $dataKembali['peminjaman_id']); ?>" class="btn btn-success btn-xs " target="_blank"><i class="fas fa-print "></i><b> Invoice</b></a>
                                                 <a href="../../assets/dist/img/pihakluar/<?= $dataKembali['file_surat']; ?>" class="btn btn-primary btn-xs" download><i class="fas fa-download"></i><b> Surat</b></a>
                                             </td>

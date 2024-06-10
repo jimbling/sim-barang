@@ -108,16 +108,21 @@ class Pihakluar extends BaseController
         $fileSurat = $this->request->getFile('surat_permohonan_alat');
 
         if ($fileSurat->isValid() && !$fileSurat->hasMoved()) {
+            // Ambil data yang diperlukan untuk nama file
+            $namaInstansi = $this->request->getPost('nama_instansi');
+            $tanggalPinjam = $this->request->getPost('tanggal_pinjam');
+
+            // Bersihkan nama instansi dari karakter yang tidak valid untuk nama file
+            $namaInstansi = preg_replace('/[^a-zA-Z0-9_-]/', '_', $namaInstansi);
+
+            // Format nama file sesuai dengan pola yang diinginkan
+            $newFileName = 'surat_permohonan_' . $namaInstansi . '_' . date('Ymd', strtotime($tanggalPinjam)) . '.' . $fileSurat->getExtension();
+
             // Simpan file ke direktori yang baru
-            $newFileName = $fileSurat->getRandomName();
             $fileSurat->move(ROOTPATH . 'public/assets/dist/img/pihakluar', $newFileName);
         } else {
             // Jika ada kesalahan dalam proses unggah
             return redirect()->back()->withInput()->with('errorMessages', ['File Surat Permohonan Alat gagal diunggah.']);
-        }
-        if (!$this->validate($validationRules, $validationMessages)) {
-            // Jika validasi gagal, kembalikan pesan error
-            return redirect()->to(base_url('penerimaan/tambahBaru'))->withInput()->with('errorMessages', $this->validator->getErrors());
         }
 
         try {
@@ -138,6 +143,7 @@ class Pihakluar extends BaseController
             // Tambah 1 hari karena peminjaman dimulai pada hari tersebut
             $lamaPinjam += 1;
         }
+
         // Ambil ID terakhir dari tabel
         $lastId = $this->pihakluarpeminjamanModel->selectMax('id')->get()->getRow()->id;
 
@@ -164,7 +170,6 @@ class Pihakluar extends BaseController
         // Simpan data peminjaman
         $peminjamanId = $this->pihakluarpeminjamanModel->insert($dataPeminjaman);
 
-
         $this->pihakluarpeminjamanModel->updateIdAngka();
 
         // Ambil data barang yang dipilih
@@ -172,12 +177,10 @@ class Pihakluar extends BaseController
 
         // Simpan relasi peminjaman dan barang
         foreach ($barangIds as $barangId) {
-            // Hitung lama_pinjam untuk setiap barang (mungkin lama_pinjam berbeda-beda untuk setiap barang)
-            // Anda bisa menghitung lama_pinjam berdasarkan kebutuhan bisnis Anda
             $dataPeminjamanBarang = [
                 'peminjaman_id' => $peminjamanId,
                 'barang_id' => $barangId,
-                'lama_pinjam' => $lamaPinjam, // Atau Anda dapat menghitung lama_pinjam yang berbeda untuk setiap barang
+                'lama_pinjam' => $lamaPinjam,
             ];
             $this->pihakluardetailModel->insert($dataPeminjamanBarang);
             // Update status_barang menjadi 1 pada tbl_barang
@@ -187,6 +190,7 @@ class Pihakluar extends BaseController
         // Redirect ke halaman invoice dengan nomor peminjaman_id
         return redirect()->to(base_url("pihakluar/invoice/{$peminjamanId}"))->with('success', 'Peminjaman berhasil!');
     }
+
 
     public function invoice($peminjaman_id)
     {

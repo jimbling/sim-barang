@@ -135,7 +135,9 @@
                                                 <a onclick=" hapus_data('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>
                                                 <a onclick=" kembali('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-info mx-auto text-white" id="button">Kembali</a>
                                                 <a href=" <?= ('/pihakluar/invoice/' . $dataKembali['peminjaman_id']); ?>" class="btn btn-success btn-xs " target="_blank"><i class="fas fa-print "></i><b> Invoice</b></a>
-                                                <a href="../../assets/dist/img/pihakluar/<?= $dataKembali['file_surat']; ?>" class="btn btn-primary btn-xs" download><i class="fas fa-download"></i><b> Surat</b></a>
+                                                <button onclick="downloadSurat('<?= $dataKembali['file_surat']; ?>')" class="btn btn-primary btn-xs" data-file="<?= $dataKembali['file_surat']; ?>">
+                                                    <i class="fas fa-download"></i><b> Surat</b>
+                                                </button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -310,3 +312,44 @@
 </script>
 
 <?php echo view('tema/footer.php'); ?>
+
+<script>
+    // Set opsi toastr
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    function downloadSurat(fileSurat) {
+        // Tentukan URL lengkap untuk file
+        var filePath = '../../assets/dist/img/pihakluar/' + fileSurat;
+
+        // Periksa apakah file surat ada atau tidak
+        $.ajax({
+            url: filePath,
+            type: 'HEAD', // Metode HEAD hanya untuk mendapatkan header, tidak mengunduh file
+            success: function() {
+                // Jika file ada, lanjutkan ke proses unduh
+                window.location.href = filePath;
+                toastr.success('File surat sedang diunduh.');
+            },
+            error: function() {
+                // Jika file tidak ada, tampilkan toastr error
+                toastr.error('File surat tidak ditemukan atau tidak tersedia.');
+            }
+        });
+    }
+</script>
