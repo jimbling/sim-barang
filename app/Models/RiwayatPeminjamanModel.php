@@ -172,4 +172,26 @@ class RiwayatPeminjamanModel extends Model
             ->groupBy('peminjaman_id')
             ->findAll();
     }
+
+    public function getPeminjamanByUserId($userId)
+    {
+        $query = $this->db->query("
+        SELECT 
+            tbl_peminjaman.id AS peminjaman_id,
+            tbl_peminjaman.kode_pinjam,
+            tbl_peminjaman.nama_peminjam,
+            tbl_peminjaman.nama_ruangan,
+            tbl_peminjaman.tanggal_pinjam,
+            tbl_peminjaman.keperluan,
+            tbl_barang.nama_barang,
+            tbl_barang.kode_barang
+        FROM tbl_peminjaman
+        JOIN tbl_riwayat_peminjaman ON tbl_peminjaman.id = tbl_riwayat_peminjaman.peminjaman_id
+        JOIN tbl_barang ON tbl_barang.id = tbl_riwayat_peminjaman.barang_id
+        WHERE tbl_peminjaman.user_id = ?
+        ORDER BY tbl_peminjaman.tanggal_pinjam DESC
+    ", [$userId]);
+
+        return $query->getResultArray(); // Pastikan kita mendapatkan array hasil query
+    }
 }

@@ -184,4 +184,18 @@ $(function() {
     });
 }
 
+if (window.location.pathname === '/pinjam/user/riwayat') {
+
+  $('#daftarRiwayatPeminjamanUser').DataTable({
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": false,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+      "serverSide": false,
+  });
+}
 });
+

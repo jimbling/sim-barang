@@ -1,5 +1,13 @@
 <?php echo view('tema/header.php'); ?>
-
+<?php
+// Mendapatkan sesi
+$session = session();
+// Mendapatkan nama pengguna dari sesi
+$nama = $session->get('full_nama');
+$username = $session->get('user_nama');
+$password = $session->get('user_password');
+$level = $session->get('level');
+?>
 <div class="content-wrapper">
 
     <div class="content-header">
@@ -28,7 +36,7 @@
                         <div class="card-header">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                                 <?php
-                                // Di bagian atas file atau tempat yang sesuai
+                                // Mengambil level pengguna dari sesi
                                 $level = session()->get('level');
                                 ?>
                                 <?php if ($level === 'Admin') : ?>
@@ -37,12 +45,18 @@
                                             <a class="btn btn-success btn-sm" href="/pinjam/tambah" role="button"> <i class='fas fa-truck-loading spaced-icon'></i>Isi Form Peminjaman Barang</a>
                                         </div>
                                     </div>
-                                    <div class="btn-toolbar">
-                                        <div class="col-md-12 col-12">
-                                            <a class="btn btn-warning btn-sm" href="/pinjam/riwayat" role="button"> <i class='fas fa-history spaced-icon'></i>Riwayat Peminjaman Barang</a>
-                                        </div>
-                                    </div>
                                 <?php endif; ?>
+
+                                <!-- Bagian tombol Riwayat Peminjaman -->
+                                <div class="btn-toolbar">
+                                    <div class="col-md-12 col-12">
+                                        <?php if ($level === 'Admin') : ?>
+                                            <a class="btn btn-warning btn-sm" href="/pinjam/riwayat" role="button"> <i class='fas fa-history spaced-icon'></i>Riwayat Peminjaman Barang</a>
+                                        <?php elseif ($level === 'User') : ?>
+                                            <a class="btn btn-warning btn-sm" href="/pinjam/user/riwayat" role="button"> <i class='fas fa-history spaced-icon'></i>Riwayat Peminjaman Barang</a>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                             </div>
@@ -153,12 +167,16 @@
                                                 }
                                                 ?>
                                             </td>
-                                            <td width='8%' class="text-center" style="text-align: center; vertical-align: middle;">
-                                                <a onclick=" hapus_data('<?= $dataPinjam['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>
-                                                <a class="btn btn-xs btn-info mx-auto text-white" href="<?= base_url('cetak_pinjam/' . $dataPinjam['peminjaman_id']); ?>" target="_blank">
-                                                    F. Pinjam
+                                            <td width='5%' class="text-center" style="text-align: center; vertical-align: middle;">
+                                                <!-- Tombol Hapus -->
+                                                <a onclick="hapus_data('<?= $dataPinjam['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button" data-toggle="tooltip" data-placement="left" title="Hapus"><i class='fas fa-trash-alt'></i> </a>
+
+                                                <!-- Tombol F. Pinjam -->
+                                                <a class="btn btn-xs btn-info mx-auto text-white" href="<?= base_url('cetak_pinjam/' . $dataPinjam['peminjaman_id']); ?>" target="_blank" data-toggle="tooltip" data-placement="left" title="Form Pinjam">
+                                                    <i class='far fa-file-alt'></i>
                                                 </a>
 
+                                                <!-- Tombol Perpanjang jika tanggal pengembalian sudah habis atau hari ini -->
                                                 <?php
                                                 $tanggal_pengembalian = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
 
@@ -166,17 +184,18 @@
                                                 if ($tanggal_pengembalian->toDateTimeString() <= \CodeIgniter\I18n\Time::now('Asia/Jakarta')->toDateTimeString()) {
                                                 ?>
                                                     <button class="btn btn-xs editBtn btn-warning mx-auto text-dark" data-id="<?= $dataPinjam['peminjaman_id']; ?>" data-toggle="modal" data-target="#editModal">
-                                                        Perpanjang
+                                                        <i class='fas fa-sync' data-toggle="tooltip" data-placement="left" title="Perpanjang"></i>
                                                     </button>
                                                 <?php
                                                 }
                                                 ?>
 
-                                                <a class="btn btn-xs btn-success mx-auto text-white" href="<?= base_url('form_kembali/' . $dataPinjam['peminjaman_id']); ?>" target="_blank">
-                                                    F. Kembali
-                                                </a>
-
-
+                                                <!-- Tombol F. Kembali, hanya tampilkan jika level pengguna adalah 'admin' -->
+                                                <?php if ($level === 'Admin') { ?>
+                                                    <a class="btn btn-xs btn-success mx-auto text-white" href="<?= base_url('form_kembali/' . $dataPinjam['peminjaman_id']); ?>" target="_blank" data-toggle="tooltip" data-placement="left" title="Form Kembali">
+                                                        <i class='far fa-file-alt'></i>
+                                                    </a>
+                                                <?php } ?>
                                             </td>
 
                                         </tr>

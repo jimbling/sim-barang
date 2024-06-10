@@ -133,6 +133,47 @@ class Peminjaman extends BaseController
         return view('peminjaman/pinjam_riwayat', $data);
     }
 
+    public function riwayatUser()
+    {
+        $session = session();
+        $userId = $session->get('id');
+
+        if (is_null($userId)) {
+            echo 'User ID tidak ditemukan dalam sesi. Pastikan pengguna telah login.';
+            return;
+        }
+
+        $riwayatPeminjamanModel = new RiwayatPeminjamanModel();
+        $dataPeminjaman = $riwayatPeminjamanModel->getPeminjamanByUserId($userId);
+
+        // Mengelompokkan barang berdasarkan peminjaman_id
+        $groupedPeminjaman = [];
+        foreach ($dataPeminjaman as $item) {
+            $peminjamanId = $item['peminjaman_id'];
+
+            if (!isset($groupedPeminjaman[$peminjamanId])) {
+                $groupedPeminjaman[$peminjamanId] = [
+                    'kode_pinjam' => $item['kode_pinjam'],
+                    'nama_peminjam' => $item['nama_peminjam'],
+                    'nama_ruangan' => $item['nama_ruangan'],
+                    'tanggal_pinjam' => $item['tanggal_pinjam'],
+                    'keperluan' => $item['keperluan'],
+                    'barang_dipinjam' => []
+                ];
+            }
+
+            $groupedPeminjaman[$peminjamanId]['barang_dipinjam'][] = $item['nama_barang'] . ' - ' . $item['kode_barang'];
+        }
+
+        $data = [
+            'judul' => "Daftar Pinjam | " . $this->settingsService->getNamaKampus(),
+            'currentYear' => date('Y'),
+            'data_peminjaman' => $groupedPeminjaman,
+        ];
+
+        return view('peminjaman/pinjam_riwayat_user', $data);
+    }
+
     // public function detailKodeKembali($kodeKembali)
     // {
     //     $pengembalianBarang = new PengembalianbarangModel();

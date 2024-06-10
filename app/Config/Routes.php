@@ -38,6 +38,7 @@ $routes->get('/dashboard', 'Home::dashboard_user');
 $routes->get('/pinjam/tambah', 'Peminjaman::addPinjam');
 $routes->get('/pinjam/daftar', 'Peminjaman::index');
 $routes->get('/pinjam/riwayat', 'Peminjaman::riwayat');
+$routes->get('/pinjam/user/riwayat', 'Peminjaman::riwayatUser');
 $routes->get('/pinjam/edit/(:num)', 'Peminjaman::edit/$1');
 
 $routes->get('/kembali/riwayat', 'Pengembalian::riwayat');
