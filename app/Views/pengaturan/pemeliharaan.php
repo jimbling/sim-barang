@@ -149,6 +149,9 @@
 
 <?php echo view('tema/footer.php'); ?>
 <script>
+    const unduhUrl = '<?= base_url('/backup/unduh/') ?>';
+</script>
+<script>
     document.addEventListener("DOMContentLoaded", function() {
         const showAllBackupBtn = document.getElementById('showAllBackupBtn');
         const tableBody = document.querySelector('tbody');
@@ -170,9 +173,9 @@
                         <td style="vertical-align: middle; font-size: 14px;">${formatDateTime(backup.created_at)}</td>
                         <td style="vertical-align: middle; font-size: 14px;">${(backup.ukuran / 1024).toFixed(2)} KB</td>
                         <td>
-                            <a class="btn btn-success btn-sm" href="<?= base_url('/backup/unduh/'); ?>${backup.nama_file}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
-                                <i class="fas fa-download"></i>
-                            </a>
+                        <a class="btn btn-success btn-sm" href="${unduhUrl}/${encodeURIComponent(backup.nama_file)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
+                            <i class="fas fa-download"></i>
+                        </a>
                         </td>
                     </tr>
                 `;
@@ -284,7 +287,7 @@
                         <td style="vertical-align: middle; font-size: 14px;">${formatDateTime(backup.created_at)}</td>
                         <td style="vertical-align: middle; font-size: 14px;">${(backup.ukuran / 1024).toFixed(2)} KB</td>
                         <td style="vertical-align: middle; font-size: 14px;">
-                            <a class="btn btn-success btn-sm" href="<?= base_url('/backup/unduh/'); ?>${backup.nama_file}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
+                            <a class="btn btn-success btn-sm" href="${unduhUrl}/${encodeURIComponent(backup.nama_file)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
                                 <i class="fas fa-download"></i>
                             </a>
                         </td>
