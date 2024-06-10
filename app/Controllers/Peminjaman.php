@@ -505,10 +505,20 @@ class Peminjaman extends BaseController
 
             // Memeriksa apakah penghapusan dari riwayat peminjaman berhasil
             if ($deletedRiwayat) {
-                return $this->response->setJSON([
-                    'status' => 'success',
-                    'message' => 'Data Peminjaman berhasil dihapus.'
-                ]);
+                // Hapus data dari tabel peminjaman juga
+                $deletedPeminjaman = $peminjamanModel->delete($peminjamanId);
+
+                if ($deletedPeminjaman) {
+                    return $this->response->setJSON([
+                        'status' => 'success',
+                        'message' => 'Data Peminjaman berhasil dihapus.'
+                    ]);
+                } else {
+                    return $this->response->setJSON([
+                        'status' => 'error',
+                        'message' => 'Gagal menghapus data Peminjaman.'
+                    ]);
+                }
             } else {
                 return $this->response->setJSON([
                     'status' => 'error',
@@ -522,6 +532,7 @@ class Peminjaman extends BaseController
             ]);
         }
     }
+
 
 
 
