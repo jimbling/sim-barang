@@ -153,7 +153,7 @@
                                                 }
                                                 ?>
                                             </td>
-                                            <td width='5%' class="text-center" style="text-align: center; vertical-align: middle;">
+                                            <td width='8%' class="text-center" style="text-align: center; vertical-align: middle;">
                                                 <a onclick=" hapus_data('<?= $dataPinjam['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>
                                                 <a class="btn btn-xs btn-info mx-auto text-white" href="<?= base_url('cetak_pinjam/' . $dataPinjam['peminjaman_id']); ?>" target="_blank">
                                                     F. Pinjam
@@ -171,7 +171,6 @@
                                                 <?php
                                                 }
                                                 ?>
-
 
                                                 <a class="btn btn-xs btn-success mx-auto text-white" href="<?= base_url('form_kembali/' . $dataPinjam['peminjaman_id']); ?>" target="_blank">
                                                     F. Kembali

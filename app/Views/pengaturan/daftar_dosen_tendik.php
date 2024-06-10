@@ -679,8 +679,12 @@
                 "url": "<?php echo base_url('dosentendik/fetchData'); ?>",
                 "type": "POST"
             },
-            "columns": [{
-                    "data": "id"
+            "columns": [{ // Kolom Nomor Urut
+                    "data": null,
+                    "className": "text-center",
+                    "render": function(data, type, row, meta) {
+                        return meta.row + 1; // Menggunakan meta.row untuk nomor urut
+                    }
                 },
                 {
                     "data": "nik"

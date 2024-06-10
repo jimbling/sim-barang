@@ -79,6 +79,7 @@
 
 
 <script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
+
 <script>
     $(document).ready(function() {
         var table = $('#daftarRiwayatPeminjamanTable').DataTable({
@@ -170,6 +171,7 @@
                         return `
                         <button type="button" class="btn btn-primary btn-xs detailBtn" data-kodepinjam="${row.kode_pinjam}">Detail</button>
                         <button type="button" class="btn btn-danger btn-xs hapusBtn" data-id="${row.peminjaman_id}">Hapus</button>
+                        <a class="btn btn-xs btn-success mx-auto text-white kembaliBtn" href="<?= base_url('form_kembali') ?>/${row.peminjaman_id}" target="_blank">F. Kembali</a>
                     `;
                     }
                 }
@@ -198,130 +200,137 @@
             hapus_data(data_id);
         });
 
+        // Event listener untuk tombol F. Kembali jika ada fungsi tambahan
+        $('#daftarRiwayatPeminjamanTable').on('click', '.kembaliBtn', function() {
+            var data_id = $(this).data('id');
+            // Tambahkan logika tambahan di sini jika diperlukan
+            console.log('F. Kembali untuk ID:', data_id);
+        });
+
         // Function to handle the deletion process
         function hapus_data(data_id) {
             console.log('Hapus data dengan ID:', data_id);
-        }
-    });
 
-    // Fungsi untuk menampilkan pesan loading
-    function showLoading() {
-        let timerInterval;
-        Swal.fire({
-            title: 'Sedang memproses data ....',
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-    }
+            Swal.fire({
+                title: 'HAPUS?',
+                text: "Yakin akan menghapus data ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tampilkan pesan loading saat permintaan sedang dijalankan
+                    showLoading();
 
-    // Fungsi untuk menyembunyikan pesan loading
-    function hideLoading() {
-        Swal.close();
-    }
+                    // Lakukan permintaan penghapusan ke server
+                    $.ajax({
+                        type: 'POST',
+                        url: '/pinjam/hapus_riwayat/' + data_id, // Ganti URL sesuai dengan URL yang benar
+                        success: function(response) {
+                            // Sembunyikan pesan loading saat permintaan selesai
+                            hideLoading();
 
-    // Fungsi untuk menghapus data berdasarkan id
-    function hapus_data(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id);
-        Swal.fire({
-            title: 'HAPUS?',
-            text: "Yakin akan menghapus data ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, Hapus!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Tampilkan pesan loading saat permintaan sedang dijalankan
-                showLoading();
-                // Lakukan permintaan penghapusan ke server
-                $.ajax({
-                    type: 'POST',
-                    url: '/pinjam/hapus_riwayat/' + data_id, // Ganti URL sesuai dengan URL yang benar
-                    success: function(response) {
-                        // Sembunyikan pesan loading saat permintaan selesai
-                        hideLoading();
-
-                        // Periksa respon dari server
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                title: 'Berhasil!',
-                                text: response.message,
-                                icon: 'success',
-                                timer: 2000, // Durasi tampilan dalam milidetik
-                                showConfirmButton: false, // Sembunyikan tombol OK
-                            }).then(() => {
-                                // Arahkan pengguna ke halaman baru setelah SweetAlert ditutup
-                                window.location.replace("/pinjam/riwayat");
-                            });
-                        } else {
-                            // Periksa apakah pesan error mengandung kode_pinjam untuk ditampilkan dengan tombol Copy
-                            if (response.message.includes('Kode Pinjam:')) {
-                                // Ekstrak kode pinjam dan bersihkan dari karakter tidak diinginkan
-                                let kodePinjam = response.message.split('Kode Pinjam: ')[1].trim();
-                                // Hilangkan titik di akhir jika ada
-                                kodePinjam = kodePinjam.replace(/\.$/, '');
-
+                            // Periksa respon dari server
+                            if (response.status === 'success') {
                                 Swal.fire({
-                                    title: 'Gagal!',
-                                    html: response.message + '<br><br><button id="copyKodePinjam" class="btn btn-primary">Copy</button>',
-                                    icon: 'error',
-                                    showConfirmButton: false // Sembunyikan tombol OK
-                                });
-
-                                // Event listener untuk tombol Copy
-                                $(document).on('click', '#copyKodePinjam', function() {
-                                    navigator.clipboard.writeText(kodePinjam)
-                                        .then(() => {
-                                            Swal.fire({
-                                                title: 'Copied!',
-                                                text: 'Kode Pinjam berhasil disalin.',
-                                                icon: 'success',
-                                                timer: 2000,
-                                                showConfirmButton: false
-                                            }).then(() => {
-                                                Swal.close(); // Tutup SweetAlert setelah menyalin
-                                            });
-                                        })
-                                        .catch((err) => {
-                                            Swal.fire({
-                                                title: 'Error!',
-                                                text: 'Gagal menyalin Kode Pinjam.',
-                                                icon: 'error'
-                                            });
-                                            console.error('Could not copy text: ', err);
-                                        });
+                                    title: 'Berhasil!',
+                                    text: response.message,
+                                    icon: 'success',
+                                    timer: 2000, // Durasi tampilan dalam milidetik
+                                    showConfirmButton: false, // Sembunyikan tombol OK
+                                }).then(() => {
+                                    // Arahkan pengguna ke halaman baru setelah SweetAlert ditutup
+                                    window.location.replace("/pinjam/riwayat");
                                 });
                             } else {
-                                Swal.fire({
-                                    title: 'Gagal!',
-                                    text: response.message,
-                                    icon: 'error',
-                                });
+                                // Periksa apakah pesan error mengandung kode_pinjam untuk ditampilkan dengan tombol Copy
+                                if (response.message.includes('Kode Pinjam:')) {
+                                    // Ekstrak kode pinjam dan bersihkan dari karakter tidak diinginkan
+                                    let kodePinjam = response.message.split('Kode Pinjam: ')[1].trim();
+                                    // Hilangkan titik di akhir jika ada
+                                    kodePinjam = kodePinjam.replace(/\.$/, '');
+
+                                    Swal.fire({
+                                        title: 'Gagal!',
+                                        html: response.message + '<br><br><button id="copyKodePinjam" class="btn btn-primary">Copy</button>',
+                                        icon: 'error',
+                                        showConfirmButton: false // Sembunyikan tombol OK
+                                    });
+
+                                    // Event listener untuk tombol Copy
+                                    $(document).on('click', '#copyKodePinjam', function() {
+                                        navigator.clipboard.writeText(kodePinjam)
+                                            .then(() => {
+                                                Swal.fire({
+                                                    title: 'Copied!',
+                                                    text: 'Kode Pinjam berhasil disalin.',
+                                                    icon: 'success',
+                                                    timer: 2000,
+                                                    showConfirmButton: false
+                                                }).then(() => {
+                                                    Swal.close(); // Tutup SweetAlert setelah menyalin
+                                                });
+                                            })
+                                            .catch((err) => {
+                                                Swal.fire({
+                                                    title: 'Error!',
+                                                    text: 'Gagal menyalin Kode Pinjam.',
+                                                    icon: 'error'
+                                                });
+                                                console.error('Could not copy text: ', err);
+                                            });
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Gagal!',
+                                        text: response.message,
+                                        icon: 'error',
+                                    });
+                                }
                             }
+                        },
+                        error: function(xhr, status, error) {
+                            // Sembunyikan pesan loading saat ada kesalahan dalam penghapusan
+                            hideLoading();
+                            // Tampilkan pesan error yang diterima dari server
+                            let errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Terjadi kesalahan saat menghapus data.';
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: errorMessage,
+                                icon: 'error',
+                            });
+                            console.log('AJAX Error:', xhr);
+                            console.log('Status:', status);
+                            console.log('Error:', error);
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        // Sembunyikan pesan loading saat ada kesalahan dalam penghapusan
-                        hideLoading();
-                        // Tampilkan pesan error yang diterima dari server
-                        let errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Terjadi kesalahan saat menghapus data.';
-                        Swal.fire({
-                            title: 'Gagal!',
-                            text: errorMessage,
-                            icon: 'error',
-                        });
-                        console.log('AJAX Error:', xhr);
-                        console.log('Status:', status);
-                        console.log('Error:', error);
-                    }
-                });
-            }
-        });
-    }
+                    });
+                }
+            });
+        }
+
+        // Fungsi untuk menampilkan pesan loading
+        function showLoading() {
+            let timerInterval;
+            Swal.fire({
+                title: 'Sedang memproses data ....',
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        }
+
+        // Fungsi untuk menyembunyikan pesan loading
+        function hideLoading() {
+            Swal.close();
+        }
+    });
 </script>
+
+
+
 
 
 
