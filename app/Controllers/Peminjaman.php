@@ -641,6 +641,47 @@ class Peminjaman extends BaseController
         ]);
     }
 
+    public function cetakFormPengembalianRiwayat($peminjamanId)
+    {
+        $pengeluaranModel = new PengeluaranModel();
+        $riwayatpeminjamanModel = new RiwayatPeminjamanModel();
+        $pengaturanModel = new PengaturanModel();
+        $dataPengaturan = $pengaturanModel->getDataById(1);
+
+        // Get data pengeluaran based on peminjaman_id
+        $groupedPengeluaran = $this->getGroupedPengeluaran($peminjamanId);
+
+        // Get peminjaman barang data by peminjaman_id
+        $peminjamanBarangDetails = $riwayatpeminjamanModel->getPeminjamanBarangByPeminjamanId($peminjamanId);
+
+        // Check if $groupedPengeluaran is not empty and has at least one element
+        if (!empty($groupedPengeluaran) && array_key_exists(0, $groupedPengeluaran)) {
+            // Fetch additional information related to barangPersediaan and peminjaman
+            foreach ($groupedPengeluaran as &$pengeluaran) {
+                $barangPersediaanModel = new BarangPersediaanModel();
+                $barangPersediaan = $barangPersediaanModel->find($pengeluaran->barang_id);
+
+                // Attach additional information to the pengeluaran data
+                $pengeluaran->barangPersediaan = $barangPersediaan;
+            }
+        } else {
+            // If $groupedPengeluaran is empty or does not have an index 0, proceed with printing peminjaman data only
+            return view('cetak/cetak_form_kembali_riwayat', [
+                'groupedPengeluaran' => [],
+                'peminjamanBarangDetails' => $peminjamanBarangDetails,
+                'dataPengaturan' => $dataPengaturan,
+            ]);
+        }
+
+        // You can now use $groupedPengeluaran and $peminjamanBarangDetails in your view or further processing
+        // For example, passing them to a view
+        return view('cetak/cetak_form_kembali_riwayat', [
+            'groupedPengeluaran' => $groupedPengeluaran,
+            'peminjamanBarangDetails' => $peminjamanBarangDetails,
+            'dataPengaturan' => $dataPengaturan,
+        ]);
+    }
+
     protected function getGroupedPengeluaran($peminjamanId)
     {
         $pengeluaranModel = new PengeluaranModel();

@@ -918,3 +918,69 @@ INFO - 2024-06-10 15:00:05 --> Session: Class initialized using 'CodeIgniter\Ses
 INFO - 2024-06-10 15:00:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 INFO - 2024-06-10 15:00:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 INFO - 2024-06-10 15:00:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:00:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:01:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-10 15:01:03 --> Undefined array key 0
+in APPPATH\Views\cetak\cetak_form_kembali.php on line 197.
+ 1 APPPATH\Views\cetak\cetak_form_kembali.php(197): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key 0', 'APPPATH\\Views\\cetak\\cetak_form_kembali.php', 197)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_form_kembali.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_form_kembali', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(628): view('cetak/cetak_form_kembali', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakFormPengembalian('47')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-10 15:01:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:06:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:06:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-10 15:06:19 --> Undefined array key 0
+in APPPATH\Views\cetak\cetak_form_kembali.php on line 197.
+ 1 APPPATH\Views\cetak\cetak_form_kembali.php(197): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key 0', 'APPPATH\\Views\\cetak\\cetak_form_kembali.php', 197)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_form_kembali.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_form_kembali', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(628): view('cetak/cetak_form_kembali', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakFormPengembalian('47')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-10 15:07:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-10 15:07:44 --> Undefined array key 0
+in APPPATH\Views\cetak\cetak_form_kembali.php on line 197.
+ 1 APPPATH\Views\cetak\cetak_form_kembali.php(197): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key 0', 'APPPATH\\Views\\cetak\\cetak_form_kembali.php', 197)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_form_kembali.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_form_kembali', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(628): view('cetak/cetak_form_kembali', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakFormPengembalian('47')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-10 15:08:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:08:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-06-10 15:08:42 --> Undefined array key 0
+in APPPATH\Views\cetak\cetak_form_kembali_riwayat.php on line 197.
+ 1 APPPATH\Views\cetak\cetak_form_kembali_riwayat.php(197): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key 0', 'APPPATH\\Views\\cetak\\cetak_form_kembali_riwayat.php', 197)
+ 2 SYSTEMPATH\View\View.php(213): include('APPPATH\\Views\\cetak\\cetak_form_kembali_riwayat.php')
+ 3 SYSTEMPATH\View\View.php(216): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1177): CodeIgniter\View\View->render('cetak/cetak_form_kembali_riwayat', [], true)
+ 5 APPPATH\Controllers\Peminjaman.php(669): view('cetak/cetak_form_kembali_riwayat', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(934): App\Controllers\Peminjaman->cetakFormPengembalianRiwayat('100')
+ 7 SYSTEMPATH\CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Peminjaman))
+ 8 SYSTEMPATH\CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 FCPATH\index.php(67): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Commands\Server\rewrite.php(47): require_once('FCPATH\\index.php')
+INFO - 2024-06-10 15:09:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:09:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:09:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:09:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:09:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:09:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:09:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:09:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:09:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-06-10 15:09:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

@@ -171,7 +171,7 @@
                         return `
                         <button type="button" class="btn btn-primary btn-xs detailBtn" data-kodepinjam="${row.kode_pinjam}">Detail</button>
                         <button type="button" class="btn btn-danger btn-xs hapusBtn" data-id="${row.peminjaman_id}">Hapus</button>
-                        <a class="btn btn-xs btn-success mx-auto text-white kembaliBtn" href="<?= base_url('form_kembali') ?>/${row.peminjaman_id}" target="_blank">F. Kembali</a>
+                        <a class="btn btn-xs btn-success mx-auto text-white kembaliBtn" href="<?= base_url('form_kembali/riwayat') ?>/${row.peminjaman_id}" target="_blank">F. Kembali</a>
                     `;
                     }
                 }

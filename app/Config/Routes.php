@@ -206,6 +206,7 @@ $routes->get('backup/latest', 'Pemeliharaan::getLatestBackups');
 
 
 $routes->get('form_kembali/(:num)', 'Peminjaman::cetakFormPengembalian/$1');
+$routes->get('form_kembali/riwayat/(:num)', 'Peminjaman::cetakFormPengembalianRiwayat/$1');
 $routes->get('/ambil_tanggal/(:num)', 'Home::get_data_peminjaman/$1');
 $routes->get('/kode_kembali/detail/(:segment)', 'Peminjaman::riwayatKodePinjam/$1');
 $routes->get('cetak/detail_pinjam/(:segment)', 'Peminjaman::cetakDetailPinjam/$1');

@@ -151,4 +151,25 @@ class RiwayatPeminjamanModel extends Model
             ->where('tbl_peminjaman.kode_pinjam', $kodePinjam)
             ->findAll();
     }
+
+    public function getPeminjamanBarangByPeminjamanId($peminjamanId)
+    {
+        return $this->select('
+                    tbl_peminjaman.id as peminjaman_id, 
+                    kode_pinjam, 
+                    nama_peminjam, 
+                    nama_ruangan, 
+                    tanggal_pinjam, 
+                    tanggal_pengembalian,
+                    nama_dosen,
+                    keperluan, 
+                    GROUP_CONCAT(tbl_barang.id) as barang_ids,
+                    GROUP_CONCAT(CONCAT(tbl_barang.nama_barang, " - ", tbl_barang.kode_barang)) as barang_dipinjam,
+                    tbl_riwayat_peminjaman.barang_id') // Menambahkan kolom barang_id
+            ->join('tbl_barang', 'tbl_barang.id = tbl_riwayat_peminjaman.barang_id')
+            ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_riwayat_peminjaman.peminjaman_id')
+            ->where('tbl_riwayat_peminjaman.peminjaman_id', $peminjamanId)
+            ->groupBy('peminjaman_id')
+            ->findAll();
+    }
 }
