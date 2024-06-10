@@ -46,14 +46,13 @@
                                 </select>
                             </form>
 
-                            <table id="daftarRiwayatPeminjamanTable" class="table table-striped table-responsive table-sm table-hover">
+                            <table id="daftarRiwayatPeminjamanTable" class="table table-striped table-sm table-hover">
                                 <thead class="thead-dark" style="font-size: 13px;">
                                     <tr>
                                         <th width='3%'>No</th>
                                         <th style="text-align: center; font-size: 13px;">Kode Pinjam</th>
                                         <th style="text-align: center; font-size: 13px;">Nama Peminjam</th>
                                         <th style="text-align: center; font-size: 13px;">Tanggal Pinjam</th>
-                                        <th style="text-align: center; font-size: 13px;">Digunakan di</th>
                                         <th style="text-align: center; font-size: 13px;">Digunakan untuk</th>
                                         <th style="text-align: center; font-size: 13px;">Nama Barang</th>
                                         <th style="text-align: center; font-size: 13px;">Aksi</th>
@@ -84,7 +83,29 @@
     $(document).ready(function() {
         var table = $('#daftarRiwayatPeminjamanTable').DataTable({
             "processing": true,
-            "responsive": true, // Menambahkan opsi responsive
+            "responsive": {
+                "breakpoints": [{
+                        "name": 'bigdesktop',
+                        "width": Infinity
+                    },
+                    {
+                        "name": 'desktop',
+                        "width": 1280
+                    },
+                    {
+                        "name": 'tablet',
+                        "width": 1024
+                    },
+                    {
+                        "name": 'fablet',
+                        "width": 768
+                    },
+                    {
+                        "name": 'phone',
+                        "width": 480
+                    }
+                ]
+            },
             "ajax": {
                 "url": "<?= base_url('peminjaman/fetchData') ?>",
                 "type": "POST",
@@ -129,9 +150,6 @@
                     }
                 },
                 {
-                    "data": "nama_ruangan"
-                },
-                {
                     "data": "keperluan"
                 },
                 {
@@ -147,12 +165,12 @@
                     }
                 },
                 {
-                    "data": null, // Menggunakan null karena kita membutuhkan lebih dari satu properti
+                    "data": null,
                     "render": function(data, type, row) {
                         return `
-                            <button type="button" class="btn btn-primary btn-xs detailBtn" data-kodepinjam="${row.kode_pinjam}">Detail</button>
-                            <button type="button" class="btn btn-danger btn-xs hapusBtn" data-id="${row.peminjaman_id}">Hapus</button>
-                        `;
+                        <button type="button" class="btn btn-primary btn-xs detailBtn" data-kodepinjam="${row.kode_pinjam}">Detail</button>
+                        <button type="button" class="btn btn-danger btn-xs hapusBtn" data-id="${row.peminjaman_id}">Hapus</button>
+                    `;
                     }
                 }
             ]
@@ -171,19 +189,7 @@
         // Event listener untuk tombol Detail
         $('#daftarRiwayatPeminjamanTable').on('click', '.detailBtn', function() {
             var kode_pinjam = $(this).data('kodepinjam');
-            // Implementasi detail sesuai kebutuhan, misalnya membuka modal atau mengarahkan ke halaman detail
             console.log('Detail untuk kode pinjam:', kode_pinjam);
-            // Contoh pengalihan ke halaman detail
-            // window.location.href = '/pinjam/detail/' + kode_pinjam;
-        });
-
-        // Event listener untuk tombol Edit
-        $('#daftarRiwayatPeminjamanTable').on('click', '.editBtn', function() {
-            var kode_pinjam = $(this).data('kodepinjam');
-            // Implementasi edit sesuai kebutuhan, misalnya membuka modal edit atau mengarahkan ke halaman edit
-            console.log('Edit untuk kode pinjam:', kode_pinjam);
-            // Contoh pengalihan ke halaman edit
-            // window.location.href = '/pinjam/edit/' + kode_pinjam;
         });
 
         // Event listener untuk tombol Hapus
@@ -191,6 +197,11 @@
             var data_id = $(this).data('id');
             hapus_data(data_id);
         });
+
+        // Function to handle the deletion process
+        function hapus_data(data_id) {
+            console.log('Hapus data dengan ID:', data_id);
+        }
     });
 
     // Fungsi untuk menampilkan pesan loading
