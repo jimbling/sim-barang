@@ -89,9 +89,25 @@
 
                         <a id="backupBtn" class="btn btn-primary btn-block" href="/backup" role="button">Buat Cadangan Database .sql</a>
                     </div>
-
-
                 </div>
+
+                <div class="card shadow card-primary card-outline">
+                    <div class="card-body">
+                        <h5 class="card-title">Restore Database</h5>
+                        <p class="card-text">Silakan unggah file SQL untuk merestore database.</p>
+
+                        <form id="restoreForm" action="/restore" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="sqlFile">Upload SQL File:</label>
+                                <input type="file" class="form-control-file" name="sqlFile" id="sqlFile" accept=".sql" required>
+                            </div>
+                            <button type="button" id="restoreButton" class="btn btn-primary">Restore</button>
+                        </form>
+                        <h5 class="card-title mt-3">Catatan</h5>
+                        <p class="card-text">File-file yang ada tidak ikut terbackup dan ter restore, jadi silahkan disesuaikan lagi : Logo, Logo Bank, Kop Surat, dan File Pihak Luar. Sebaiknya diamankan terlebih dahulu sebelum melakukan restore</p>
+                    </div>
+                </div>
+
             </div>
 
             <div class="col-md-5">
@@ -441,5 +457,67 @@
     document.getElementById('showAllBtn').addEventListener('click', function() {
         var url = this.getAttribute('data-url');
         window.location.href = url;
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mengambil elemen form dan tombol restore
+        const form = document.getElementById('restoreForm');
+        const restoreButton = document.getElementById('restoreButton');
+
+        // Menambahkan event listener pada tombol restore
+        restoreButton.addEventListener('click', function() {
+            // Memeriksa apakah file yang dipilih adalah file SQL
+            const sqlFile = document.getElementById('sqlFile');
+            const fileName = sqlFile.value;
+            if (!fileName.endsWith('.sql')) {
+                // Menampilkan pesan SweetAlert jika bukan file SQL
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid File',
+                    text: 'File yang diunggah harus berformat .sql!',
+                });
+                return; // Menghentikan proses jika bukan file SQL
+            }
+
+            // Menampilkan konfirmasi SweetAlert sebelum restore
+            Swal.fire({
+                icon: 'warning',
+                title: 'Konfirmasi Restore',
+                text: 'Semua data yang ada akan terhapus dan akan digantikan dengan data baru. Lanjutkan?',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Lanjutkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                // Jika pengguna mengonfirmasi restore
+                if (result.isConfirmed) {
+                    // Submit form untuk melakukan restore
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Periksa apakah ada pesan sukses atau error di flash data
+        <?php if (session()->getFlashdata('success')) : ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '<?= session()->getFlashdata('success') ?>',
+                onClose: () => {
+                    window.location.href = '/pemeliharaan'; // Redirect ke halaman pemeliharaan setelah alert ditutup
+                }
+            });
+        <?php elseif (session()->getFlashdata('error')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '<?= session()->getFlashdata('error') ?>'
+            });
+        <?php endif; ?>
     });
 </script>

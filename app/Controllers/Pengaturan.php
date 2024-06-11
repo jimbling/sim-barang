@@ -417,4 +417,73 @@ class Pengaturan extends BaseController
 
         return view('upload_form');
     }
+
+    public function uploadRestoreFile()
+    {
+        $file = $this->request->getFile('sqlFile');
+
+        if ($file->isValid() && !$file->hasMoved()) {
+            // Validasi ekstensi file
+            $extension = $file->getClientExtension();
+            if ($extension !== 'sql') {
+                session()->setFlashdata('error', 'Hanya file dengan ekstensi .sql yang diizinkan.');
+                return redirect()->to('/pemeliharaan');
+            }
+
+            $filePath = $file->getTempName();
+            // Panggil fungsi restoreDatabase Anda
+            $restoreResult = $this->restoreDatabase($filePath);
+
+            if ($restoreResult) {
+                // Menyimpan pesan sukses dalam session flash data
+                session()->setFlashdata('success', 'Database berhasil di-restore.');
+            } else {
+                // Menyimpan pesan error dalam session flash data
+                session()->setFlashdata('error', 'Gagal melakukan restore database.');
+            }
+        } else {
+            session()->setFlashdata('error', 'Gagal mengunggah file.');
+        }
+
+        return redirect()->to('/pemeliharaan');
+    }
+
+    private function restoreDatabase($filePath)
+    {
+        // Mendapatkan koneksi ke database
+        $db = \Config\Database::connect();
+
+        try {
+            // Menonaktifkan pemeriksaan foreign key sementara
+            $db->query('SET FOREIGN_KEY_CHECKS=0');
+
+            // Ambil semua tabel di database
+            $tables = $db->listTables();
+
+            // Hapus semua tabel
+            foreach ($tables as $table) {
+                $db->query("DROP TABLE IF EXISTS $table");
+            }
+
+            // Baca file SQL dan eksekusi query
+            $sql = file_get_contents($filePath);
+            $queries = explode(';', $sql);
+
+            foreach ($queries as $query) {
+                if (trim($query) !== '') {
+                    $db->query($query);
+                }
+            }
+
+            // Mengaktifkan kembali pemeriksaan foreign key
+            $db->query('SET FOREIGN_KEY_CHECKS=1');
+
+            // Mengembalikan true jika proses berhasil
+            return true;
+        } catch (\Exception $e) {
+            // Tampilkan pesan error
+            session()->setFlashdata('error', 'Failed to restore database: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

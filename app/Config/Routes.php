@@ -214,7 +214,7 @@ $routes->get('cetak/detail_pinjam/(:segment)', 'Peminjaman::cetakDetailPinjam/$1
 $routes->get('/kembali/hapus_kode/(:segment)', 'Pengembalian::penghapusanKodeKembali/$1');
 $routes->post('/pengembalian/batal', 'Pengembalian::batal');
 
-
+$routes->post('restore', 'Pengaturan::uploadRestoreFile');
 
 
 
