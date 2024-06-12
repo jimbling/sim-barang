@@ -17,7 +17,7 @@
 
 
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-12">
                 <div class="card shadow card-primary card-outline">
 
                     <div class="card-body">
@@ -28,58 +28,13 @@
                                 <tr style="vertical-align: middle; font-size: 14px;">
                                     <th>#</th>
                                     <th>Nama File .sql</th>
+                                    <th>Nama File .zip</th>
                                     <th>Tanggal Backup</th>
-                                    <th>Ukuran File (KB)</th>
-                                    <th>Aksi</th>
+                                    <th>File .sql</th>
+                                    <th>File .zip</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i = 1; ?>
-                                <?php foreach ($backup_db as $backup) : ?>
-                                    <tr>
-                                        <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;"><?= $i++; ?></th>
-                                        <td style="vertical-align: middle; font-size: 14px;"><?= $backup['nama_file']; ?></td>
-                                        <td style="vertical-align: middle; font-size: 14px;">
-                                            <?php
-                                            $tanggal_backup = \CodeIgniter\I18n\Time::parse($backup['created_at'])
-                                                ->setTimezone('Asia/Jakarta');
-
-                                            $nama_bulan = [
-                                                'January' => 'Januari',
-                                                'February' => 'Februari',
-                                                'March' => 'Maret',
-                                                'April' => 'April',
-                                                'May' => 'Mei',
-                                                'June' => 'Juni',
-                                                'July' => 'Juli',
-                                                'August' => 'Agustus',
-                                                'September' => 'September',
-                                                'October' => 'Oktober',
-                                                'November' => 'November',
-                                                'December' => 'Desember',
-                                            ];
-
-                                            $bulan = $nama_bulan[$tanggal_backup->format('F')];
-
-                                            echo $tanggal_backup->format('d ') . $bulan . $tanggal_backup->format(' Y - H:i') . ' WIB';
-                                            ?>
-
-                                        </td>
-                                        <td>
-                                            <?php
-                                            // Konversi ukuran file dari byte ke kilobyte
-                                            $ukuran_kb = round($backup['ukuran'] / 1024, 2);
-                                            echo $ukuran_kb . " KB";
-                                            ?>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-success btn-sm" href="<?= base_url('/backup/unduh/' . $backup['nama_file']); ?>" role="button">
-                                                <i class="fas fa-download"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-
                             </tbody>
                         </table>
 
@@ -87,30 +42,17 @@
 
                     <div class="card-footer">
 
-                        <a id="backupBtn" class="btn btn-primary btn-block" href="/backup" role="button">Buat Cadangan Database .sql</a>
+                        <a id="backupBtn" class="btn btn-primary btn-block" href="/backup" role="button">Buat Cadangan Database dan Files</a>
                     </div>
                 </div>
 
-                <div class="card shadow card-primary card-outline">
-                    <div class="card-body">
-                        <h5 class="card-title">Restore Database</h5>
-                        <p class="card-text">Silakan unggah file SQL untuk merestore database.</p>
 
-                        <form id="restoreForm" action="/restore" method="POST" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="sqlFile">Upload SQL File:</label>
-                                <input type="file" class="form-control-file" name="sqlFile" id="sqlFile" accept=".sql" required>
-                            </div>
-                            <button type="button" id="restoreButton" class="btn btn-primary">Restore</button>
-                        </form>
-                        <h5 class="card-title mt-3">Catatan</h5>
-                        <p class="card-text">File-file yang ada tidak ikut terbackup dan ter restore, jadi silahkan disesuaikan lagi : Logo, Logo Bank, Kop Surat, dan File Pihak Luar. Sebaiknya diamankan terlebih dahulu sebelum melakukan restore</p>
-                    </div>
-                </div>
 
             </div>
+        </div>
 
-            <div class="col-md-5">
+        <div class="row">
+            <div class="col-md-4">
                 <div class="card shadow card-danger card-outline">
                     <div class="card-body">
                         <?php if (empty($backup_kadaluarsa)) : ?>
@@ -147,6 +89,41 @@
 
                 </div>
             </div>
+            <div class="col-md-4">
+                <!-- Card untuk Restore Database SQL -->
+                <div class="card shadow card-primary card-outline">
+                    <div class="card-body">
+                        <h5 class="card-title">Restore Database</h5>
+                        <p class="card-text">Silakan unggah file SQL untuk merestore database.</p>
+
+                        <form id="restoreSqlForm" action="/restore/sql" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="sqlFile">Upload SQL File:</label>
+                                <input type="file" class="form-control-file" name="sqlFile" id="sqlFile" accept=".sql" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Restore Database</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <!-- Card untuk Restore File ZIP -->
+                <div class="card shadow card-primary card-outline">
+                    <div class="card-body">
+                        <h5 class="card-title">Restore Files</h5>
+                        <p class="card-text">Silakan unggah file ZIP untuk merestore file-file terkait.</p>
+
+                        <form id="restoreZipForm" action="restore/files" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="fileZip">Upload ZIP File:</label>
+                                <input type="file" class="form-control-file" name="fileZip" id="fileZip" accept=".zip" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Restore Files</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
 
 
         </div>
@@ -156,8 +133,8 @@
     <div class="card-body">
         <div class="alert alert-danger">
             <h5><i class="icon fas fa-info" style="font-size: 14px;"></i> PENTING!</h5>
-            Fasilitas ini berguna untuk melakukan proses pencadangan database .sql, jika suatu hal aplikasi ada kesalahan, backup database ini bisa digunakan untuk mengembalikan data keposisi terakhir kali dilakukan backup.
-            Diharapkan untuk rutin melakukan proses pencadangan secara berkala dan menyimpan file .sql ke tempat yang aman, untuk mengantisipasi hal-hal yang tidak diinginkan dikemudian hari.
+            Fasilitas ini berguna untuk melakukan proses pencadangan database .sql dan file-file yang terkait, jika suatu hal aplikasi ada kesalahan, backup database dan file ini bisa digunakan untuk mengembalikan data keposisi terakhir kali dilakukan backup.
+            Diharapkan untuk rutin melakukan proses pencadangan secara berkala dan menyimpan file .sql dan file .zip ke tempat yang aman, untuk mengantisipasi hal-hal yang tidak diinginkan dikemudian hari.
         </div>
     </div>
 </div>
@@ -166,6 +143,7 @@
 <?php echo view('tema/footer.php'); ?>
 <script>
     const unduhUrl = '<?= base_url('/backup/unduh/') ?>';
+    const unduhFilesUrl = '<?= base_url('/files/unduh/') ?>';
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -180,16 +158,22 @@
             tableBody.innerHTML = '';
 
             // Tampilkan dua data pertama
-            for (let i = 0; i < Math.min(data.length, 2); i++) {
+            for (let i = 0; i < Math.min(data.length, 4); i++) {
                 const backup = data[i];
                 const row = `
                     <tr>
                         <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;">${i + 1}</th>
-                        <td style="vertical-align: middle; font-size: 14px;">${backup.nama_file}</td>
+                        <td style="vertical-align: middle; font-size: 14px;">${backup.nama_file} - ${(backup.ukuran / 1024).toFixed(2)} KB</td>
+                        <td style="vertical-align: middle; font-size: 14px;">${backup.file_zip} - ${(backup.ukuran_zip / 1024).toFixed(2)} KB</td>
                         <td style="vertical-align: middle; font-size: 14px;">${formatDateTime(backup.created_at)}</td>
-                        <td style="vertical-align: middle; font-size: 14px;">${(backup.ukuran / 1024).toFixed(2)} KB</td>
+
                         <td>
                         <a class="btn btn-success btn-sm" href="${unduhUrl}/${encodeURIComponent(backup.nama_file)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
+                            <i class="fas fa-download"></i>
+                        </a>
+                        </td>
+                        <td>
+                        <a class="btn btn-warning btn-sm" href="${unduhFilesUrl}/${encodeURIComponent(backup.file_zip)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .zip">
                             <i class="fas fa-download"></i>
                         </a>
                         </td>
@@ -210,15 +194,21 @@
             // Tampilkan semua data backup
             data.forEach((backup, index) => {
                 const row = `
-                    <tr>
-                        <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;">${index + 1}</th>
-                        <td>${backup.nama_file}</td>
-                        <td>${formatDateTime(backup.created_at)}</td>
-                        <td>${(backup.ukuran / 1024).toFixed(2)} KB</td>
+                <tr>
+                        <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;">${i + 1}</th>
+                        <td style="vertical-align: middle; font-size: 14px;">${backup.nama_file} - ${(backup.ukuran / 1024).toFixed(2)} KB</td>
+                        <td style="vertical-align: middle; font-size: 14px;">${backup.file_zip} - ${(backup.ukuran_zip / 1024).toFixed(2)} KB</td>
+                        <td style="vertical-align: middle; font-size: 14px;">${formatDateTime(backup.created_at)}</td>
+
                         <td>
-                            <a class="btn btn-success btn-sm" href="<?= base_url('/backup/unduh/'); ?>${backup.nama_file}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
-                                <i class="fas fa-download"></i>
-                            </a>
+                        <a class="btn btn-success btn-sm" href="${unduhUrl}/${encodeURIComponent(backup.nama_file)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
+                            <i class="fas fa-download"></i>
+                        </a>
+                        </td>
+                        <td>
+                        <a class="btn btn-warning btn-sm" href="${unduhFilesUrl}/${encodeURIComponent(backup.file_zip)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .zip">
+                            <i class="fas fa-download"></i>
+                        </a>
                         </td>
                     </tr>
                 `;
@@ -299,11 +289,17 @@
                 const row = `
                     <tr>
                         <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;">${index + 1}</th>
-                        <td style="vertical-align: middle; font-size: 14px;">${backup.nama_file}</td>
+                        <td style="vertical-align: middle; font-size: 14px;">${backup.nama_file} - ${(backup.ukuran / 1024).toFixed(2)} KB</td>
+                        <td style="vertical-align: middle; font-size: 14px;">${backup.file_zip} - ${(backup.ukuran_zip / 1024).toFixed(2)} KB</td>
                         <td style="vertical-align: middle; font-size: 14px;">${formatDateTime(backup.created_at)}</td>
-                        <td style="vertical-align: middle; font-size: 14px;">${(backup.ukuran / 1024).toFixed(2)} KB</td>
+                        
                         <td style="vertical-align: middle; font-size: 14px;">
                             <a class="btn btn-success btn-sm" href="${unduhUrl}/${encodeURIComponent(backup.nama_file)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </td>
+                        <td style="vertical-align: middle; font-size: 14px;">
+                            <a class="btn btn-success btn-sm" href="${unduhFilesUrl}/${encodeURIComponent(backup.file_zip)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .zip">
                                 <i class="fas fa-download"></i>
                             </a>
                         </td>
@@ -383,7 +379,6 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Backup Berhasil',
-                    text: 'Nama File: ' + data.nama_file,
                 }).then(() => {
                     // Reload halaman setelah SweetAlert terkonfirmasi
                     location.reload();
@@ -405,7 +400,7 @@
     function showLoading() {
         let timerInterval
         Swal.fire({
-            title: 'membackup database ....',
+            title: 'membuat cadangan ....',
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading()

@@ -10,7 +10,7 @@ class BackupModel extends Model
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $useTimestamps = true; // Sesuaikan dengan kebutuhan Anda
-    protected $allowedFields = ['id', 'nama_file', 'ukuran', 'created_at', 'updated_at'];
+    protected $allowedFields = ['id', 'nama_file', 'file_zip', 'ukuran', 'ukuran_zip', 'created_at', 'updated_at'];
 
     public function getBackup()
     {
@@ -27,7 +27,7 @@ class BackupModel extends Model
         return $this->find($id);
     }
 
-    public function getLatestBackups($limit = 2)
+    public function getLatestBackups($limit = 4)
     {
         return $this->orderBy('created_at', 'DESC')->findAll($limit);
     }

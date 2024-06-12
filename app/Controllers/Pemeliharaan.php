@@ -8,6 +8,7 @@ use App\Models\PengaturanModel;
 use App\Models\UserModel;
 use Ifsnop\Mysqldump\Mysqldump;
 use App\Models\BackupModel;
+use ZipArchive;
 
 class Pemeliharaan extends BaseController
 {
@@ -82,12 +83,52 @@ class Pemeliharaan extends BaseController
         return view('pengaturan/pengguna', $data);
     }
 
-    public function backup()
+    public function backupAll()
+    {
+        try {
+            // Backup database SQL
+            $databaseBackupInfo = $this->backupDatabase();
+
+            // Backup file-file dalam folder tertentu
+            $fileBackupInfo = $this->backupFiles();
+
+            // Jika kedua proses berhasil, simpan informasi backup ke dalam database
+            $backupModel = new BackupModel();
+            $data = [
+                'jenis_backup' => 'database_file', // Menyatakan bahwa ini adalah backup dari kedua jenis
+                'nama_file' => $databaseBackupInfo['nama_file'],
+                'ukuran' => $databaseBackupInfo['ukuran'],
+                'file_zip' => $fileBackupInfo['file_zip'],
+                'ukuran_zip' => $fileBackupInfo['ukuran_zip'],
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+            $backupModel->insert($data);
+
+            // Pesan sukses setelah backup
+            $pesan = "Backup Database dan File Berhasil...";
+            session()->setFlashData('pesan', $pesan);
+
+            // Kembalikan respons JSON
+            return $this->response->setJSON(['pesan' => $pesan]);
+        } catch (\Exception $e) {
+            // Jika terjadi kesalahan, tangani dan berikan pesan error
+            $pesan = "Terjadi kesalahan saat melakukan backup: " . $e->getMessage();
+            session()->setFlashData('pesan', $pesan);
+            return redirect()->to('/data/pengaturan')->with('error', $pesan);
+        }
+    }
+
+
+
+    public function backupDatabase()
     {
         try {
             $tglSekarang = date('Y-m-dHis');
+            // Generate random UUID
+            $uuid = uniqid();
             $dump = new Mysqldump('mysql:host=localhost;dbname=yky_pinjam;port=3306', 'root', '');
-            $dumpFile = 'database/backup/db-' . $tglSekarang . '.sql';
+            $dumpFile = 'database/backup/db-' . $tglSekarang . '-' . $uuid . '.sql';
             $dump->start($dumpFile);
 
             // Mengukur ukuran file yang dihasilkan dalam byte
@@ -96,31 +137,120 @@ class Pemeliharaan extends BaseController
             // Menggunakan basename() untuk mendapatkan nama file tanpa folder
             $namaFileTanpaFolder = basename($dumpFile);
 
-            // Setelah backup berhasil, simpan nama file dan ukuran file ke dalam database
-            $backupModel = new BackupModel();
-            $data = [
+            // Kembalikan informasi backup database
+            return [
                 'nama_file' => $namaFileTanpaFolder,
-                'ukuran' => $ukuranFile, // Menyimpan ukuran file dalam byte
+                'ukuran' => $ukuranFile
             ];
-            $backupModel->insertBackup($data);
-
-            $pesan = "Backup Berhasil...";
-            session()->setFlashData('pesan', $pesan);
-
-            // Kembalikan nama file sebagai response JSON
-            return $this->response->setJSON(['nama_file' => $namaFileTanpaFolder, 'ukuran' => $ukuranFile]);
         } catch (\Exception $e) {
-            $pesan = "mysqldump error-php error" . $e->getMessage();
-            session()->setFlashData('pesan', $pesan);
-            return redirect()->to('/data/pengaturan')->with('success', 'Data siswa berhasil diubah.');
+            // Tangani kesalahan jika terjadi
+            throw new \Exception("mysqldump error-php error: " . $e->getMessage());
         }
     }
+
+
+    private function createZipFromFolder($folder, $zipFilePath)
+    {
+        $zip = new ZipArchive();
+
+        if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            $this->addFolderToZip($folder, $zip, basename($folder));
+            $zip->close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function backupFiles()
+    {
+        try {
+            // Generate unique identifier (timestamp)
+            $tglSekarang = date('Y-m-dHis');
+            $folderToZip = FCPATH . 'assets/dist/img'; // Path folder yang ingin Anda backup
+            // Generate random UUID
+            $uuid = uniqid();
+
+            // File path for ZIP backup with unique identifier
+            $zipFilePath = WRITEPATH . 'backup/backup-' . $tglSekarang . '-' . $uuid . '.zip';
+
+            if ($this->createZipFromFolder($folderToZip, $zipFilePath)) {
+                // Mengukur ukuran file ZIP yang dihasilkan dalam byte
+                $ukuranFileZip = filesize($zipFilePath);
+
+                // Hanya mengambil nama file tanpa path lengkapnya
+                $namaFileZip = basename($zipFilePath);
+
+                // Kembalikan informasi backup file
+                return [
+                    'file_zip' => $namaFileZip,
+                    'ukuran_zip' => $ukuranFileZip
+                ];
+            } else {
+                throw new \Exception("Failed to create backup.");
+            }
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika terjadi
+            throw new \Exception("Error during file backup: " . $e->getMessage());
+        }
+    }
+
+
+    private function addFolderToZip($folder, $zipArchive, $zipPath)
+    {
+        // Pastikan folder diakhiri dengan slash
+        $folder = rtrim($folder, '/') . '/';
+        $handle = opendir($folder);
+
+        while (false !== ($entry = readdir($handle))) {
+            if ($entry != '.' && $entry != '..') {
+                $fullPath = $folder . $entry;
+                $relativePath = $zipPath . '/' . $entry; // Path dalam ZIP
+
+                if (is_dir($fullPath)) {
+                    // Jika adalah folder, tambahkan folder ke ZIP dan rekursif
+                    $zipArchive->addEmptyDir($relativePath);
+                    $this->addFolderToZip($fullPath, $zipArchive, $relativePath); // Panggil rekursif
+                } else {
+                    // Jika adalah file, tambahkan file ke ZIP
+                    $zipArchive->addFile($fullPath, $relativePath);
+                }
+            }
+        }
+        closedir($handle);
+    }
+
+
+
 
 
     public function unduh($namaFile)
     {
         // Tentukan path lengkap ke file backup
         $fileBackup = 'database/backup/' . $namaFile;
+
+        // Pastikan file ada sebelum mencoba mengirimkannya
+        if (file_exists($fileBackup)) {
+            // Tentukan header untuk memicu unduhan
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . basename($fileBackup) . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($fileBackup));
+            readfile($fileBackup);
+            exit;
+        } else {
+            // Jika file tidak ditemukan, tampilkan pesan atau lakukan sesuatu yang sesuai
+            echo "File tidak ditemukan";
+        }
+    }
+
+    public function unduhFiles($namaFile)
+    {
+        // Tentukan path lengkap ke file backup
+        $fileBackup = WRITEPATH . 'backup/' . $namaFile;
 
         // Pastikan file ada sebelum mencoba mengirimkannya
         if (file_exists($fileBackup)) {

@@ -165,8 +165,9 @@ $routes->get('/cetak/mutasi/bulan', 'Laporan::laporanMutasiBulan');
 
 $routes->get('/unauthorized', 'Unauthorized::index');
 
-$routes->get('/backup', 'Pemeliharaan::backup');
+$routes->get('/backup', 'Pemeliharaan::backupAll');
 $routes->get('/backup/unduh/(:segment)', 'Pemeliharaan::unduh/$1');
+$routes->get('/files/unduh/(:segment)', 'Pemeliharaan::unduhFiles/$1');
 $routes->post('/hapus/backup', 'Pemeliharaan::deleteExpiredBackups');
 
 $routes->get('/pihakluar', 'Pihakluar::index');
@@ -214,7 +215,8 @@ $routes->get('cetak/detail_pinjam/(:segment)', 'Peminjaman::cetakDetailPinjam/$1
 $routes->get('/kembali/hapus_kode/(:segment)', 'Pengembalian::penghapusanKodeKembali/$1');
 $routes->post('/pengembalian/batal', 'Pengembalian::batal');
 
-$routes->post('restore', 'Pengaturan::uploadRestoreFile');
+$routes->post('restore/sql', 'Pengaturan::uploadRestoreFile');
+$routes->post('restore/files', 'Pengaturan::restoreFiles');
 
 
 

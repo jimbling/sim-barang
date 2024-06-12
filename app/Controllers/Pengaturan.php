@@ -8,6 +8,7 @@ use App\Models\PengaturanModel;
 use App\Models\UserModel;
 use Ifsnop\Mysqldump\Mysqldump;
 use App\Models\BackupModel;
+use ZipArchive;
 
 class Pengaturan extends BaseController
 {
@@ -484,6 +485,61 @@ class Pengaturan extends BaseController
             // Tampilkan pesan error
             session()->setFlashdata('error', 'Failed to restore database: ' . $e->getMessage());
             return false;
+        }
+    }
+
+    public function restoreFiles()
+    {
+        try {
+            // Memeriksa jika ada file yang di-upload
+            $uploadedFile = $this->request->getFile('fileZip');
+
+            if ($uploadedFile && $uploadedFile->isValid()) {
+                // Ambil tipe MIME file yang di-upload
+                $mimeType = $uploadedFile->getClientMimeType();
+                $allowedMimeTypes = ['application/zip', 'application/x-zip-compressed', 'multipart/x-zip'];
+
+                // Validasi: apakah file ZIP (dengan beberapa tipe MIME yang mungkin)
+                if (!in_array($mimeType, $allowedMimeTypes)) {
+                    throw new \Exception("File yang di-upload bukan file ZIP. Tipe MIME diterima: " . $mimeType);
+                }
+
+                // Lokasi penyimpanan sementara
+                $temporaryPath = WRITEPATH . 'uploads/';
+                $uploadedFile->move($temporaryPath, $uploadedFile->getClientName());
+
+                // Path file ZIP yang di-upload
+                $zipFilePath = $temporaryPath . $uploadedFile->getClientName();
+
+                // Lokasi tujuan untuk ekstraksi
+                $extractTo = FCPATH . 'assets/dist/';
+
+                // Membuka dan mengekstrak file ZIP
+                $zip = new ZipArchive();
+                if ($zip->open($zipFilePath) === TRUE) {
+                    $zip->extractTo($extractTo);
+                    $zip->close();
+
+                    // Hapus file ZIP setelah ekstraksi berhasil
+                    unlink($zipFilePath);
+
+                    // Pesan sukses setelah restore
+                    $pesan = "File ZIP berhasil di-upload dan direstore.";
+                    session()->setFlashData('pesan', $pesan);
+
+                    // Redirect ke halaman /pemeliharaan dengan pesan sukses
+                    return redirect()->to('/pemeliharaan')->with('success', $pesan);
+                } else {
+                    throw new \Exception("Gagal membuka file ZIP.");
+                }
+            } else {
+                throw new \Exception("Tidak ada file yang di-upload atau file tidak valid.");
+            }
+        } catch (\Exception $e) {
+            // Jika terjadi kesalahan, tangani dan berikan pesan error
+            $pesan = "Terjadi kesalahan saat melakukan restore: " . $e->getMessage();
+            session()->setFlashData('pesan', $pesan);
+            return redirect()->to('/pemeliharaan')->with('error', $pesan);
         }
     }
 }
