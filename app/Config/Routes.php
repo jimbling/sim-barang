@@ -140,7 +140,7 @@ $routes->post('/pengguna/hapus', 'Pengaturan::delete');
 $routes->post('/pengaturan/update', 'Pengaturan::updateData');
 $routes->get('/laporan/peminjaman', 'Laporan::laporanPeminjaman');
 $routes->get('/laporan/persediaan', 'Laporan::laporanPersediaan');
-$routes->get('/laporan/stock', 'Laporan::laporanStockOpname');
+$routes->get('/laporan/mutasi', 'Laporan::laporanStockOpname');
 
 $routes->get('/profile', 'Pengaturan::settingUser');
 $routes->get('/get-user-by-id/(:num)', 'Pengaturan::getUserById/$1');
@@ -159,9 +159,12 @@ $routes->get('/cetak/pengeluaran_murni/bulan', 'Laporan::cetakPengeluaranMurniBT
 $routes->get('/cetak/pengeluaran_murni/tahun', 'Laporan::cetakPengeluaranMurniT');
 
 $routes->get('/cetak/stock/bulan', 'Laporan::laporanStockOpnameBulan');
+$routes->get('laporan-stock-opname', 'Laporan::laporanStockOpnameBulan');
+$routes->post('laporan/simpanMutasiBulan', 'Laporan::simpanMutasiBulan');
 $routes->get('/cetak/stock/tahun', 'Laporan::laporanStockOpnameTahun');
 $routes->get('/cetak/stock/rekap', 'Laporan::laporanStockRekapOpname');
 $routes->get('/cetak/mutasi/bulan', 'Laporan::laporanMutasiBulan');
+
 
 $routes->get('/unauthorized', 'Unauthorized::index');
 
@@ -217,6 +220,18 @@ $routes->post('/pengembalian/batal', 'Pengembalian::batal');
 
 $routes->post('restore/sql', 'Pengaturan::uploadRestoreFile');
 $routes->post('restore/files', 'Pengaturan::restoreFiles');
+
+$routes->get('stok/hitung-bulanan', 'Stock::hitungStokBulanan');
+$routes->get('laporan-mutasi-bulan', 'Laporan::laporanMutasiBulan');
+
+$routes->get('laporan/simpan_stok_bulanan', 'Laporan::simpanStokBulanan');
+$routes->get('laporan/lihat-mutasi', 'Laporan::lihatMutasiBulan');
+$routes->post('persediaan/simpanStokBulanan', 'Laporan::simpanStokBulanan');
+$routes->post('persediaan/hapusStokBulanan', 'Laporan::hapusStokBulanan');
+$routes->get('/cetak/daftar-mutasi-bhp', 'Laporan::cetakDaftarMutasiPersediaan');
+$routes->get('/api/data-stok', 'Stock::getDataStok');
+$routes->get('/laporan/stok-opname', 'Laporan::cetakStokBulanan');
+$routes->get('cetak/cetak_stok', 'Laporan::cetakStok');
 
 
 

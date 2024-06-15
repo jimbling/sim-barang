@@ -197,5 +197,20 @@ if (window.location.pathname === '/pinjam/user/riwayat') {
       "serverSide": false,
   });
 }
+
+if (window.location.pathname === '/laporan/lihat-mutasi') {
+
+  $('#tableStokBulanan').DataTable({
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+      "serverSide": false,
+
+  });
+}
 });
 

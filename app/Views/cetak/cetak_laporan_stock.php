@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h6 class="m-0">Laporan Stock Opname Barang Habis Pakai Laboratorium Keperawatan</h6>
+                    <h6 class="m-0">Laporan Mutasi Barang Habis Pakai Laboratorium Keperawatan</h6>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -19,23 +19,25 @@
         <div class="row">
             <div class="col-md-6">
 
+
+
                 <div class="card shadow">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Cetak Laporan <STRONG>STOCK OPNAME BULANAN</STRONG> </h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Daftar Mutasi Barang Persediaan</h6>
                     </div>
                     <div class="card-body">
-                        <form method="get" action="<?= site_url('/cetak/stock/bulan'); ?>" target="_blank">
+                        <form id="formLihatMutasi" method="get" action="<?= site_url('/laporan/lihat-mutasi'); ?>" target="_self">
                             <table class="table table-borderless table-sm">
                                 <tbody>
                                     <thead>
                                         <th style="text-align: left;">Pilih Bulan</th>
                                         <th style="text-align: left;">Pilih Tahun</th>
                                         <th></th>
+                                        <th></th> <!-- Kolom tambahan untuk tombol Cetak -->
                                     </thead>
                                     <tr>
-
                                         <td>
-                                            <select class="form-control form-control-sm" id="bulanCetakKembali" name="bulan">
+                                            <select class="form-control form-control-sm" id="bulanLihatMutasi" name="bulan">
                                                 <option value="01">Januari</option>
                                                 <option value="02">Februari</option>
                                                 <option value="03">Maret</option>
@@ -48,157 +50,171 @@
                                                 <option value="10">Oktober</option>
                                                 <option value="11">November</option>
                                                 <option value="12">Desember</option>
-                                                <!-- Tambahkan opsi bulan lainnya -->
+                                                <!-- Tambahkan opsi bulan lainnya jika diperlukan -->
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="form-control form-control-sm" id="tahunCetakKembali" name="tahun">
+                                            <select class="form-control form-control-sm" id="tahunLihatMutasi" name="tahun">
                                                 <?php foreach ($years as $year) : ?>
-                                                    <option value="<?= $year['tahun'] ?>"><?= $year['tahun'] ?></option>
+                                                    <option value="<?= $year ?>"><?= $year ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </td>
                                         <td style="text-align: center; vertical-align: middle;">
-                                            <button type="submit" class="btn btn-primary btn-sm" id="btnCetakPinjam">
+                                            <button type="submit" class="btn btn-primary btn-sm">
                                                 <span class="icon text-white-100">
                                                     <i class="fas fa-print spaced-icon"></i>
                                                 </span>
-                                                <span class="text">Cetak Opname</span>
+                                                <span class="text">Lihat Mutasi</span>
                                             </button>
-                                            <button type="submit" formaction="<?= site_url('/cetak/mutasi/bulan'); ?>" class="btn btn-success btn-sm" id="btnCetakTahunKembali">
-                                                <i class="fas fa-print spaced-icon"></i>
-                                                <span class="text">Rekap Mutasi</span>
-                                            </button>
-                                        </td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-                        </form>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Cetak Laporan <STRONG>STOCK OPNAME TAHUNAN </STRONG></h6>
-                    </div>
-                    <div class="card-body">
-                        <form method="get" action="/cetak/stock/tahun" target="_blank">
-                            <table class="table table-borderless table-sm">
-                                <tbody>
-                                    <thead>
-                                        <th style="text-align: left;">Pilih Tahun</th>
-                                        <th></th>
-                                    </thead>
-
-                                    <tr>
-                                        <td>
-                                            <select class="form-control form-control-sm" id="tahunCetakKembali" name="tahun">
-                                                <?php foreach ($years as $year) : ?>
-                                                    <option value="<?= $year['tahun'] ?>"><?= $year['tahun'] ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
                                         </td>
                                         <td style="text-align: center; vertical-align: middle;">
-                                            <button type="submit" class="btn btn-warning btn-sm" id="btnCetakTahunKembali">
-                                                <i class="fas fa-print spaced-icon"></i>
+                                            <!-- Tombol Cetak -->
+                                            <button id="btnCetakMutasi" class="btn btn-success btn-sm">
+                                                <span class="icon text-white-100">
+                                                    <i class="fas fa-print spaced-icon"></i>
+                                                </span>
                                                 <span class="text">Cetak</span>
                                             </button>
                                         </td>
-                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
-
-
                         </form>
 
-                    </div>
 
-                </div>
-            </div>
+                        <hr>
 
-        </div>
-
-
-        <div class="row">
-            <div class="col-md-6" style="font-size: 14px;">
-                <div class="card shadow">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Cetak Laporan <STRONG>REKAP OPNAME </STRONG></h6>
-                    </div>
-                    <div class="card-body">
-                        <form method="get" action="/cetak/stock/rekap" target="_blank">
-                            <table class="table table-borderless table-sm">
-                                <tbody>
-                                    <thead>
-                                        <th style="text-align: left;">Pilih Tahun</th>
-                                        <th></th>
-                                    </thead>
-
-                                    <tr>
-                                        <td>
-                                            <select class="form-control form-control-sm" id="btnCetakRekapOpname" name="tahun">
-                                                <?php foreach ($years as $year) : ?>
-                                                    <option value="<?= $year['tahun'] ?>"><?= $year['tahun'] ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </td>
-                                        <td style="text-align: center; vertical-align: middle;">
-                                            <button type="submit" class="btn btn-warning btn-sm" id="btnCetakRekapOpname">
-                                                <i class="fas fa-print spaced-icon"></i>
-                                                <span class="text">Cetak Rekap</span>
-                                            </button>
-                                        </td>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-
-                        </form>
 
                     </div>
                 </div>
+
             </div>
 
             <div class="col-md-6">
-
                 <div class="card shadow">
-                    <div class="card-body bg-success">
-                        <dl class="row" style="font-size: 13px;">
-                            <dt class="col-sm-3">Opname Bulanan</dt>
-                            <dd class="col-sm-9">Mencetak laporan stok opname perbulan berdasarkan data penerimaan dan pengeluaran pada Bulan dan Tahun yang dipilih</dd>
-
-                            <dt class="col-sm-3">Opname Tahunan</dt>
-                            <dd class="col-sm-9">
-                                Mencetak laporan stok opname berdasarkan data penerimaan dan pengeluaran pada Tahun yang dipilih
-                            </dd>
-                            <dt class="col-sm-3">Rekap Stock</dt>
-                            <dd class="col-sm-9">
-                                Mencetak laporan Rekapitulasi Stock Opname Barang Persediaan, sampai keadaan tahun berjalan.
-                            </dd>
-                        </dl>
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Hapus Saldo Stock Barang Persediaan</h6>
                     </div>
+                    <div class="card-body">
+                        <form id="formHapusStok" action="<?= base_url('persediaan/hapusStokBulanan') ?>" method="post">
+                            <!-- CSRF Token -->
+                            <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
+
+                            <!-- Pilihan Bulan -->
+                            <label for="bulan">Pilih Bulan:</label>
+                            <select class="form-control form-control-sm" name="bulan" id="bulan" required>
+                                <?php foreach ($bulanOptions as $bulanAngka => $bulanNama) : ?>
+                                    <option value="<?= $bulanAngka ?>"><?= $bulanNama ?></option>
+                                <?php endforeach; ?>
+                            </select>
+
+                            <!-- Pilihan Tahun -->
+                            <label for="tahun">Pilih Tahun:</label>
+                            <select class="form-control form-control-sm" name="tahun" id="tahun" required>
+                                <?php foreach ($years as $year) : ?>
+                                    <option value="<?= $year ?>"><?= $year ?></option>
+                                <?php endforeach; ?>
+                            </select>
+
+                            <!-- Tombol Hapus -->
+                            <button type="submit" class="btn btn-danger btn-sm btn-block mt-2">Hapus Stock Bulanan</button>
+                        </form>
+
+                    </div>
+
                 </div>
 
             </div>
-
         </div>
+
+        <div class="card shadow">
+            <div class="card-body bg-success">
+                <dl class="row" style="font-size: 13px;">
+                    <dt class="col-sm-3">Opname Bulanan</dt>
+                    <dd class="col-sm-9">Mencetak laporan stok opname perbulan berdasarkan data penerimaan dan pengeluaran pada Bulan dan Tahun yang dipilih</dd>
+
+                    <dt class="col-sm-3">Opname Tahunan</dt>
+                    <dd class="col-sm-9">
+                        Mencetak laporan stok opname berdasarkan data penerimaan dan pengeluaran pada Tahun yang dipilih
+                    </dd>
+                    <dt class="col-sm-3">Rekap Stock</dt>
+                    <dd class="col-sm-9">
+                        Mencetak laporan Rekapitulasi Stock Opname Barang Persediaan, sampai keadaan tahun berjalan.
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
 
     </div>
 </div>
 
-<aside class="control-sidebar control-sidebar-dark">
 
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
 <?php echo view('tema/footer.php'); ?>
+<script>
+    // Fungsi untuk konfirmasi penghapusan dengan SweetAlert
+    function confirmDelete(event) {
+        event.preventDefault(); // Mencegah form submit langsung
+
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data stok bulanan untuk bulan dan tahun yang dipilih akan dihapus secara permanen.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit form jika dikonfirmasi
+                document.getElementById('formHapusStok').submit();
+            }
+        });
+    }
+
+    // Mengaitkan fungsi confirmDelete() dengan klik tombol Hapus
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelector('.btn-danger').addEventListener('click', confirmDelete);
+    });
+</script>
+
+<!-- Script untuk menangani alert setelah penghapusan berhasil -->
+<?php if (session()->has('message')) : ?>
+    <script>
+        Swal.fire({
+            title: 'Sukses!',
+            text: '<?= session('message') ?>',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    </script>
+<?php endif; ?>
+<script>
+    // Ambil nilai bulan dan tahun saat form disubmit untuk tombol Lihat Mutasi
+    document.getElementById('formLihatMutasi').addEventListener('submit', function(e) {
+        e.preventDefault(); // Hentikan proses submit sementara
+
+        var bulan = document.getElementById('bulanLihatMutasi').value;
+        var tahun = document.getElementById('tahunLihatMutasi').value;
+
+        var url = "<?= site_url('/laporan/lihat-mutasi') ?>?bulan=" + bulan + "&tahun=" + tahun;
+
+        // Redirect ke halaman lihat-mutasi dengan parameter bulan dan tahun
+        window.location.href = url;
+    });
+
+    // Tambahkan event listener untuk tombol Cetak
+    document.getElementById('btnCetakMutasi').addEventListener('click', function(e) {
+        e.preventDefault(); // Hentikan default action dari tombol
+
+        var bulan = document.getElementById('bulanLihatMutasi').value;
+        var tahun = document.getElementById('tahunLihatMutasi').value;
+
+        var url = "<?= site_url('/cetak/daftar-mutasi-bhp') ?>?bulan=" + bulan + "&tahun=" + tahun;
+
+        // Buka halaman cetak di tab baru
+        window.open(url, '_blank');
+    });
+</script>

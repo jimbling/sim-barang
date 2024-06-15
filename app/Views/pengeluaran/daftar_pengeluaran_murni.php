@@ -159,9 +159,9 @@ $nama = $session->get('full_nama');
                         <div class="form-group row">
                             <label for="tanggal_penggunaan" class="col-sm-4 col-form-label">Tanggal</label>
                             <div class="col-sm-8">
-                                <div class="input-group date" id="tanggalPermintaan" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" data-target="#tanggalPermintaan" name="tanggal_penerimaan" placeholder="Isikan tanggal penggunaan" required />
-                                    <div class="input-group-append" data-target="#tanggalPermintaan" data-toggle="datetimepicker">
+                                <div class="input-group date" id="tanggalPenggunaan" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#tanggalPenggunaan" name="tanggal_penggunaan" placeholder="Isikan tanggal penggunaan" required />
+                                    <div class="input-group-append" data-target="#tanggalPenggunaan" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                 </div>

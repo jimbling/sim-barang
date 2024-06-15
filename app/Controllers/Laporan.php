@@ -20,6 +20,7 @@ use App\Models\PenerimaanPersediaanModel;
 use App\Models\PengembalianbarangModel;
 use App\Models\PengeluaranmurniModel;
 use App\Models\PengeluaranmurniDetailModel;
+use App\Models\StokBulananModel;
 
 
 class Laporan extends BaseController
@@ -414,20 +415,41 @@ class Laporan extends BaseController
     {
         $currentYear = date('Y');
 
-        $riwayatPeminjamanModel = new RiwayatPeminjamanModel();
-        $years = $riwayatPeminjamanModel->getUniqueYears();
+        // Tahun mulai (misalnya, 2023)
+        $tahunMulai = 2023;
+        // Tahun saat ini
+        $tahunSekarang = date('Y');
+        // Generate array tahun dari tahunMulai hingga tahunSekarang
+        $years = range($tahunMulai, $tahunSekarang);
 
+        // Data bulan
+        $bulanOptions = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
 
+        // Menyusun data yang akan dikirim ke view
         $data = [
             'judul' => 'Laporan Stock Opname | Akper "YKY" Yogyakarta',
             'currentYear' => $currentYear,
             'years' => $years,
-
+            'bulanOptions' => $bulanOptions, // Menambahkan bulan options ke view
         ];
 
-        // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
+        // Kirim data ke view atau lakukan hal lain sesuai kebutuhan
         return view('cetak/cetak_laporan_stock', $data);
     }
+
 
 
 
@@ -480,8 +502,6 @@ class Laporan extends BaseController
 
         // Menghitung stok barang
         $stockData = $this->calculateStock($combinedData);
-
-
 
         $data = [
             'judul' => 'Laporan Peminjaman | Akper "YKY" Yogyakarta',
@@ -684,7 +704,6 @@ class Laporan extends BaseController
 
 
 
-
     // Fungsi untuk menghitung stok barang
     protected function calculateStock($combinedData)
     {
@@ -788,6 +807,8 @@ class Laporan extends BaseController
 
         // Mendapatkan nama bulan berdasarkan nilai bulan dari array
         $namaBulan = $bulanOptions[$month];
+        // Konversi nama bulan menjadi angka bulan
+
 
         // Mendapatkan data penerimaan dan pengeluaran
         $penerimaanBarangData = $penerimaanModel->getAllBarangDataUntilYear($year);
@@ -808,11 +829,360 @@ class Laporan extends BaseController
             'dataPengaturan' => $dataPengaturan,
             'data_pengeluaran_murni' => $pengeluaranMurniData,
 
+
         ];
 
         // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
         return view('cetak/laporan_mutasi_bulan', $data);
     }
+
+    public function lihatMutasiBulan()
+    {
+        $currentYear = date('Y');
+        $pengaturanModel = new PengaturanModel();
+        $dataPengaturan = $pengaturanModel->getDataById(1);
+        $peminjamanbarangModel = new PeminjamanbarangModel();
+        $barangByStatus = $peminjamanbarangModel->getPeminjamanBarang();
+
+        $penerimaanModel = new PenerimaanPersediaanModel();
+        $pengeluaranModel = new PengeluaranModel();
+        $riwayatPeminjamanModel = new RiwayatPeminjamanModel();
+        $years = $riwayatPeminjamanModel->getUniqueYears();
+
+        $bulan = $this->request->getGet('bulan');
+        $year = $this->request->getGet('tahun');
+        $stokBulananModel = new StokBulananModel();
+        $stockAwal = $stokBulananModel->getDataBulanTahunSebelumnya($bulan, $year);
+
+        // Memeriksa apakah data sudah ada untuk bulan dan tahun tertentu
+        $isDataExists = $stokBulananModel->checkIfDataExists($bulan, $year);
+
+        // Lanjutkan proses seperti biasa
+        $bulanOptions = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $month = str_pad($bulan, 2, '0', STR_PAD_LEFT);
+        $namaBulan = $bulanOptions[$month];
+
+        // Konversi nama bulan menjadi angka bulan
+        $bulanAngka = array_search($namaBulan, $bulanOptions);
+        if (!$bulanAngka) {
+            $bulanAngka = '01'; // Default jika nama bulan tidak ditemukan
+        }
+
+        // Mendapatkan data penerimaan dan pengeluaran
+        $penerimaanBarangData = $penerimaanModel->getBarangDataByMonthAndYear($month, $year);
+        $pengeluaranBarangData = $pengeluaranModel->getBarangDataByMonthAndYear($month, $year);
+        $pengeluaranMurniModel = new PengeluaranmurniDetailModel();
+        $pengeluaranMurniData = $pengeluaranMurniModel->getBarangDataByMonthAndYear($month, $year);
+
+        // Menentukan jumlah barang yang unik
+        $uniqueBarangIds = array_unique(array_merge(
+            array_column($penerimaanBarangData, 'barang_id'),
+            array_column($pengeluaranBarangData, 'barang_id'),
+            array_column($pengeluaranMurniData, 'barang_id'),
+            array_column($stockAwal, 'barang_id') // Tambahkan barang_id dari stok awal
+        ));
+
+        $barangList = [];
+
+        foreach ($uniqueBarangIds as $barangId) {
+            $barangInfo = [
+                'barang_id' => $barangId,
+                'nama_barang' => '',
+                'harga_satuan' => 0,
+                'jumlah_saldo_awal' => 0,
+                'jumlah_penerimaan' => 0,
+                'jumlah_penerimaan_total' => 0,
+                'jumlah_pengeluaran' => 0,
+                'jumlah_pengeluaran_murni' => 0,
+                'sisa_stok' => 0,
+                'satuan' => 'Pcs',
+            ];
+
+            // Cari data penerimaan untuk barang ini
+            $penerimaanIndex = array_search($barangId, array_column($penerimaanBarangData, 'barang_id'));
+            if ($penerimaanIndex !== false) {
+                $barangInfo['nama_barang'] = $penerimaanBarangData[$penerimaanIndex]['nama_barang'];
+                $barangInfo['harga_satuan'] = $penerimaanBarangData[$penerimaanIndex]['harga_satuan'];
+                $barangInfo['jumlah_penerimaan'] = $penerimaanBarangData[$penerimaanIndex]['jumlah_barang'];
+            }
+
+            // Cari data pengeluaran untuk barang ini
+            $pengeluaranIndex = array_search($barangId, array_column($pengeluaranBarangData, 'barang_id'));
+            if ($pengeluaranIndex !== false) {
+                $barangInfo['nama_barang'] = $pengeluaranBarangData[$pengeluaranIndex]['nama_barang'];
+                $barangInfo['harga_satuan'] = $pengeluaranBarangData[$pengeluaranIndex]['harga_satuan'];
+                $barangInfo['jumlah_pengeluaran'] = $pengeluaranBarangData[$pengeluaranIndex]['ambil_barang'];
+            }
+
+            // Cari data pengeluaran murni untuk barang ini
+            $pengeluaranMurniIndex = array_search($barangId, array_column($pengeluaranMurniData, 'barang_id'));
+            if ($pengeluaranMurniIndex !== false) {
+                $barangInfo['nama_barang'] = $pengeluaranMurniData[$pengeluaranMurniIndex]['nama_barang'];
+                $barangInfo['harga_satuan'] = $pengeluaranMurniData[$pengeluaranMurniIndex]['harga_satuan'];
+                $barangInfo['jumlah_pengeluaran_murni'] = $pengeluaranMurniData[$pengeluaranMurniIndex]['ambil_barang_murni'];
+            }
+
+            // Cari saldo awal untuk barang ini dari stok awal
+            foreach ($stockAwal as $saldo) {
+                if ($saldo->barang_id == $barangId) {
+                    $barangInfo['jumlah_saldo_awal'] = $saldo->sisa_stok;
+                    // Ambil harga_satuan dari stok awal jika belum diisi
+                    if ($barangInfo['harga_satuan'] == 0) {
+                        $barangInfo['harga_satuan'] = $saldo->harga_satuan;
+                    }
+                    break;
+                }
+            }
+
+            // Cari data setok untuk memperbarui nama_barang dan satuan jika ada
+            foreach ($stockAwal as $saldo) {
+                if ($saldo->barang_id == $barangId) {
+                    $barangInfo['nama_barang'] = $saldo->nama_barang;
+                    $barangInfo['satuan'] = $saldo->satuan;
+                    break;
+                }
+            }
+
+            // Hitung jumlah penerimaan total (termasuk saldo awal)
+            $barangInfo['jumlah_penerimaan_total'] = $barangInfo['jumlah_saldo_awal'] + $barangInfo['jumlah_penerimaan'];
+
+            // Hitung sisa stok
+            $barangInfo['sisa_stok'] = $barangInfo['jumlah_penerimaan_total'] - ($barangInfo['jumlah_pengeluaran'] + $barangInfo['jumlah_pengeluaran_murni']);
+
+            // Tambahkan ke daftar barang
+            $barangList[] = $barangInfo;
+        }
+        // Totalkan saldo awal dari semua barang
+        $totalJumlahSaldo = array_sum(array_column($barangList, 'jumlah_saldo_awal'));
+
+        $totalJumlahPenerimaan = array_sum(array_column($barangList, 'jumlah_penerimaan'));
+        $totalJumlahPengeluaran = array_sum(array_column($barangList, 'jumlah_pengeluaran'));
+        $totalJumlahPengeluaranMurni = array_sum(array_column($barangList, 'jumlah_pengeluaran_murni'));
+        $totalSisaStok = array_sum(array_column($barangList, 'sisa_stok'));
+
+        $data = [
+            'judul' => 'Lihat Stok Bulanan | Akper "YKY" Yogyakarta',
+            'currentYear' => $currentYear,
+            'barangList' => $barangList,
+            'totalJumlahPenerimaan' => $totalJumlahPenerimaan,
+            'totalJumlahPengeluaran' => $totalJumlahPengeluaran,
+            'totalJumlahPengeluaranMurni' => $totalJumlahPengeluaranMurni,
+            'totalSisaStok' => $totalSisaStok,
+            'totalSaldoAwal' => $totalJumlahSaldo,
+            'years' => $years,
+            'namaBulan' => $namaBulan,
+            'bulanAngka' => $bulanAngka,
+            'tahun' => $year,
+            'dataPengaturan' => $dataPengaturan,
+            'setok' => $stockAwal,
+            'isDataExists' => $isDataExists // Menyertakan status apakah data sudah ada
+        ];
+
+        // Update nama_barang dan satuan dari setok ke barangList
+        foreach ($barangList as &$barang) {
+            foreach ($stockAwal as $saldo) {
+                if ($saldo->barang_id == $barang['barang_id']) {
+                    $barang['nama_barang'] = $saldo->nama_barang;
+                    $barang['satuan'] = $saldo->satuan;
+                    break;
+                }
+            }
+        }
+
+        return view('persediaan/stok_bulanan', $data);
+    }
+
+
+    public function cetakDaftarMutasiPersediaan()
+    {
+        $currentYear = date('Y');
+        $pengaturanModel = new PengaturanModel();
+        $dataPengaturan = $pengaturanModel->getDataById(1);
+        $peminjamanbarangModel = new PeminjamanbarangModel();
+        $barangByStatus = $peminjamanbarangModel->getPeminjamanBarang();
+
+        $penerimaanModel = new PenerimaanPersediaanModel();
+        $pengeluaranModel = new PengeluaranModel();
+        $riwayatPeminjamanModel = new RiwayatPeminjamanModel();
+        $years = $riwayatPeminjamanModel->getUniqueYears();
+
+        $bulan = $this->request->getGet('bulan');
+        $year = $this->request->getGet('tahun');
+        $stokBulananModel = new StokBulananModel();
+        $stockAwal = $stokBulananModel->getDataBulanTahunSebelumnya($bulan, $year);
+
+        // Memeriksa apakah data sudah ada untuk bulan dan tahun tertentu
+        $isDataExists = $stokBulananModel->checkIfDataExists($bulan, $year);
+
+        // Lanjutkan proses seperti biasa
+        $bulanOptions = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $month = str_pad($bulan, 2, '0', STR_PAD_LEFT);
+        $namaBulan = $bulanOptions[$month];
+
+        // Konversi nama bulan menjadi angka bulan
+        $bulanAngka = array_search($namaBulan, $bulanOptions);
+        if (!$bulanAngka) {
+            $bulanAngka = '01'; // Default jika nama bulan tidak ditemukan
+        }
+
+        // Mendapatkan data penerimaan dan pengeluaran
+        $penerimaanBarangData = $penerimaanModel->getBarangDataByMonthAndYear($month, $year);
+        $pengeluaranBarangData = $pengeluaranModel->getBarangDataByMonthAndYear($month, $year);
+        $pengeluaranMurniModel = new PengeluaranmurniDetailModel();
+        $pengeluaranMurniData = $pengeluaranMurniModel->getBarangDataByMonthAndYear($month, $year);
+
+        // Menentukan jumlah barang yang unik
+        $uniqueBarangIds = array_unique(array_merge(
+            array_column($penerimaanBarangData, 'barang_id'),
+            array_column($pengeluaranBarangData, 'barang_id'),
+            array_column($pengeluaranMurniData, 'barang_id'),
+            array_column($stockAwal, 'barang_id') // Tambahkan barang_id dari stok awal
+        ));
+
+        $barangList = [];
+
+        foreach ($uniqueBarangIds as $barangId) {
+            $barangInfo = [
+                'barang_id' => $barangId,
+                'nama_barang' => '',
+                'harga_satuan' => 0,
+                'jumlah_saldo_awal' => 0,
+                'jumlah_penerimaan' => 0,
+                'jumlah_penerimaan_total' => 0,
+                'jumlah_pengeluaran' => 0,
+                'jumlah_pengeluaran_murni' => 0,
+                'sisa_stok' => 0,
+                'satuan' => 'Pcs',
+            ];
+
+            // Cari data penerimaan untuk barang ini
+            $penerimaanIndex = array_search($barangId, array_column($penerimaanBarangData, 'barang_id'));
+            if ($penerimaanIndex !== false) {
+                $barangInfo['nama_barang'] = $penerimaanBarangData[$penerimaanIndex]['nama_barang'];
+                $barangInfo['harga_satuan'] = $penerimaanBarangData[$penerimaanIndex]['harga_satuan'];
+                $barangInfo['jumlah_penerimaan'] = $penerimaanBarangData[$penerimaanIndex]['jumlah_barang'];
+            }
+
+            // Cari data pengeluaran untuk barang ini
+            $pengeluaranIndex = array_search($barangId, array_column($pengeluaranBarangData, 'barang_id'));
+            if ($pengeluaranIndex !== false) {
+                $barangInfo['nama_barang'] = $pengeluaranBarangData[$pengeluaranIndex]['nama_barang'];
+                $barangInfo['harga_satuan'] = $pengeluaranBarangData[$pengeluaranIndex]['harga_satuan'];
+                $barangInfo['jumlah_pengeluaran'] = $pengeluaranBarangData[$pengeluaranIndex]['ambil_barang'];
+            }
+
+            // Cari data pengeluaran murni untuk barang ini
+            $pengeluaranMurniIndex = array_search($barangId, array_column($pengeluaranMurniData, 'barang_id'));
+            if ($pengeluaranMurniIndex !== false) {
+                $barangInfo['nama_barang'] = $pengeluaranMurniData[$pengeluaranMurniIndex]['nama_barang'];
+                $barangInfo['harga_satuan'] = $pengeluaranMurniData[$pengeluaranMurniIndex]['harga_satuan'];
+                $barangInfo['jumlah_pengeluaran_murni'] = $pengeluaranMurniData[$pengeluaranMurniIndex]['ambil_barang_murni'];
+            }
+
+            // Cari saldo awal untuk barang ini dari stok awal
+            foreach ($stockAwal as $saldo) {
+                if ($saldo->barang_id == $barangId) {
+                    $barangInfo['jumlah_saldo_awal'] = $saldo->sisa_stok;
+                    // Ambil harga_satuan dari stok awal jika belum diisi
+                    if ($barangInfo['harga_satuan'] == 0) {
+                        $barangInfo['harga_satuan'] = $saldo->harga_satuan;
+                    }
+                    break;
+                }
+            }
+
+            // Cari data setok untuk memperbarui nama_barang dan satuan jika ada
+            foreach ($stockAwal as $saldo) {
+                if ($saldo->barang_id == $barangId) {
+                    $barangInfo['nama_barang'] = $saldo->nama_barang;
+                    $barangInfo['satuan'] = $saldo->satuan;
+                    break;
+                }
+            }
+
+            // Hitung jumlah penerimaan total (termasuk saldo awal)
+            $barangInfo['jumlah_penerimaan_total'] = $barangInfo['jumlah_saldo_awal'] + $barangInfo['jumlah_penerimaan'];
+
+            // Hitung sisa stok
+            $barangInfo['sisa_stok'] = $barangInfo['jumlah_penerimaan_total'] - ($barangInfo['jumlah_pengeluaran'] + $barangInfo['jumlah_pengeluaran_murni']);
+
+            // Tambahkan ke daftar barang
+            $barangList[] = $barangInfo;
+        }
+        // Totalkan saldo awal dari semua barang
+        $totalJumlahSaldo = array_sum(array_column($barangList, 'jumlah_saldo_awal'));
+
+        $totalJumlahPenerimaan = array_sum(array_column($barangList, 'jumlah_penerimaan'));
+        $totalJumlahPengeluaran = array_sum(array_column($barangList, 'jumlah_pengeluaran'));
+        $totalJumlahPengeluaranMurni = array_sum(array_column($barangList, 'jumlah_pengeluaran_murni'));
+        $totalSisaStok = array_sum(array_column($barangList, 'sisa_stok'));
+
+        $data = [
+            'judul' => 'Lihat Stok Bulanan | Akper "YKY" Yogyakarta',
+            'currentYear' => $currentYear,
+            'barangList' => $barangList,
+            'totalJumlahPenerimaan' => $totalJumlahPenerimaan,
+            'totalJumlahPengeluaran' => $totalJumlahPengeluaran,
+            'totalJumlahPengeluaranMurni' => $totalJumlahPengeluaranMurni,
+            'totalSisaStok' => $totalSisaStok,
+            'totalSaldoAwal' => $totalJumlahSaldo,
+            'years' => $years,
+            'namaBulan' => $namaBulan,
+            'bulanAngka' => $bulanAngka,
+            'tahun' => $year,
+            'dataPengaturan' => $dataPengaturan,
+            'setok' => $stockAwal,
+            'isDataExists' => $isDataExists // Menyertakan status apakah data sudah ada
+        ];
+
+        // Update nama_barang dan satuan dari setok ke barangList
+        foreach ($barangList as &$barang) {
+            foreach ($stockAwal as $saldo) {
+                if ($saldo->barang_id == $barang['barang_id']) {
+                    $barang['nama_barang'] = $saldo->nama_barang;
+                    $barang['satuan'] = $saldo->satuan;
+                    break;
+                }
+            }
+        }
+
+        return view('cetak/cetak_daf_mutasi_persediaan', $data);
+    }
+
+
+
+
+
+
+
 
 
     public function cetakPengeluaranMurniBT()
@@ -875,5 +1245,90 @@ class Laporan extends BaseController
 
         // Load view laporan_peminjaman_bulan.php
         return view('cetak/laporan_pengeluaran_murni_tahun', $data);
+    }
+
+    public function simpanStokBulanan()
+    {
+        $stokBulananModel = new \App\Models\StokBulananModel();
+
+        $barangIds = $this->request->getPost('barang_id');
+        $hargaSatuans = $this->request->getPost('harga_satuan');
+        $sisaStoks = $this->request->getPost('sisa_stok');
+        $bulan = $this->request->getPost('bulan');
+        $tahun = $this->request->getPost('tahun');
+
+        $dataToInsert = [];
+        foreach ($barangIds as $index => $barangId) {
+            $dataToInsert[] = [
+                'barang_id' => $barangId,
+                'bulan' => $bulan,
+                'tahun' => $tahun,
+                'harga_satuan' => $hargaSatuans[$index],
+                'sisa_stok' => $sisaStoks[$index],
+            ];
+        }
+
+        if ($stokBulananModel->insertBatch($dataToInsert)) {
+            return redirect()->to('laporan/stock')->with('success', 'Data stok bulanan berhasil disimpan.');
+        } else {
+            return redirect()->to('laporan/stock')->with('error', 'Gagal menyimpan data stok bulanan.');
+        }
+    }
+
+    public function hapusStokBulanan()
+    {
+        // Ambil bulan dan tahun dari input form
+        $bulan = $this->request->getPost('bulan');
+        $tahun = $this->request->getPost('tahun');
+
+        // Instansiasi model
+        $stokBulananModel = new StokBulananModel();
+
+        // Hapus data berdasarkan bulan dan tahun
+        $result = $stokBulananModel->hapusDataBerdasarkanBulanTahun($bulan, $tahun);
+
+        // Redirect dengan pesan sukses atau gagal
+        if ($result) {
+            return redirect()->back()->with('message', 'Data stok bulanan berhasil dihapus.');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menghapus data stok bulanan.');
+        }
+    }
+
+    public function cetakStokBulanan()
+    {
+
+        $currentYear = date('Y');
+        $currentYear = date('Y');
+
+        // Tahun mulai (misalnya, 2023)
+        $tahunMulai = 2023;
+        // Tahun saat ini
+        $tahunSekarang = date('Y');
+        // Generate array tahun dari tahunMulai hingga tahunSekarang
+        $years = range($tahunMulai, $tahunSekarang);
+        $data = [
+            'judul' => 'Cetak Stok Bulanan | Akper "YKY" Yogyakarta',
+            'currentYear' => $currentYear,
+            'years' => $years
+        ];
+
+        // Kirim data berita ke view atau lakukan hal lain sesuai kebutuhan
+        return view('cetak/cetak_stok_bulanan', $data);
+    }
+
+    public function cetakStok()
+    {
+
+        $pengaturanModel = new PengaturanModel();
+        $dataPengaturan = $pengaturanModel->getDataById(1);
+
+        $data = [
+            'base_url' => base_url(),
+            'dataPengaturan' => $dataPengaturan,
+
+        ];
+
+        return view('cetak/cetak_stok', $data);
     }
 }

@@ -411,7 +411,7 @@ $level = $session->get('level');
                             </li>
 
                             <li class="nav-item menu-close">
-                                <a href="" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/laporan/peminjaman') !== false || $_SERVER['REQUEST_URI'] == '/laporan/persediaan' || $_SERVER['REQUEST_URI'] == '/laporan/stock') ? 'active' : '' ?>">
+                                <a href="" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/laporan/peminjaman') !== false || $_SERVER['REQUEST_URI'] == '/laporan/persediaan' || $_SERVER['REQUEST_URI'] == '/laporan/mutasi' || $_SERVER['REQUEST_URI'] == '/laporan/stok-opname') ? 'active' : '' ?>">
                                     <i class="nav-icon 	fas fa-file-alt"></i>
                                     <p>
                                         Laporan
@@ -433,10 +433,17 @@ $level = $session->get('level');
                                                 Persediaan
                                             </p>
                                         </a>
-                                        <a href="/laporan/stock" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/laporan/stock') !== false || $_SERVER['REQUEST_URI'] == '/laporan/stock' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
+                                        <a href="/laporan/mutasi" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/laporan/mutasi') !== false || $_SERVER['REQUEST_URI'] == '/laporan/mutasi' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
                                             <i class="fas fa-clipboard-list sub-item spaced-icon"></i>
                                             <p>
-                                                Laporan Stock
+                                                Daftar Mutasi
+                                            </p>
+                                        </a>
+
+                                        <a href="/laporan/stok-opname" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/laporan/stok-opname') !== false || $_SERVER['REQUEST_URI'] == '/laporan/stok-opname' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
+                                            <i class="fas fa-clipboard-list sub-item spaced-icon"></i>
+                                            <p>
+                                                Stock Opname
                                             </p>
                                         </a>
 
@@ -444,6 +451,7 @@ $level = $session->get('level');
                                     </li>
 
                                 </ul>
+                            </li>
                             <li class="nav-item">
                                 <a href="/pemeliharaan" class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/pemeliharaan') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-fire" style='color:red'></i>
