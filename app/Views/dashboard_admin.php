@@ -434,7 +434,9 @@
     // Fungsi yang dipicu saat tombol edit ditekan
     $('.editBtn').click(function() {
         var id = $(this).data('id');
-        console.log("ID yang diambil:", id); // Menambahkan log ke konsol
+        if (process.env.NODE_ENV !== 'production') {
+            console.log("ID yang diambil:", id);
+        }
 
         // Menggunakan AJAX untuk memuat data dari server
         $.ajax({

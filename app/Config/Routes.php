@@ -159,11 +159,11 @@ $routes->get('/cetak/pengeluaran_murni/bulan', 'Laporan::cetakPengeluaranMurniBT
 $routes->get('/cetak/pengeluaran_murni/tahun', 'Laporan::cetakPengeluaranMurniT');
 
 $routes->get('/cetak/stock/bulan', 'Laporan::laporanStockOpnameBulan');
-$routes->get('laporan-stock-opname', 'Laporan::laporanStockOpnameBulan');
+// $routes->get('laporan-stock-opname', 'Laporan::laporanStockOpnameBulan');
 $routes->post('laporan/simpanMutasiBulan', 'Laporan::simpanMutasiBulan');
 $routes->get('/cetak/stock/tahun', 'Laporan::laporanStockOpnameTahun');
 $routes->get('/cetak/stock/rekap', 'Laporan::laporanStockRekapOpname');
-$routes->get('/cetak/mutasi/bulan', 'Laporan::laporanMutasiBulan');
+// $routes->get('/cetak/mutasi/bulan', 'Laporan::laporanMutasiBulan');
 
 
 $routes->get('/unauthorized', 'Unauthorized::index');

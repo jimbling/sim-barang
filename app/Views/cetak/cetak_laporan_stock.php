@@ -130,18 +130,14 @@
 
         <div class="card shadow">
             <div class="card-body bg-success">
-                <dl class="row" style="font-size: 13px;">
-                    <dt class="col-sm-3">Opname Bulanan</dt>
-                    <dd class="col-sm-9">Mencetak laporan stok opname perbulan berdasarkan data penerimaan dan pengeluaran pada Bulan dan Tahun yang dipilih</dd>
+                <dl class="row">
 
-                    <dt class="col-sm-3">Opname Tahunan</dt>
-                    <dd class="col-sm-9">
-                        Mencetak laporan stok opname berdasarkan data penerimaan dan pengeluaran pada Tahun yang dipilih
-                    </dd>
-                    <dt class="col-sm-3">Rekap Stock</dt>
-                    <dd class="col-sm-9">
-                        Mencetak laporan Rekapitulasi Stock Opname Barang Persediaan, sampai keadaan tahun berjalan.
-                    </dd>
+                    <dt class="col-sm-3">Daftar Mutasi BHP</dt>
+                    <dd class="col-sm-9">Untuk melihat dan mencetak barang habis pakai yang masuk dan keluar setiap bulan dan tahun yang dipilih.</dd>
+
+                    <dt class="col-sm-3 text-truncate">Hapus Saldo Stock BHP</dt>
+                    <dd class="col-sm-9">Untuk menghapus stock BHP yang sudah tersimpan berdasarkan bulan dan tahun yang terpilih</dd>
+
                 </dl>
             </div>
         </div>

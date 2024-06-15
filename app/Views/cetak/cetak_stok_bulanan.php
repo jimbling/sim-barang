@@ -83,7 +83,6 @@
                                 <dt class="col-sm-3 text-truncate">Cetak Stock Bulanan</dt>
                                 <dd class="col-sm-9">Untuk melihat dan mencetak sisa BHP pada Bulan dan Tahun Terpilih</dd>
 
-
                             </dl>
                         </div>
                     </div>

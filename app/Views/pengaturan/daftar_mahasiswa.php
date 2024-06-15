@@ -58,7 +58,7 @@
                                     </tr>
                                 </thead>
                                 <div id="alertContainer" class="mt-3"></div>
-                                <tbody></tbody> >
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
@@ -117,13 +117,7 @@
 </div>
 
 
-<aside class="control-sidebar control-sidebar-dark">
 
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
 
 <!-- Modal untuk import data barang -->
 <div class="modal fade" id="importMhsModal" tabindex="-1" aria-labelledby="importMhsModalLabel" aria-hidden="true">

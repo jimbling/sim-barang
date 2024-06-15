@@ -108,18 +108,16 @@
             // Tampilkan gambar kop surat
             let pengaturanHTML = `
                 <div class="text-center">
-                                    <img src="${baseUrl}/assets/dist/img/${data.dataPengaturan.kop_surat}" alt="Kop Surat" width="450px">
+                                    <img src="${baseUrl}/assets/dist/img/${data.dataPengaturan.kop_surat}" alt="Kop Surat" width="400px">
                 </div>
                   <h2>
             <center><b>L A P O R A N
 
             </h2>
-            <h2>
-                <center><b> REKAP MUTASI BARANG HABIS PAKAI LABORATORIUM KEPERAWATAN
-                        <P> Bulan:  Tahun: 
-                    </b></CENTER>
+           <h2>
+                <center><b>REKAP STOCK OPNAME BARANG HABIS PAKAI LABORATORIUM KEPERAWATAN</b></center>
             </h2>
-
+            <p><center>Bulan: ${data.namaBulan} Tahun: ${data.tahun}</center></p>
             <div class="gradient-line"></div>
             <br>
             `;
