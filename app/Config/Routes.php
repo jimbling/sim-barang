@@ -232,6 +232,7 @@ $routes->get('/cetak/daftar-mutasi-bhp', 'Laporan::cetakDaftarMutasiPersediaan')
 $routes->get('/api/data-stok', 'Stock::getDataStok');
 $routes->get('/laporan/stok-opname', 'Laporan::cetakStokBulanan');
 $routes->get('cetak/cetak_stok', 'Laporan::cetakStok');
+$routes->get('/stock/daftar', 'Laporan::lihatStock');
 
 
 

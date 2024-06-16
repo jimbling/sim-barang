@@ -1269,9 +1269,9 @@ class Laporan extends BaseController
         }
 
         if ($stokBulananModel->insertBatch($dataToInsert)) {
-            return redirect()->to('laporan/stock')->with('success', 'Data stok bulanan berhasil disimpan.');
+            return redirect()->to('laporan/stok-opname')->with('success', 'Data stok bulanan berhasil disimpan.');
         } else {
-            return redirect()->to('laporan/stock')->with('error', 'Gagal menyimpan data stok bulanan.');
+            return redirect()->to('laporan/stok-opname')->with('error', 'Gagal menyimpan data stok bulanan.');
         }
     }
 
@@ -1330,5 +1330,38 @@ class Laporan extends BaseController
         ];
 
         return view('cetak/cetak_stok', $data);
+    }
+
+    public function lihatStock()
+    {
+        // Mengambil tahun saat ini
+        $currentYear = date('Y');
+
+        // Tahun mulai (misalnya, 2023)
+        $tahunMulai = 2023;
+        // Tahun saat ini
+        $tahunSekarang = date('Y');
+        // Generate array tahun dari tahunMulai hingga tahunSekarang
+        $years = range($tahunMulai, $tahunSekarang);
+
+        // Mendapatkan tahun yang dipilih dari input form (GET request)
+        $selectedYear = $this->request->getVar('year') ?? $currentYear;
+
+        // Membuat instance dari model StokBulananModel
+        $model = new StokBulananModel();
+
+        // Memanggil method filterByYearAndGroupByMonth() dari model untuk mengambil data stok bulanan berdasarkan tahun yang dipilih
+        $filteredDataStock = $model->filterByYearAndGroupByMonth($selectedYear);
+
+        // Menyiapkan data untuk dikirim ke view
+        $data = [
+            'judul' => 'Lihat Data Stock | Akper "YKY" Yogyakarta',
+            'currentYear' => $selectedYear,
+            'years' => $years,
+            'data_stock' => $filteredDataStock
+        ];
+
+        // Mengirim data ke view
+        return view('persediaan/stock_views', $data);
     }
 }

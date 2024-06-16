@@ -434,23 +434,20 @@
     // Fungsi yang dipicu saat tombol edit ditekan
     $('.editBtn').click(function() {
         var id = $(this).data('id');
-        if (process.env.NODE_ENV !== 'production') {
-            console.log("ID yang diambil:", id);
-        }
+
 
         // Menggunakan AJAX untuk memuat data dari server
+        var id = encodeURIComponent($(this).data('id'));
         $.ajax({
-            url: '/peminjaman/get_detail/' + id, // Ganti dengan URL yang sesuai
+            url: '/peminjaman/get_detail/' + id,
             method: 'GET',
             dataType: 'json',
             success: function(response) {
-                // Memasukkan data ke dalam input modal
+                // Pastikan response sudah divalidasi di sisi server
                 $('#editId').val(response.id);
                 $('#editTanggalKembali').val(response.tanggal_pengembalian);
-
-                // Set minDate for the datepicker
-                $('#editTanggalKembali').datetimepicker('minDate', moment(response.tanggal_pengembalian).add(1, 'days'));
             },
+
             error: function(xhr, status, error) {
                 console.error(xhr.responseText);
             }
@@ -472,32 +469,33 @@
         var id = $('#editId').val();
         var tanggalKembali = $('#editTanggalKembali').val();
 
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         $.ajax({
-            url: 'update_tanggal_kembali/' + id,
+            url: 'update_tanggal_kembali/' + encodeURIComponent(id),
             method: 'POST',
             data: {
                 tanggalKembali: tanggalKembali
             },
             success: function(response) {
-                // Tutup modal setelah berhasil disimpan
                 $('#editModal').modal('hide');
-
-                // Tampilkan SweetAlert berhasil
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
                     text: 'Peminjaman berhasil diperpanjang.',
                 }).then((result) => {
-                    // Lakukan reload halaman setelah SweetAlert ditutup
                     location.reload();
                 });
             },
             error: function(xhr, status, error) {
-                // Tampilkan SweetAlert gagal jika terjadi error
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal',
-                    text: 'Gagal memperbarui tanggal kembali.',
+                    text: 'Terjadi kesalahan saat memperbarui tanggal kembali. Silakan coba lagi atau hubungi dukungan jika masalah terus berlanjut.',
                 });
             }
         });
@@ -656,15 +654,15 @@
                             if (result.dismiss === Swal.DismissReason.cancel) {
                                 // Jika pengguna memilih "Sembunyikan 30 Hari", mengupdate status hidden
                                 $.ajax({
-                                    url: '/alert/updateAlertHiddenStatus/' + response[0].id, // Ubah URL sesuai dengan fungsi yang baru
+                                    url: '/alert/updateAlertHiddenStatus/' + encodeURIComponent(response[0].id),
                                     method: 'POST',
+                                    headers: {
+                                        'Authorization': 'Bearer <your-token>'
+                                    },
                                     success: function(response) {
-                                        // Tambahkan logika jika diperlukan
-                                        // Arahkan pengguna ke halaman /pemeliharaan
                                         window.location.href = '/pemeliharaan';
                                     },
                                     error: function(xhr, status, error) {
-                                        // Handle error jika terjadi
                                         console.error(error);
                                     }
                                 });

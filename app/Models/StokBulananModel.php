@@ -11,6 +11,15 @@ class StokBulananModel extends Model
     protected $useAutoIncrement = true;
     protected $allowedFields = ['barang_id', 'bulan', 'tahun', 'harga_satuan', 'sisa_stok'];
 
+    public function filterByYearAndGroupByMonth($year)
+    {
+        return $this->select('bulan, SUM(sisa_stok) as total_stok')
+            ->where('tahun', $year)
+            ->groupBy('bulan')
+            ->orderBy('bulan', 'ASC')
+            ->findAll();
+    }
+
     // Fungsi untuk mendapatkan informasi barang terkait
     public function getBarangInfo($barang_id)
     {

@@ -137,7 +137,7 @@
 <?php echo view('tema/footer.php'); ?>
 <script>
     function goToLaporanStock() {
-        window.location.href = '<?= base_url('/laporan/mutasi') ?>';
+        window.location.href = '<?= base_url('/laporan/stok-opname') ?>';
     }
 </script>
 <script>
