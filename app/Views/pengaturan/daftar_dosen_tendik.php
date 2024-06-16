@@ -264,7 +264,7 @@
             url: '/dosen_tendik/get_detail/' + id,
             method: 'GET',
             success: function(data) {
-                console.log(data); // Periksa data yang diterima di konsol browser
+
                 // Populate the modal with the fetched data
                 $('#editDosenTendik').modal('show');
                 populateEditModal(data);
@@ -415,7 +415,7 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data); // Tampilkan data JSON ke dalam konsol
+
                             loading.style.display = "none"; // Menyembunyikan spinner
                             processText.style.display = "none"; // Menyembunyikan teks "Proses kirim data..."
 
@@ -471,110 +471,6 @@
     });
 </script>
 
-<!-- <script>
-    function copySelectedItems() {
-        var selectedIds = [];
-
-        // Get all selected checkboxes
-        $('.checkbox-item:checked').each(function() {
-            selectedIds.push($(this).data('id'));
-        });
-
-        // Log selected IDs to console
-        console.log(selectedIds);
-
-        // Check if any checkbox is selected
-        if (selectedIds.length > 0) {
-            // Use SweetAlert for confirmation
-            Swal.fire({
-                title: 'Anda yakin?',
-                text: 'Data yang dipilih akan dibuatkan Akun Login!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Buat!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoading(); // Show loading indicator
-                    // Send AJAX request to copy the items
-                    $.ajax({
-                        url: '/data/dosen_tendik/copy', // Update with your actual controller and method
-                        method: 'POST',
-                        data: {
-                            selected_ids: selectedIds
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                // Hide loading indicator
-                                hideLoading();
-                                // Jika sukses, tampilkan pesan berhasil
-                                Swal.fire({
-                                    title: 'Berhasil!',
-                                    text: 'Akun login berhasil dibuat.',
-                                    icon: 'success',
-                                    timer: 2000,
-                                    showConfirmButton: false,
-                                }).then(() => {
-                                    // Redirect to specified page
-                                    window.location.replace("/data/pengguna");
-                                });
-                            } else {
-                                // Hide loading indicator
-                                hideLoading();
-                                // Jika terjadi kesalahan, gabungkan pesan kesalahan menjadi satu pesan dengan format HTML dan tampilkan
-                                var errorMessage = '<div style="text-align: left;">Terjadi kesalahan:<br><ul>';
-                                for (var i = 0; i < response.errors.length; i++) {
-                                    errorMessage += '<li>' + response.errors[i] + '</li>';
-                                }
-                                errorMessage += '</ul></div>';
-                                Swal.fire({
-                                    title: 'Error!',
-                                    html: errorMessage,
-                                    icon: 'error',
-                                    showCloseButton: true,
-                                    showCancelButton: false,
-                                    showConfirmButton: false
-                                });
-                            }
-                        },
-                        error: function(error) {
-                            console.error('Error:', error);
-                            // Hide loading indicator
-                            hideLoading();
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'Terjadi kesalahan saat menyalin data.',
-                                icon: 'error',
-                            });
-                        }
-                    });
-                }
-            });
-        } else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Peringatan',
-                text: 'Pilih setidaknya satu data dosen/tendik untuk disalin.'
-            });
-        }
-    }
-
-    function showLoading() {
-        // Show loading indicator
-        // Implement your loading indicator display logic here
-        // For example:
-        $('#loadingIndicator').show();
-    }
-
-    function hideLoading() {
-        // Hide loading indicator
-        // Implement your loading indicator hide logic here
-        // For example:
-        $('#loadingIndicator').hide();
-    }
-</script> -->
 
 <script>
     function copySelectedItems() {

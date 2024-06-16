@@ -24,10 +24,7 @@
 
                     <div class="card-body">
 
-
-
                         <div class="table-responsive">
-
                             <table class="table table-sm table-striped text-gray-900" id="penggunaTabel" width="100%" cellspacing="0">
 
                                 <thead class="text-gray-900">

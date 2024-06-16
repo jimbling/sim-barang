@@ -349,7 +349,7 @@ $nama = $session->get('full_nama');
     }
 
     function hapus_data(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id); // Tambahkan baris ini
+
         Swal.fire({
             title: 'HAPUS?',
             text: "Yakin akan menghapus data ini?",
@@ -409,8 +409,7 @@ $nama = $session->get('full_nama');
                             showConfirmButton: true,
                         });
 
-                        // Handle error here, jika ada kesalahan dalam penghapusan
-                        console.log(error);
+
                     }
                 });
             }

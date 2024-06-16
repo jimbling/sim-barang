@@ -195,7 +195,7 @@
     }
 
     function hapus_data(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id);
+
 
         // Mendapatkan token CSRF dari cookie
         const csrfName = '<?= csrf_token() ?>';
@@ -258,7 +258,7 @@
 
 <script>
     function logPeminjamanId(peminjamanId) {
-        console.log('Peminjaman ID:', peminjamanId);
+
 
         // Mengambil elemen tabel di dalam modal
         var tabelDetail = document.getElementById('tabelDetail');
@@ -308,7 +308,7 @@
     }
 
     function proses_pinjam(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id);
+
 
         Swal.fire({
             title: 'Konfirmasi',
@@ -361,13 +361,11 @@
                         },
                         error: function(xhr, status, error) {
                             hideLoading();
-                            console.log(error);
+
                         }
                     });
                 <?php else : ?>
-                    // Handle the case where $dataReservasi is not set (no data available)
-                    console.log('No data available for dataReservasi');
-                    // Optionally, you can display a message to the user or perform other actions
+
                 <?php endif; ?>
             }
         });

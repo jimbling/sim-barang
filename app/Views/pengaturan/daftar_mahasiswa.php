@@ -279,7 +279,7 @@
             url: '/mahasiswa/get_detail/' + id,
             method: 'GET',
             success: function(data) {
-                console.log(data); // Periksa data yang diterima di konsol browser
+
                 // Populate the modal with the fetched data
                 $('#editMhs').modal('show');
                 populateEditModal(data);
@@ -428,7 +428,7 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data); // Tampilkan data JSON ke dalam konsol
+
                             loading.style.display = "none"; // Menyembunyikan spinner
                             processText.style.display = "none"; // Menyembunyikan teks "Proses kirim data..."
 

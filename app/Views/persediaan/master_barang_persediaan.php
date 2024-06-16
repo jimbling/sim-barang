@@ -361,7 +361,7 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data); // Tampilkan data JSON ke dalam konsol
+
                             loading.style.display = "none"; // Menyembunyikan spinner
                             processText.style.display = "none"; // Menyembunyikan teks "Proses kirim data..."
 

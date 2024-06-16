@@ -168,22 +168,22 @@
                         <td style="vertical-align: middle; font-size: 14px;">${formatDateTime(backup.created_at)}</td>
 
                         <td>
-                        <a class="btn btn-success btn-sm" href="${unduhUrl}/${encodeURIComponent(backup.nama_file)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
-                            <i class="fas fa-download"></i>
-                        </a>
+                            <a class="btn btn-success btn-sm" href="${unduhUrl}/${encodeURIComponent(backup.nama_file)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
+                                <i class="fas fa-download"></i>
+                            </a>
                         </td>
                         <td>
-                        <a class="btn btn-warning btn-sm" href="${unduhFilesUrl}/${encodeURIComponent(backup.file_zip)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .zip">
-                            <i class="fas fa-download"></i>
-                        </a>
+                            <a class="btn btn-warning btn-sm" href="${unduhFilesUrl}/${encodeURIComponent(backup.file_zip)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .zip">
+                                <i class="fas fa-download"></i>
+                            </a>
                         </td>
                     </tr>
                 `;
                 tableBody.innerHTML += row;
             }
 
-            // Aktifkan tooltips AdminLTE
-            $(document).Tooltips();
+            // Aktifkan tooltips dengan jQuery setelah tabel dimuat
+            $('[data-toggle="tooltip"]').tooltip();
         }
 
         // Fungsi untuk menampilkan data backup lengkap
@@ -194,29 +194,29 @@
             // Tampilkan semua data backup
             data.forEach((backup, index) => {
                 const row = `
-                <tr>
-                        <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;">${i + 1}</th>
+                    <tr>
+                        <th class="text-center" scope="row" style="vertical-align: middle; font-size: 14px;">${index + 1}</th>
                         <td style="vertical-align: middle; font-size: 14px;">${backup.nama_file} - ${(backup.ukuran / 1024).toFixed(2)} KB</td>
                         <td style="vertical-align: middle; font-size: 14px;">${backup.file_zip} - ${(backup.ukuran_zip / 1024).toFixed(2)} KB</td>
                         <td style="vertical-align: middle; font-size: 14px;">${formatDateTime(backup.created_at)}</td>
 
                         <td>
-                        <a class="btn btn-success btn-sm" href="${unduhUrl}/${encodeURIComponent(backup.nama_file)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
-                            <i class="fas fa-download"></i>
-                        </a>
+                            <a class="btn btn-success btn-sm" href="${unduhUrl}/${encodeURIComponent(backup.nama_file)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .sql">
+                                <i class="fas fa-download"></i>
+                            </a>
                         </td>
                         <td>
-                        <a class="btn btn-warning btn-sm" href="${unduhFilesUrl}/${encodeURIComponent(backup.file_zip)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .zip">
-                            <i class="fas fa-download"></i>
-                        </a>
+                            <a class="btn btn-warning btn-sm" href="${unduhFilesUrl}/${encodeURIComponent(backup.file_zip)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .zip">
+                                <i class="fas fa-download"></i>
+                            </a>
                         </td>
                     </tr>
                 `;
                 tableBody.innerHTML += row;
             });
 
-            // Aktifkan tooltips AdminLTE
-            $(document).Tooltips();
+            // Aktifkan tooltips dengan jQuery setelah tabel dimuat
+            $('[data-toggle="tooltip"]').tooltip();
         }
 
         // Fungsi untuk memformat waktu
@@ -271,6 +271,7 @@
 </script>
 
 
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const showAllBackupBtn = document.getElementById('showAllBackupBtn');
@@ -299,7 +300,7 @@
                             </a>
                         </td>
                         <td style="vertical-align: middle; font-size: 14px;">
-                            <a class="btn btn-success btn-sm" href="${unduhFilesUrl}/${encodeURIComponent(backup.file_zip)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .zip">
+                            <a class="btn btn-warning btn-sm" href="${unduhFilesUrl}/${encodeURIComponent(backup.file_zip)}" role="button" data-toggle="tooltip" data-placement="top" title="Unduh Backup .zip">
                                 <i class="fas fa-download"></i>
                             </a>
                         </td>
@@ -307,7 +308,8 @@
                 `;
                 tableBody.innerHTML += row;
             });
-
+            // Aktifkan tooltips dengan jQuery setelah tabel dimuat
+            $('[data-toggle="tooltip"]').tooltip();
             // Tampilkan tombol 'Reload Halaman'
             const reloadBtnContainer = document.getElementById('reloadBtnContainer');
             reloadBtnContainer.innerHTML = '<a class="btn btn-danger btn-sm" href="#" role="button" onclick="window.location.reload();"><i class="fas fa-sync-alt spaced-icon"></i> Reload Halaman</a>';
@@ -449,11 +451,21 @@
 </script>
 
 <script>
-    document.getElementById('showAllBtn').addEventListener('click', function() {
-        var url = this.getAttribute('data-url');
-        window.location.href = url;
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ambil elemen berdasarkan id
+        const element = document.getElementById('elementId');
+
+        // Pastikan elemen ditemukan sebelum melakukan operasi
+        if (element) {
+            // Lakukan operasi dengan elemen
+            element.addEventListener('click', function() {
+
+
+            });
+        }
     });
 </script>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -461,39 +473,42 @@
         const form = document.getElementById('restoreForm');
         const restoreButton = document.getElementById('restoreButton');
 
-        // Menambahkan event listener pada tombol restore
-        restoreButton.addEventListener('click', function() {
-            // Memeriksa apakah file yang dipilih adalah file SQL
-            const sqlFile = document.getElementById('sqlFile');
-            const fileName = sqlFile.value;
-            if (!fileName.endsWith('.sql')) {
-                // Menampilkan pesan SweetAlert jika bukan file SQL
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid File',
-                    text: 'File yang diunggah harus berformat .sql!',
-                });
-                return; // Menghentikan proses jika bukan file SQL
-            }
-
-            // Menampilkan konfirmasi SweetAlert sebelum restore
-            Swal.fire({
-                icon: 'warning',
-                title: 'Konfirmasi Restore',
-                text: 'Semua data yang ada akan terhapus dan akan digantikan dengan data baru. Lanjutkan?',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Lanjutkan!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                // Jika pengguna mengonfirmasi restore
-                if (result.isConfirmed) {
-                    // Submit form untuk melakukan restore
-                    form.submit();
+        // Menambahkan event listener pada tombol restore jika elemen ditemukan
+        if (restoreButton) {
+            restoreButton.addEventListener('click', function() {
+                // Memeriksa apakah file yang dipilih adalah file SQL
+                const sqlFile = document.getElementById('sqlFile');
+                const fileName = sqlFile.value;
+                if (!fileName.endsWith('.sql')) {
+                    // Menampilkan pesan SweetAlert jika bukan file SQL
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid File',
+                        text: 'File yang diunggah harus berformat .sql!',
+                    });
+                    return; // Menghentikan proses jika bukan file SQL
                 }
+
+                // Menampilkan konfirmasi SweetAlert sebelum restore
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Konfirmasi Restore',
+                    text: 'Semua data yang ada akan terhapus dan akan digantikan dengan data baru. Lanjutkan?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Lanjutkan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    // Jika pengguna mengonfirmasi restore
+                    if (result.isConfirmed) {
+                        // Submit form untuk melakukan restore
+                        form.submit();
+                    }
+                });
             });
-        });
+        }
     });
 </script>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

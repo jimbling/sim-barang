@@ -292,7 +292,7 @@
                     $('#btnSpinner').hide();
                 },
                 error: function(error) {
-                    console.log('Error:', error);
+
                     toastr.error('Terjadi kesalahan. Data tidak dapat disimpan.');
 
                     // Setelah AJAX request selesai dengan kesalahan, tampilkan kembali teks "Simpan" dan sembunyikan ikon spinner
@@ -308,8 +308,6 @@
     $('#tabelBarangBody').on('click', '.btnHapusBarang', function() {
         var idBarang = $(this).data('id'); // Ubah data-id menjadi data-idbarang
 
-        // Tambahkan console log untuk menampilkan ID yang dipilih
-        console.log("ID yang dipilih untuk dihapus:", idBarang);
 
         // Simpan referensi ke baris tabel yang akan dihapus
         var deletedRow = $(this).closest('tr');
@@ -361,7 +359,7 @@
                     }
                 },
                 error: function(error) {
-                    console.log('Error:', error);
+
                     alert('Gagal menghapus barang');
                 }
             });
@@ -383,12 +381,6 @@
 
         // Mengatur nilai jumlah_barang pada input readonly
         document.getElementById("jumlah_barang").value = jumlahBarang;
-
-        // Menampilkan detail data barang di konsol
-        console.log("ID Barang: " + barangId);
-        console.log("Nama Barang: " + namaBarang);
-        console.log("Harga Satuan: " + hargaSatuan);
-        console.log("Jumlah Barang: " + jumlahBarang);
 
         // Menutup modal
         $('#modalPilihBarang').modal('hide');

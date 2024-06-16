@@ -285,7 +285,7 @@
     }
 
     function hapus_data(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id);
+
         Swal.fire({
             title: 'HAPUS?',
             text: "Yakin akan menghapus data ini?",
@@ -320,9 +320,7 @@
                             return;
                         }
                     <?php else : ?>
-                        // Handle the case where $peminjaman['created_at'] is not set
-                        console.log('No data available for peminjaman created_at');
-                        // Optionally, you can display a message to the user or perform other actions
+
                         return;
                     <?php endif; ?>
                 }
@@ -352,8 +350,7 @@
                     error: function(xhr, status, error) {
                         // Sembunyikan pesan loading saat ada kesalahan dalam penghapusan
                         hideLoading();
-                        // Handle error here, jika ada kesalahan dalam penghapusan
-                        console.log(error);
+
                     }
                 });
             }

@@ -196,7 +196,7 @@
         // Event listener untuk tombol Detail
         $('#daftarRiwayatPeminjamanTable').on('click', '.detailBtn', function() {
             var kode_pinjam = $(this).data('kodepinjam');
-            console.log('Detail untuk kode pinjam:', kode_pinjam);
+
         });
 
         // Event listener untuk tombol Hapus
@@ -209,12 +209,12 @@
         $('#daftarRiwayatPeminjamanTable').on('click', '.kembaliBtn', function() {
             var data_id = $(this).data('id');
             // Tambahkan logika tambahan di sini jika diperlukan
-            console.log('F. Kembali untuk ID:', data_id);
+
         });
 
         // Function to handle the deletion process
         function hapus_data(data_id) {
-            console.log('Hapus data dengan ID:', data_id);
+
 
             Swal.fire({
                 title: 'HAPUS?',
@@ -306,9 +306,7 @@
                                 text: errorMessage,
                                 icon: 'error',
                             });
-                            console.log('AJAX Error:', xhr);
-                            console.log('Status:', status);
-                            console.log('Error:', error);
+
                         }
                     });
                 }

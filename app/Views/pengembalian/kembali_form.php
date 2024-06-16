@@ -173,14 +173,6 @@
 
 <script>
     function pilihData(peminjamanId, barangId, kodePinjam, namaPeminjam, namaRuangan, penggunaan, tanggalPinjam, namaBarang) {
-        console.log("Peminjaman ID:", peminjamanId);
-        console.log("Kode Pinjam:", kodePinjam);
-        console.log("Nama Peminjam:", namaPeminjam);
-        console.log("Nama Ruangan:", namaRuangan);
-        console.log("Penggunaan:", penggunaan);
-        console.log("Tanggal Pinjam:", tanggalPinjam);
-        console.log("Nama Barang:", namaBarang);
-        console.log("ID Barang:", barangId);
 
         // Mengisi nilai input dengan data yang dipilih
         document.getElementById('peminjaman_id').value = peminjamanId;

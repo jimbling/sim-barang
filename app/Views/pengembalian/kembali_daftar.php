@@ -159,7 +159,7 @@
     }
 
     function hapus_data(kodeKembali) {
-        console.log('Kode Kembali yang akan dihapus:', kodeKembali);
+
 
         // Pemeriksaan level pengguna di sisi klien
         let userLevel = '<?= session()->get("level") ?>';

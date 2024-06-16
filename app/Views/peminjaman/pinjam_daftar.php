@@ -315,7 +315,7 @@ $level = $session->get('level');
     }
 
     function hapus_data(peminjamanId) {
-        console.log('Data ID yang akan dihapus:', peminjamanId);
+
 
         Swal.fire({
             title: 'Konfirmasi',
@@ -395,9 +395,7 @@ $level = $session->get('level');
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log('AJAX Error:', xhr);
-                        console.log('Status:', status);
-                        console.log('Error:', error);
+
 
                         hideLoading();
 
@@ -474,7 +472,7 @@ $level = $session->get('level');
 
 <script>
     function logPeminjamanId(peminjamanId) {
-        console.log('Peminjaman ID:', peminjamanId);
+
 
         // Mengambil elemen tabel di dalam modal
         var tabelDetail = document.getElementById('tabelDetail');

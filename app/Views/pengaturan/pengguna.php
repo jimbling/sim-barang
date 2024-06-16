@@ -344,31 +344,8 @@
 
 
 
-        // Log data yang akan dikirim ke konsol
-        console.log('Data yang akan dikirim:', {
-            nama_kampus: nama_kampus,
-            no_id: no_id,
-            alamat: alamat,
-
-            nama_direktur: nama_direktur,
-            nik_dir: nik_dir,
-            ttd_1: ttd_1,
-
-            nama_laboran: nama_laboran,
-            ttd_2: ttd_2,
-            nik_laboran: nik_laboran,
-
-            ttd_4: ttd_4,
-            nama_ttd_4: nama_ttd_4,
-            id_ttd_4: id_ttd_4,
-
-            ttd_3: ttd_3,
-            nama_ttd_3: nama_ttd_3,
-            id_ttd_3: id_ttd_3,
 
 
-
-        });
 
         // Buat objek data yang akan dikirimkan melalui AJAX
         var data = {
@@ -409,7 +386,7 @@
                 hideLoading();
 
                 // Handle respons dari server jika diperlukan
-                console.log('Respons dari server:', data);
+
 
                 // Tampilkan SweetAlert sukses dengan timer 5000 milidetik (5 detik)
                 Swal.fire({

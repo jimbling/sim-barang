@@ -288,8 +288,7 @@
             // Ambil nim/nik (indeks ke-1) dan simpan ke dalam input hidden
             hiddenInputNimNik.value = selectedValues[1];
 
-            // Cetak nim/nik yang dipilih ke konsol
-            console.log("NIM/NIK yang dipilih:", selectedValues[1]);
+
         });
     });
 </script>

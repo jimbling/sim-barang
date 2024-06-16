@@ -264,7 +264,7 @@
     }
 
     function hapus_data(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id); // Tambahkan baris ini
+
         Swal.fire({
             title: 'HAPUS?',
             text: "Yakin akan menghapus data ini?",
@@ -301,7 +301,7 @@
                         // Sembunyikan pesan loading saat ada kesalahan dalam penghapusan
                         hideLoading();
                         // Handle error here, jika ada kesalahan dalam penghapusan
-                        console.log(error);
+
                     }
                 });
             }

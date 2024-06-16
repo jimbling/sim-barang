@@ -177,7 +177,7 @@
     }
 
     function kembali(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id);
+
 
         // Pemeriksaan level pengguna di sisi klien
         let userLevel = '<?= session()->get("level") ?>';
@@ -220,7 +220,7 @@
                     },
                     error: function(xhr, status, error) {
                         hideLoading();
-                        console.log(error);
+
                         Swal.fire({
                             title: 'Gagal!',
                             text: 'Gagal mengembalikan barang. Silakan coba lagi.',
@@ -255,7 +255,7 @@
     }
 
     function hapus_data(data_id) {
-        console.log('Data ID yang akan dihapus:', data_id);
+
 
         // Pemeriksaan level pengguna di sisi klien
         let userLevel = '<?= session()->get("level") ?>';
@@ -298,7 +298,7 @@
                     },
                     error: function(xhr, status, error) {
                         hideLoading();
-                        console.log(error);
+
                         Swal.fire({
                             title: 'Gagal!',
                             text: 'Gagal mengembalikan barang. Silakan coba lagi.',

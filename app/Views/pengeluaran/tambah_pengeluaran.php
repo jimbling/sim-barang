@@ -266,7 +266,7 @@
     var selectedPeminjamanId; // Deklarasikan variabel global untuk menyimpan kode pinjam yang dipilih
 
     function pilihData(peminjamanId, barangId, kodePinjam, namaPeminjam, namaRuangan, penggunaan, tanggalPinjam, namaBarang) {
-        console.log("Peminjaman ID:", peminjamanId);
+
 
         // Set the value of the peminjaman_id_hidden hidden input field
         document.getElementById('peminjaman_id_hidden').value = peminjamanId;
@@ -299,7 +299,7 @@
 
                 // Update table with new data
                 updateTable(data);
-                console.log("Success Response:", data);
+
             },
             error: function(error) {
                 console.error('Error fetching data:', error);
@@ -457,7 +457,7 @@
         // Menangkap perubahan pada input hidden peminjaman_id
         $('#peminjaman_id').on('change', function() {
             var peminjamanId = $(this).val();
-            console.log('Nilai #peminjaman_id berubah menjadi:', peminjamanId);
+
 
             if (peminjamanId !== '') {
                 tampilkanData(peminjamanId);
@@ -466,7 +466,7 @@
 
         // Fungsi untuk menampilkan data terkait berdasarkan peminjaman_id
         function tampilkanData(peminjamanId) {
-            console.log('Mengambil data untuk peminjaman_id:', peminjamanId);
+
 
             $.ajax({
                 url: '/pengeluaran/getDataByPeminjamanId/' + peminjamanId,
