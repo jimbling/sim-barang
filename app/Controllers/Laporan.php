@@ -912,6 +912,7 @@ class Laporan extends BaseController
                 'satuan' => 'Pcs',
             ];
 
+
             // Cari data penerimaan untuk barang ini
             $penerimaanIndex = array_search($barangId, array_column($penerimaanBarangData, 'barang_id'));
             if ($penerimaanIndex !== false) {
@@ -966,6 +967,20 @@ class Laporan extends BaseController
             // Tambahkan ke daftar barang
             $barangList[] = $barangInfo;
         }
+
+        // Inisialisasi array untuk menyimpan barang dengan sisa_stok negatif
+        $barangListNegatif = [];
+
+        // Loop untuk menandai barang dengan sisa_stok negatif atau memindahkan ke $barangListNegatif
+        foreach ($barangList as &$barang) {
+            if ($barang['sisa_stok'] < 0) {
+                $barangListNegatif[] = $barang;
+                // Atau menandai di dalam array barangList, misalnya dengan tambahan properti 'is_sisa_stok_negatif'
+                $barang['is_sisa_stok_negatif'] = true;
+            }
+        }
+
+
         // Totalkan saldo awal dari semua barang
         $totalJumlahSaldo = array_sum(array_column($barangList, 'jumlah_saldo_awal'));
 
@@ -978,6 +993,7 @@ class Laporan extends BaseController
             'judul' => 'Lihat Stok Bulanan | Akper "YKY" Yogyakarta',
             'currentYear' => $currentYear,
             'barangList' => $barangList,
+            'barangListNegatif' => $barangListNegatif,
             'totalJumlahPenerimaan' => $totalJumlahPenerimaan,
             'totalJumlahPengeluaran' => $totalJumlahPengeluaran,
             'totalJumlahPengeluaranMurni' => $totalJumlahPengeluaranMurni,
@@ -989,7 +1005,7 @@ class Laporan extends BaseController
             'tahun' => $year,
             'dataPengaturan' => $dataPengaturan,
             'setok' => $stockAwal,
-            'isDataExists' => $isDataExists // Menyertakan status apakah data sudah ada
+            'isDataExists' => $isDataExists,
         ];
 
         // Update nama_barang dan satuan dari setok ke barangList

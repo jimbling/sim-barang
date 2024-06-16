@@ -5,6 +5,11 @@
     .table th {
         font-size: 14px;
     }
+
+    .negative-stock {
+        background-color: #f8d7da !important;
+        /* Warna merah muda */
+    }
 </style>
 <div class="content-wrapper">
 
@@ -64,7 +69,7 @@
                                 </thead>
                                 <tbody>
                                     <?php foreach ($barangList as $index => $barang) : ?>
-                                        <tr>
+                                        <tr <?php if ($barang['sisa_stok'] < 0) echo 'class="negative-stock"'; ?>>
                                             <td><?= $index + 1; ?></td>
                                             <td style="text-align: left;"><?= $barang['nama_barang']; ?></td>
                                             <td style="text-align: right;">Rp. <?= number_format($barang['harga_satuan'], 0, ',', '.'); ?></td>
@@ -113,7 +118,7 @@
                                     <button type="button" class="btn btn-primary btn-sm" disabled>Data Sudah Ada</button>
                                     <p class="text-danger">Data stok untuk bulan dan tahun ini sudah ada.</p>
                                 <?php else : ?>
-                                    <button type="submit" class="btn btn-primary btn-sm" onclick="confirmSave()">Simpan Stok Bulanan</button>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="confirmSave()">Simpan Stok Bulanan</button>
                                 <?php endif; ?>
 
                                 <button type="button" class="btn btn-warning btn-sm" onclick="goToLaporanStock()">Kembali</button>
@@ -139,20 +144,26 @@
     function goToLaporanStock() {
         window.location.href = '<?= base_url('/laporan/stok-opname') ?>';
     }
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Mengambil form dengan ID formStokBulanan
-        var formStokBulanan = document.getElementById('formStokBulanan');
 
-        // Menambahkan event listener untuk menangani submit form
-        formStokBulanan.addEventListener('submit', function(event) {
-            event.preventDefault(); // Menghentikan pengiriman form secara langsung
+    function confirmSave() {
+        // Mengambil semua elemen tr dengan class negative-stock
+        var negativeStockRows = document.querySelectorAll('tr.negative-stock');
 
-            // Menampilkan konfirmasi SweetAlert
+        // Jika ada baris dengan stok negatif
+        if (negativeStockRows.length > 0) {
+            // Menampilkan SweetAlert2 dengan pesan bahwa ada stok negatif dan menghentikan proses
+            Swal.fire({
+                title: 'Peringatan!',
+                html: 'Ada barang dengan sisa stok negatif.<br>Perbaiki stok negatif sebelum menyimpan.',
+                icon: 'error',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Tutup'
+            });
+        } else {
+            // Jika tidak ada stok negatif, tampilkan konfirmasi untuk melanjutkan penyimpanan
             Swal.fire({
                 title: 'Simpan Stok Bulanan?',
-                text: "Stok Bulan Ini akan menjadi saldo awal bulan berikutnya!",
+                text: 'Stok bulan ini akan menjadi saldo awal bulan berikutnya!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -162,9 +173,9 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Jika pengguna mengonfirmasi, lanjutkan dengan pengiriman form
-                    formStokBulanan.submit();
+                    document.getElementById('formStokBulanan').submit();
                 }
             });
-        });
-    });
+        }
+    }
 </script>

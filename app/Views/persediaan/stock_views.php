@@ -27,9 +27,12 @@
             <form method="get" action="" class="form-inline mb-3">
                 <label class="mr-2" for="year">Pilih Tahun:</label>
                 <select class="form-control" name="year" id="year" onchange="this.form.submit()">
-                    <?php foreach ($years as $year) : ?>
-                        <option value="<?= $year ?>" <?= $year == $currentYear ? 'selected' : '' ?>><?= $year ?></option>
-                    <?php endforeach; ?>
+                    <?php
+                    $currentYear = date('Y'); // Mendapatkan tahun berjalan
+
+                    // Tampilkan opsi tahun berjalan
+                    echo '<option value="' . $currentYear . '" selected>' . $currentYear . '</option>';
+                    ?>
                 </select>
             </form>
             <div class="row">
@@ -42,14 +45,15 @@
                     foreach ($data_stock as $row) {
                         if ($row['bulan'] == $i) {
                             $found = true;
-                            $total_stok = esc($row['total_stok']);
+                            // Pastikan hanya angka yang diformat
+                            $total_stok = is_numeric($row['total_stok']) ? number_format($row['total_stok'], 0, ',', '.') : esc($row['total_stok']);
                             break;
                         }
                     }
                     ?>
                     <div class="col-md-3 col-sm-6">
                         <div class="info-box shadow-lg <?= $found ? '' : 'bg-light' ?>">
-                            <span class="info-box-icon <?= $found ? 'bg-info' : 'bg-secondary' ?>"><i class="far fa-calendar-alt"></i></span>
+                            <span class="info-box-icon <?= $found ? 'bg-info' : 'bg-secondary' ?>"><i class="fas fa-boxes"></i></span>
                             <div class="info-box-content">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <span class="info-box-text"><?= getBulanName($i) ?></span>
@@ -64,7 +68,7 @@
                                         </form>
                                     <?php endif; ?>
                                 </div>
-                                <span class="info-box-number"> Total Stok: <?= $total_stok ?></span>
+                                <span class="info-box-number">Total Stok: <?= $total_stok ?></span>
                             </div>
                         </div>
                     </div>
