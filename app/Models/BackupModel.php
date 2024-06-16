@@ -34,30 +34,46 @@ class BackupModel extends Model
 
     public function deleteExpiredBackups()
     {
-        // Menghitung tanggal 60 hari yang lalu
-        $expiredDate = date('Y-m-d', strtotime('-30 days'));
+        // Mendapatkan data backup yang sudah kadaluarsa
+        $expiredBackups = $this->getExpiredBackups();
 
-        // Mengambil data backup yang sudah kadaluarsa
-        $expiredBackups = $this->where('created_at <', $expiredDate)->findAll();
+        // Inisialisasi penghitung jumlah yang berhasil dihapus
+        $deletedCount = 0;
 
         // Looping melalui data backup yang sudah kadaluarsa
         foreach ($expiredBackups as $backup) {
-            // Mendapatkan nama file backup
-            $namaFile = $backup['nama_file'];
+            // Mendapatkan path file yang akan dihapus
+            $filePathNamaFile = 'database/backup/' . $backup['nama_file'];
+            $filePathFileZip = WRITEPATH . 'backup/' . $backup['file_zip'];
 
-            // Menghapus file sumber jika ada
-            $filePath = 'database/backup/' . $namaFile; // Sesuaikan dengan path file Anda
-            if (file_exists($filePath)) {
-                unlink($filePath); // Menghapus file
+            // Menghapus file nama_file jika ada
+            if (file_exists($filePathNamaFile) && !unlink($filePathNamaFile)) {
+                // Jika penghapusan file gagal, log error dan lanjutkan ke backup berikutnya
+                log_message('error', "Gagal menghapus file: $filePathNamaFile");
+                continue; // Melanjutkan ke loop berikutnya jika penghapusan gagal
+            }
+
+            // Menghapus file file_zip jika ada
+            if (file_exists($filePathFileZip) && !unlink($filePathFileZip)) {
+                // Jika penghapusan file gagal, log error dan lanjutkan ke backup berikutnya
+                log_message('error', "Gagal menghapus file: $filePathFileZip");
+                continue; // Melanjutkan ke loop berikutnya jika penghapusan gagal
+            }
+
+            // Jika file berhasil dihapus, hapus entri dari database
+            if ($this->delete($backup['id'])) {
+                $deletedCount++;
+            } else {
+                // Jika penghapusan entri database gagal, log error
+                log_message('error', "Gagal menghapus entri backup ID: " . $backup['id']);
             }
         }
 
-        // Menghapus data backup yang sudah kadaluarsa dari database
-        $this->where('created_at <', $expiredDate)->delete();
-
         // Mengembalikan jumlah data backup yang berhasil dihapus
-        return count($expiredBackups);
+        return $deletedCount;
     }
+
+
 
 
     public function getExpiredBackups()
