@@ -26,19 +26,7 @@
     <link rel="stylesheet" href="../../assets/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
     <link rel="stylesheet" href="../../assets/plugins/bs-stepper/css/bs-stepper.min.css">
 
-    <style>
-        @media print {
-            .bg-danger {
-                background-color: transparent !important;
-                /* Menghilangkan warna latar belakang */
-            }
 
-            td.bg-danger b {
-                font-weight: bold;
-                color: red;
-            }
-        }
-    </style>
 
 </head>
 
@@ -77,7 +65,7 @@
                                 Kepada
                                 <address>
                                     <?php if (!empty($data_pinjamLuar)) : ?>
-                                        <?php $pinjamLuar = $data_pinjamLuar[0]; // Assuming the first row contains all the necessary data 
+                                        <?php $pinjamLuar = $data_pinjamLuar[0];
                                         ?>
                                         <strong><?= $pinjamLuar['nama_peminjam']; ?></strong><br>
                                         <?= $pinjamLuar['nama_instansi']; ?><br>
@@ -90,7 +78,7 @@
 
                             <div class="col-sm-4 invoice-col">
                                 <?php if (!empty($data_pinjamLuar)) : ?>
-                                    <?php $pinjamLuar = $data_pinjamLuar[0]; // Assuming the first row contains all the necessary data 
+                                    <?php $pinjamLuar = $data_pinjamLuar[0];
                                     ?>
                                     <b>Invoice #<?= $pinjamLuar['no_invoice']; ?></b><br>
                                     <br>
@@ -163,7 +151,7 @@
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $totalSemuaHarga = 0; // Inisialisasi variabel totalSemuaHarga sebelum loop
+                                        $totalSemuaHarga = 0;
 
                                         foreach ($data_pinjamLuar as $PinjamLuar) :
                                         ?>
@@ -184,7 +172,7 @@
                                                     $totalHarga = $PinjamLuar['lama_pinjam'] * $PinjamLuar['harga_sewa'];
                                                     echo 'Rp. ' . number_format($totalHarga, 0, ',', '.');
 
-                                                    // Menambahkan nilai totalHarga ke dalam totalSemuaHarga
+
                                                     $totalSemuaHarga += $totalHarga;
                                                     ?>
                                                 </td>
@@ -192,7 +180,7 @@
                                         <?php
                                         endforeach;
 
-                                        // Menambahkan biaya perawatan ke dalam totalSemuaHarga di luar loop
+
                                         $biayaPerawatan = 20000;
                                         $totalSemuaHarga += $biayaPerawatan;
                                         ?>
@@ -226,8 +214,8 @@
                                             <td style="text-align: right;"><?php echo 'Rp. ' . number_format($biayaPerawatan, 0, ',', '.'); ?></td>
                                         </tr>
                                         <tr>
-                                            <th class="bg-danger">Total:</th>
-                                            <td class="bg-danger" style="text-align: right; "><span style="font-weight:bold; color:red;"><?php echo 'Rp. ' . number_format($totalSemuaHarga, 0, ',', '.'); ?></span></td>
+                                            <th class="bg-secondary">Total:</th>
+                                            <td class="bg-secondary" style="text-align: right;"><b><?php echo 'Rp. ' . number_format($totalSemuaHarga, 0, ',', '.'); ?></b></td>
                                         </tr>
                                     </table>
                                 </div>

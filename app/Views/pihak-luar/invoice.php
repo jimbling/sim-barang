@@ -37,7 +37,7 @@
 
             td.bg-danger b {
                 font-weight: bold;
-                color: red;
+                color: white;
             }
 
         }

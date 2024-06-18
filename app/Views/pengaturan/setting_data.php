@@ -140,7 +140,7 @@
                                     <td>:</td>
                                     <td>
                                         <form method="post" action="/upload/logobank" enctype="multipart/form-data">
-                                            <!-- Form fields for other data -->
+
                                             <div class="form-group row">
                                                 <div class="col-sm-12">
                                                     <div class="custom-file">
@@ -162,7 +162,7 @@
                                     <td>:</td>
                                     <td>
                                         <form method="post" action="/upload/favicon" enctype="multipart/form-data">
-                                            <!-- Form fields for other data -->
+
                                             <div class="form-group row">
                                                 <div class="col-sm-12">
                                                     <div class="custom-file">
@@ -197,7 +197,7 @@
                                 </div>
                                 <div class="card-body">
                                     <form method="post" action="/upload/logo" enctype="multipart/form-data">
-                                        <!-- Form fields for other data -->
+
                                         <div class="form-group row">
                                             <div class="col-sm-12">
                                                 <div class="custom-file">
@@ -346,7 +346,7 @@
                         </div>
                         <div class="card-body">
                             <form method="post" action="/upload/kopsurat" enctype="multipart/form-data">
-                                <!-- Form fields for other data -->
+
                                 <div class="form-group row">
                                     <label for="foto_siswa" class="col-sm-6 col-form-label">Upload file Kop Surat</label>
                                     <div class="col-sm-12">
@@ -405,7 +405,7 @@
                                                 <td><?= $akun['level']; ?></td>
                                                 <td>
                                                     <a href="javascript:void(0);" class="btn btn-xs btn-primary mx-auto text-white" id="edit-button-<?= $akun['id']; ?>" data-toggle="modal" data-target="#editModal<?= $akun['id']; ?>" data-id="<?= $akun['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
-                                                    <!-- Tambah modal untuk edit di sini -->
+
                                                 </td>
 
                                             </tr>
@@ -430,7 +430,6 @@
 </div>
 
 <?php foreach ($data_pengguna as $akun) : ?>
-    <!-- Modal untuk edit -->
     <div class="modal fade" id="editModal<?= $akun['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel<?= $akun['id']; ?>" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog " role="document">
             <div class="modal-content">
@@ -441,36 +440,30 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="editAKun" method="post" action="/data/akun/update">
-
+                    <form id="editAkun" method="post" action="/data/admin/update">
                         <div class="form-group row">
                             <label for="editNama" class="col-sm-4 col-form-label">Nama</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="editNama" name="full_nama" value="<?= $akun['full_nama']; ?>">
+                                <input type="text" class="form-control" id="editNama" name="fullName" value="<?= $akun['full_nama']; ?>" readonly> <!-- Menggunakan alias fullName -->
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label for="editUserNama" class="col-sm-4 col-form-label">Username</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="editUserNama" name="user_nama" value="<?= $akun['user_nama']; ?>">
+                                <input type="text" class="form-control" id="editUserNama" name="username" value="<?= $akun['user_nama']; ?>"> <!-- Menggunakan alias username -->
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="editUserPass" class="col-sm-4 col-form-label">Password</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="editUserPass" name="user_password">
+                                <input type="text" class="form-control" id="editUserPass" name="password"> <!-- Menggunakan alias password -->
                             </div>
                         </div>
                         <input type="hidden" id="akunId" name="id" value="<?= $akun['id']; ?>">
                         <button type="submit" class="btn btn-primary btn-sm" onclick="simpan_editAkun()">Simpan</button>
-
                     </form>
-
-
-
                 </div>
-
             </div>
         </div>
     </div>
@@ -478,13 +471,16 @@
 
 <script>
     var updateUrl = "<?php echo base_url('/pengaturan/update'); ?>";
+    const baseUrl = "<?= base_url() ?>/";
 </script>
-<script src="../../assets/dist/js/edit.js"></script>
+
+<script src="<?= base_url('assets/dist/js/jquery-3.6.4.min.js') ?>"> </script>
+<script src=" <?= base_url('assets/dist/js/frontend-js/settingData.js') ?>"></script>
 
 <?php echo view('tema/footer.php'); ?>
 
 <script>
-    function showLoadingProses() {
+    function showLoading() {
         let timerInterval
         Swal.fire({
             title: 'Sedang memproses data ....',
@@ -504,16 +500,15 @@
     }
 
     function simpan_editAkun() {
-        var id = document.getElementById('edit-button-' + id).getAttribute('data-id');
-        var full_nama = document.getElementById('editNama').value;
-        var user_nama = document.getElementById('editUserNama').value;
-        var user_password = document.getElementById('editUserPass').value;
-        showLoadingProses();
+        var id = document.getElementById('akunId').value;
+        var fullName = document.getElementById('editNama').value;
+        var username = document.getElementById('editUserNama').value;
+        var password = document.getElementById('editUserPass').value;
+        showLoading();
 
-        // Kirim data ke controller dengan Ajax
         $.ajax({
             type: "POST",
-            url: '/data/akun/update',
+            url: baseURL + '/data/admin/update',
             data: {
                 id: id,
                 full_nama: full_nama,
@@ -521,19 +516,16 @@
                 user_password: user_password
             },
             success: function(response) {
-                // Handle response dari controller
+                hideLoading();
                 if (response.status === 'success') {
-                    hideLoading();
                     Swal.fire({
                         icon: 'success',
                         title: 'Sukses',
                         text: response.message,
+                    }).then(() => {
+                        window.location.href = '/data/pengaturan';
                     });
-
-                    // Redirect setelah pesan ditampilkan
-                    window.location.href = '/data/pengaturan';
                 } else {
-                    hideLoading();
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
@@ -542,8 +534,6 @@
                 }
             },
             error: function(xhr, textStatus, errorThrown) {
-                // Tangani kesalahan jika ada
-                console.error(xhr.responseText);
                 hideLoading();
                 Swal.fire({
                     icon: 'error',
@@ -553,453 +543,6 @@
             }
         });
 
-        return false; // Mencegah formulir dikirim secara tradisional
+        return false;
     }
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- KOP SURAT -->
-
-<script>
-    // Fungsi untuk menampilkan gambar previ saat gambar dipilih
-    function showPreviewImage(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-                $('#previewImage').attr('src', e.target.result);
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-
-        // Menampilkan nama file yang dipilih
-        var fileName = input.files[0].name;
-        $('#selectedFileName').text(fileName);
-    }
-
-    // Memanggil fungsi showPreviewImage saat input file berubah
-    $('#customFile').change(function() {
-        showPreviewImage(this);
-    });
-</script>
-<script>
-    const customFileInput = document.querySelector("#customFile");
-    const previewImage = document.querySelector("#previewImage");
-
-    customFileInput.addEventListener("change", function() {
-        if (this.files.length > 0) {
-            previewImage.style.display = "block";
-        } else {
-            previewImage.style.display = "none";
-        }
-    });
-</script>
-
-
-<script>
-    // Function to show loading
-    function showLoading() {
-        let timerInterval
-        Swal.fire({
-            title: 'Memproses upload...',
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading()
-                const b = Swal.getHtmlContainer().querySelector('b')
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                }, 100)
-            }
-        });
-    }
-
-    // Function to hide loading
-    function hideLoading() {
-        Swal.close();
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const fileInput = document.querySelector("input[name='kop_surat']");
-        const submitButton = document.querySelector("button[type='submit']");
-        const selectedFileName = document.querySelector("#selectedFileName");
-        const previewImage = document.querySelector("#previewImage");
-
-        fileInput.addEventListener("change", function() {
-            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
-            const fileName = this.files[0].name;
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-
-            if (allowedExtensions.includes(fileExtension)) {
-                selectedFileName.textContent = fileName;
-                previewImage.style.display = "block";
-                previewImage.src = URL.createObjectURL(this.files[0]);
-                submitButton.disabled = false;
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Jenis File Tidak Diijinkan!",
-                    text: "Anda hanya dapat mengimpor file dengan ekstensi .jpg, .jpeg, .png, atau .svg."
-                });
-                this.value = ''; // Clear the file input
-                selectedFileName.textContent = "Pilih File Foto";
-                previewImage.style.display = "none";
-                submitButton.disabled = true;
-            }
-        });
-
-        // Prevent default form submission and show loading when file successfully uploaded
-        submitButton.addEventListener("click", function(event) {
-            event.preventDefault(); // Prevent default form submission
-            if (!fileInput.files || !fileInput.files.length) {
-                return;
-            }
-            const fileName = fileInput.files[0].name;
-            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-
-            if (allowedExtensions.includes(fileExtension)) {
-                showLoading(); // Show loading
-                // Submit the form after some time (you can adjust the time as needed)
-                setTimeout(function() {
-                    submitButton.form.submit();
-                }, 2000); // Example: submit the form after 2 seconds (2000 milliseconds)
-            }
-        });
-    });
-</script>
-
-<!-- END KOP SURAT -->
-
-<!-- UPLOAD LOGO -->
-<script>
-    // Fungsi untuk menampilkan gambar previ saat gambar dipilih
-    function showPreviewLogo(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-                $('#previewLogo').attr('src', e.target.result);
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-
-        // Menampilkan nama file yang dipilih
-        var fileName = input.files[0].name;
-        $('#selectedFileLogo').text(fileName);
-    }
-
-    // Memanggil fungsi showPreviewImage saat input file berubah
-    $('#customFile').change(function() {
-        showPreviewImage(this);
-    });
-</script>
-<script>
-    const customFileLogo = document.querySelector("#customFile");
-    const previewLogo = document.querySelector("#previewLogo");
-
-    customFileInput.addEventListener("change", function() {
-        if (this.files.length > 0) {
-            previewImage.style.display = "block";
-        } else {
-            previewImage.style.display = "none";
-        }
-    });
-</script>
-
-
-<script>
-    // Function to show loading
-    function showLoading() {
-        let timerInterval
-        Swal.fire({
-            title: 'Memproses upload...',
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading()
-                const b = Swal.getHtmlContainer().querySelector('b')
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                }, 100)
-            }
-        });
-    }
-
-    // Function to hide loading
-    function hideLoading() {
-        Swal.close();
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const fileInput = document.querySelector("input[name='logo']");
-        const submitButton = document.querySelector("button[type='submit']");
-        const selectedFileLogo = document.querySelector("#selectedFileLogo");
-        const previewImage = document.querySelector("#previewLogo");
-
-        fileInput.addEventListener("change", function() {
-            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
-            const fileName = this.files[0].name;
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-
-            if (allowedExtensions.includes(fileExtension)) {
-                selectedFileLogo.textContent = fileName;
-                previewImage.style.display = "block";
-                previewImage.src = URL.createObjectURL(this.files[0]);
-                submitButton.disabled = false;
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Jenis File Tidak Diijinkan!",
-                    text: "Anda hanya dapat mengimpor file dengan ekstensi .jpg, .jpeg, .png, atau .svg."
-                });
-                this.value = ''; // Clear the file input
-                selectedFileLogo.textContent = "Pilih File Foto";
-                previewImage.style.display = "none";
-                submitButton.disabled = true;
-            }
-        });
-
-        // Prevent default form submission and show loading when file successfully uploaded
-        submitButton.addEventListener("click", function(event) {
-            event.preventDefault(); // Prevent default form submission
-            if (!fileInput.files || !fileInput.files.length) {
-                return;
-            }
-            const fileName = fileInput.files[0].name;
-            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-
-            if (allowedExtensions.includes(fileExtension)) {
-                showLoading(); // Show loading
-                // Submit the form after some time (you can adjust the time as needed)
-                setTimeout(function() {
-                    submitButton.form.submit();
-                }, 2000); // Example: submit the form after 2 seconds (2000 milliseconds)
-            }
-        });
-    });
-</script>
-<!-- END UPLOAD LOGO -->
-
-<!-- UPLOAD FAVICON -->
-<script>
-    // Fungsi untuk menampilkan gambar previ saat gambar dipilih
-    function showPreviewLogo(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-                $('#previewFavicon').attr('src', e.target.result);
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-
-        // Menampilkan nama file yang dipilih
-        var fileName = input.files[0].name;
-        $('#selectedFileFavicon').text(fileName);
-    }
-
-    // Memanggil fungsi showPreviewImage saat input file berubah
-    $('#customFile').change(function() {
-        showPreviewImage(this);
-    });
-</script>
-<script>
-    const customFileFavicon = document.querySelector("#customFile");
-    const previewFavicon = document.querySelector("#previewFavicon");
-
-    customFileInput.addEventListener("change", function() {
-        if (this.files.length > 0) {
-            previewImage.style.display = "block";
-        } else {
-            previewImage.style.display = "none";
-        }
-    });
-</script>
-
-
-<script>
-    // Function to show loading
-    function showLoading() {
-        let timerInterval
-        Swal.fire({
-            title: 'Memproses upload...',
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading()
-                const b = Swal.getHtmlContainer().querySelector('b')
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                }, 100)
-            }
-        });
-    }
-
-    // Function to hide loading
-    function hideLoading() {
-        Swal.close();
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const fileInput = document.querySelector("input[name='favicon']");
-        const submitButton = document.querySelector("button[type='submit']");
-        const selectedFileFavicon = document.querySelector("#selectedFileFavicon");
-        const previewImage = document.querySelector("#previewFavicon");
-
-        fileInput.addEventListener("change", function() {
-            const allowedExtensions = ['ico'];
-            const fileName = this.files[0].name;
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-
-            if (allowedExtensions.includes(fileExtension)) {
-                selectedFileFavicon.textContent = fileName;
-                previewImage.style.display = "block";
-                previewImage.src = URL.createObjectURL(this.files[0]);
-                submitButton.disabled = false;
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Jenis File Tidak Diijinkan!",
-                    text: "Anda hanya dapat mengimpor file dengan ekstensi .ico"
-                });
-                this.value = ''; // Clear the file input
-                selectedFileFavicon.textContent = "Pilih File Favicon";
-                previewImage.style.display = "none";
-                submitButton.disabled = true;
-            }
-        });
-
-        // Prevent default form submission and show loading when file successfully uploaded
-        submitButton.addEventListener("click", function(event) {
-            event.preventDefault(); // Prevent default form submission
-            if (!fileInput.files || !fileInput.files.length) {
-                return;
-            }
-            const fileName = fileInput.files[0].name;
-            const allowedExtensions = ['ico'];
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-
-            if (allowedExtensions.includes(fileExtension)) {
-                showLoading(); // Show loading
-                // Submit the form after some time (you can adjust the time as needed)
-                setTimeout(function() {
-                    submitButton.form.submit();
-                }, 2000); // Example: submit the form after 2 seconds (2000 milliseconds)
-            }
-        });
-    });
-</script>
-<!-- END UPLOAD FAVICON -->
-
-<!-- UPLOAD LOGO BANK -->
-<script>
-    // Fungsi untuk menampilkan gambar previ saat gambar dipilih
-    function showPreviewBank(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-                $('#previewBank').attr('src', e.target.result);
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-
-        // Menampilkan nama file yang dipilih
-        var fileName = input.files[0].name;
-        $('#selectedFileBank').text(fileName);
-    }
-
-    // Memanggil fungsi showPreviewImage saat input file berubah
-    $('#customFile').change(function() {
-        showPreviewImage(this);
-    });
-</script>
-<script>
-    const customFileBank = document.querySelector("#customFile");
-    const previewBank = document.querySelector("#previewBank");
-
-    customFileInput.addEventListener("change", function() {
-        if (this.files.length > 0) {
-            previewImage.style.display = "block";
-        } else {
-            previewImage.style.display = "none";
-        }
-    });
-</script>
-
-
-<script>
-    // Function to show loading
-    function showLoading() {
-        let timerInterval
-        Swal.fire({
-            title: 'Memproses upload...',
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading()
-                const b = Swal.getHtmlContainer().querySelector('b')
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                }, 100)
-            }
-        });
-    }
-
-    // Function to hide loading
-    function hideLoading() {
-        Swal.close();
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const fileInput = document.querySelector("input[name='logo_bank']");
-        const submitButton = document.querySelector("button[type='submit']");
-        const selectedFileBank = document.querySelector("#selectedFileBank");
-        const previewImage = document.querySelector("#previewBank");
-
-        fileInput.addEventListener("change", function() {
-            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
-            const fileName = this.files[0].name;
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-
-            if (allowedExtensions.includes(fileExtension)) {
-                selectedFileBank.textContent = fileName;
-                previewImage.style.display = "block";
-                previewImage.src = URL.createObjectURL(this.files[0]);
-                submitButton.disabled = false;
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Jenis File Tidak Diijinkan!",
-                    text: "Anda hanya dapat mengimpor file dengan ekstensi .jpg, .jpeg, .png, atau .svg."
-                });
-                this.value = ''; // Clear the file input
-                selectedFileBank.textContent = "Pilih Logo Bank";
-                previewImage.style.display = "none";
-                submitButton.disabled = true;
-            }
-        });
-
-        // Prevent default form submission and show loading when file successfully uploaded
-        submitButton.addEventListener("click", function(event) {
-            event.preventDefault(); // Prevent default form submission
-            if (!fileInput.files || !fileInput.files.length) {
-                return;
-            }
-            const fileName = fileInput.files[0].name;
-            const allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-
-            if (allowedExtensions.includes(fileExtension)) {
-                showLoading(); // Show loading
-                // Submit the form after some time (you can adjust the time as needed)
-                setTimeout(function() {
-                    submitButton.form.submit();
-                }, 2000); // Example: submit the form after 2 seconds (2000 milliseconds)
-            }
-        });
-    });
-</script>
-<!-- END UPLOAD LOGO BANK -->

@@ -47,7 +47,7 @@
 
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
-                                        <label for="tanggalPenerimaan">Tanggal Penerimaan</label>
+                                        <label for="tanggal_penerimaan">Tanggal Penerimaan</label>
                                         <div class="col-12">
                                             <div class="input-group date" id="tanggalPenerimaan" data-target-input="nearest">
                                                 <input type="text" class="form-control datetimepicker-input" data-target="#tanggalPenerimaan" name="tanggal_penerimaan" required />
@@ -89,18 +89,18 @@
                                                 <option value="<?= $item['id'] ?>">
                                                     <?= $item['nama_barang'] ?>
                                                     <?php
-                                                    // Tampilkan harga_satuan jika nilainya tidak 0
+
                                                     if ($item['harga_satuan'] != 0) {
                                                         echo " - Harga Satuan: " . $item['harga_satuan'];
                                                     }
 
-                                                    // Hitung selisih waktu antara created_at dan waktu saat ini
+
                                                     $createdTime = strtotime($item['created_at']);
                                                     $currentTime = time();
                                                     $timeDifference = $currentTime - $createdTime;
 
-                                                    // Jika selisih waktu kurang dari 10 menit, tampilkan "Barang Baru"
-                                                    if ($timeDifference <= 300) { // 600 detik = 10 menit
+
+                                                    if ($timeDifference <= 300) {
                                                         echo " - (Barang Baru)";
                                                     }
                                                     ?>
@@ -123,7 +123,7 @@
                                         <label for="jumlah_harga[]">Jumlah Harga:</label>
                                         <input type="number" class="form-control jumlah_harga" name="jumlah_harga[]" readonly>
                                     </div>
-                                    <!-- Tambahkan field lainnya sesuai kebutuhan -->
+
                                 </div>
 
 
@@ -147,7 +147,7 @@
 
 </div>
 
-<!-- Tambahkan elemen ini sebagai template -->
+
 <div id="template-barang" style="display: none;">
     <div class="form-group col-md-6">
         <label for="barang_id[]">Barang:</label>
@@ -156,18 +156,18 @@
                 <option value="<?= $item['id'] ?>">
                     <?= $item['nama_barang'] ?>
                     <?php
-                    // Tampilkan harga_satuan jika nilainya tidak 0
+
                     if ($item['harga_satuan'] != 0) {
                         echo " - Harga Satuan: " . $item['harga_satuan'];
                     }
 
-                    // Hitung selisih waktu antara created_at dan waktu saat ini
+
                     $createdTime = strtotime($item['created_at']);
                     $currentTime = time();
                     $timeDifference = $currentTime - $createdTime;
 
-                    // Jika selisih waktu kurang dari 10 menit, tampilkan "Barang Baru"
-                    if ($timeDifference <= 300) { // 600 detik = 10 menit
+
+                    if ($timeDifference <= 300) {
                         echo " - (Barang Baru)";
                     }
                     ?>
@@ -189,35 +189,26 @@
     </div>
 </div>
 
-<aside class="control-sidebar control-sidebar-dark">
-
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
-
 
 
 <script>
-    // Fungsi untuk menghapus elemen barang
     function hapusBarang(element) {
         element.remove();
     }
 
-    // Fungsi untuk menambahkan elemen barang baru
+
     function tambahBarang() {
         var container = document.getElementById('barang-container');
         var newItem = document.createElement('div');
         newItem.className = 'form-row barang-item';
 
-        var randomNumber = Math.floor(Math.random() * 1000); // Generate a random number for unique ID
+        var randomNumber = Math.floor(Math.random() * 1000);
         newItem.innerHTML = document.getElementById('template-barang').innerHTML.replace(/\[]/g, '[' + randomNumber + ']');
 
-        // Tambahkan tombol hapus
+
         var deleteButton = document.createElement('button');
         deleteButton.innerHTML = 'Hapus';
-        deleteButton.className = 'btn btn-danger btn-xs ml-2';
+        deleteButton.className = 'btn btn-danger btn-sm ml-2';
         deleteButton.onclick = function() {
             hapusBarang(newItem);
         };
@@ -225,35 +216,35 @@
 
         container.appendChild(newItem);
 
-        // Inisialisasi Select2 hanya untuk elemen yang baru ditambahkan
+
         $(newItem).find('.penerimaan').select2({
             theme: 'bootstrap4'
         });
 
-        // Tambahkan event listener untuk menghitung otomatis ketika nilai harga_satuan atau jumlah_barang diubah
+
         $(newItem).find('.harga_satuan, .jumlah_barang').on('input', function() {
             updateJumlahHarga(newItem);
         });
     }
 
-    // Fungsi untuk mengupdate jumlah harga berdasarkan harga satuan dan jumlah barang
+
     function updateJumlahHarga(row) {
         var jumlahBarangInput = row.querySelector('.jumlah_barang');
         var hargaSatuanInput = row.querySelector('.harga_satuan');
         var jumlahHargaInput = row.querySelector('.jumlah_harga');
 
-        // Ambil nilai jumlah_barang dan harga_satuan
+
         var jumlahBarang = parseFloat(jumlahBarangInput.value) || 0;
         var hargaSatuan = parseFloat(hargaSatuanInput.value) || 0;
 
-        // Hitung jumlah_harga
+
         var jumlahHarga = jumlahBarang * hargaSatuan;
 
-        // Set nilai jumlah_harga pada input
+
         jumlahHargaInput.value = isNaN(jumlahHarga) ? '' : jumlahHarga.toFixed(2);
     }
 
-    // Memanggil fungsi updateJumlahHarga untuk setiap elemen di form awal saat halaman pertama kali dimuat
+
     document.querySelectorAll('.harga_satuan, .jumlah_barang').forEach(function(element) {
         element.addEventListener('input', function() {
             updateJumlahHarga(element.closest('.barang-item'));

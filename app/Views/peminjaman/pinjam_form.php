@@ -122,16 +122,16 @@
                                                 const selectedValue = $(this).val();
                                                 if (selectedValue === 'Praktek Pembelajaran') {
                                                     formPembelajaran.show();
-                                                    pembelajaranSelect.prop('disabled', false); // Aktifkan form pembelajaran
+                                                    pembelajaranSelect.prop('disabled', false);
                                                 } else {
                                                     formPembelajaran.hide();
-                                                    pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran
+                                                    pembelajaranSelect.prop('disabled', true);
                                                 }
                                             });
 
-                                            // Inisialisasi form select kedua
+
                                             pembelajaranSelect.hide();
-                                            pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran awal
+                                            pembelajaranSelect.prop('disabled', true);
                                         });
                                     </script>
 
@@ -175,122 +175,9 @@
 </div>
 
 
-
-
-<aside class="control-sidebar control-sidebar-dark">
-
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
-
-
 <script>
-    function showLoading() {
-        let timerInterval
-        Swal.fire({
-            title: 'Sedang memproses data ....',
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading()
-                const b = Swal.getHtmlContainer().querySelector('b')
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                }, 100)
-            }
-        });
-    }
-
-    function hideLoading() {
-        Swal.close();
-    }
-
-    $(document).ready(function() {
-        // Menangani tombol submit pada formulir
-        $("form").submit(function(event) {
-            event.preventDefault(); // Mencegah formulir untuk dikirim secara default
-
-            // Validasi pinjam_nama_peminjam
-            var namaPeminjam = $("#pinjam_nama_peminjam").val();
-            if (namaPeminjam === '') {
-                toastr.error('Nama Peminjam harus diisi!');
-                return; // Berhenti jika validasi gagal
-            }
-
-            // Validasi pinjam_nama_ruangan
-            var namaRuangan = $("#pinjam_nama_ruangan").val();
-            if (namaRuangan === '') {
-                toastr.error('Nama Ruangan harus diisi!');
-                return; // Berhenti jika validasi gagal
-            }
-
-            // Validasi pinjam_keperluan
-            var keperluan = $("#pinjam_keperluan").val();
-            if (keperluan === '') {
-                toastr.error('Penggunaan/Keperluan harus diisi!');
-                return; // Berhenti jika validasi gagal
-            }
-
-            // Validasi barang[]
-            var selectedBarang = $("select[name='barang[]']").val();
-            if (selectedBarang === null || selectedBarang.length === 0) {
-                toastr.error('Tambahkan minimal satu barang!');
-                return; // Berhenti jika validasi gagal
-            }
-
-            showLoading(); // Menampilkan SweetAlert saat formulir dikirim
-
-            // Setelah SweetAlert ditampilkan, izinkan formulir dikirim secara default
-            // Anda bisa menambahkan proses penyimpanan ke database di sini
-            // Contoh AJAX untuk proses penyimpanan
-            $.ajax({
-                type: "POST",
-                url: $(this).attr("action"),
-                data: $(this).serialize(),
-                success: function(response) {
-                    // Proses penyimpanan selesai, sembunyikan SweetAlert
-                    hideLoading();
-
-                    // Tampilkan SweetAlert berhasil
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Peminjaman berhasil dilakukan!',
-                        showConfirmButton: false,
-                        timer: 1500, // Atur waktu tampil SweetAlert (ms)
-                        willClose: () => {
-                            // Redirect ke halaman 'pinjam/daftar' setelah SweetAlert ditutup
-                            window.location.href = "/pinjam/daftar";
-                        }
-                    });
-                },
-                error: function(error) {
-                    hideLoading();
-                    // Handle error
-                }
-            });
-        });
-    });
+    const baseUrl = "<?= base_url() ?>/";
 </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var selectPeminjam = document.getElementById('pinjam_nama_peminjam');
-        var hiddenInputNimNik = document.getElementById('nim_nik');
-
-        // Tambahkan event listener untuk perubahan pada elemen select
-        selectPeminjam.addEventListener('change', function() {
-            // Mendapatkan nilai yang dipilih dari opsi select
-            var selectedOption = selectPeminjam.options[selectPeminjam.selectedIndex].value;
-
-            // Pisahkan nilai menjadi array
-            var selectedValues = selectedOption.split('-');
-
-            // Ambil nim/nik (indeks ke-1) dan simpan ke dalam input hidden
-            hiddenInputNimNik.value = selectedValues[1];
-
-
-        });
-    });
-</script>
+<script src="<?= base_url('assets/dist/js/frontend-js/pinjamForm.js') ?>"></script>
 
 <?php echo view('tema/footer.php'); ?>

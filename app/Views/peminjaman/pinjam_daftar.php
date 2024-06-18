@@ -1,8 +1,8 @@
 <?php echo view('tema/header.php'); ?>
 <?php
-// Mendapatkan sesi
+
 $session = session();
-// Mendapatkan nama pengguna dari sesi
+
 $nama = $session->get('full_nama');
 $username = $session->get('user_nama');
 $password = $session->get('user_password');
@@ -36,7 +36,7 @@ $level = $session->get('level');
                         <div class="card-header">
                             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                                 <?php
-                                // Mengambil level pengguna dari sesi
+
                                 $level = session()->get('level');
                                 ?>
                                 <?php if ($level === 'Admin') : ?>
@@ -82,7 +82,7 @@ $level = $session->get('level');
                                 </thead>
                                 <div id="alertContainer" class="mt-3"></div>
                                 <tbody>
-                                    <?php $i = 1; // Deklarasi di luar loop foreach 
+                                    <?php $i = 1;
                                     ?>
                                     <?php foreach ($data_peminjaman as $dataPinjam) : ?>
                                         <tr class="searchable-row">
@@ -137,15 +137,15 @@ $level = $session->get('level');
                                                 $bulan = $nama_bulan[$tanggal_kembali->format('F')];
                                                 $waktu = $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y - H:i') . ' WIB';
 
-                                                // Mendapatkan waktu sekarang dengan timezone Asia/Jakarta
+
                                                 $now = \CodeIgniter\I18n\Time::now('Asia/Jakarta');
 
-                                                // Membandingkan apakah tanggal pengembalian sama dengan hari ini
+
                                                 if ($tanggal_kembali->toDateString() === $now->toDateString()) {
-                                                    // Mendapatkan selisih waktu dalam menit antara waktu sekarang dan tanggal pengembalian
+
                                                     $selisihMenit = $now->difference($tanggal_kembali)->getMinutes();
 
-                                                    // Jika selisih waktu kurang dari atau sama dengan 0, maka tanggal pengembalian telah lewat
+
                                                     if ($selisihMenit <= 0) {
                                                         $waktu .= '<br><span class="badge badge-danger">JATUH TEMPO</span>';
                                                     }
@@ -160,10 +160,10 @@ $level = $session->get('level');
                                             <td style="text-align: left; vertical-align: middle; font-size: 13px;">
                                                 <?php
                                                 $barang_dipinjam = explode(',', $dataPinjam['barang_dipinjam']);
-                                                $no_urut_barang = 1; // Reset nomor urut pada setiap baris barang
+                                                $no_urut_barang = 1;
                                                 foreach ($barang_dipinjam as $barang) {
                                                     echo $no_urut_barang . '. ' . $barang . '<br>';
-                                                    $no_urut_barang++; // Increment nomor urut barang
+                                                    $no_urut_barang++;
                                                 }
                                                 ?>
                                             </td>
@@ -180,7 +180,7 @@ $level = $session->get('level');
                                                 <?php
                                                 $tanggal_pengembalian = \CodeIgniter\I18n\Time::parse($dataPinjam['tanggal_pengembalian'])->setTimezone('Asia/Jakarta');
 
-                                                // Periksa apakah tanggal pengembalian adalah hari ini atau sudah melebihi tanggal dan waktu saat ini
+
                                                 if ($tanggal_pengembalian->toDateTimeString() <= \CodeIgniter\I18n\Time::now('Asia/Jakarta')->toDateTimeString()) {
                                                 ?>
                                                     <button class="btn btn-xs editBtn btn-warning mx-auto text-dark" data-id="<?= $dataPinjam['peminjaman_id']; ?>" data-toggle="modal" data-target="#editModal">
@@ -212,8 +212,6 @@ $level = $session->get('level');
     </div>
 
 </div>
-
-
 
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -255,32 +253,26 @@ $level = $session->get('level');
 
 
 
-
-
-
 <script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
-
-
-
 <script>
     $(document).ready(function() {
         <?php if (!empty($jumlah_peminjaman)) : ?>
-            // Tampilkan modal jika ada data peminjaman
+
             $('#myModal').modal('show');
 
-            // Tampilkan jumlah peminjaman jika ada
+
             $('#jumlahPeminjaman').text('Anda memiliki peminjaman yang jatuh tempo sebanyak: <?= $jumlah_peminjaman[0]['jumlah_peminjaman'] ?>');
 
         <?php endif; ?>
 
-        // Fungsi untuk menyalin kode pinjam ke clipboard
+
         $('#copyButton').click(function() {
-            var kodePinjam = $('#kodePinjam').text().trim().split(':')[1].trim(); // mengambil hanya nilai kode pinjam
+            var kodePinjam = $('#kodePinjam').text().trim().split(':')[1].trim();
             copyToClipboard(kodePinjam);
             toastr.success('Kode Pinjam telah disalin ke clipboard!', 'Sukses');
         });
 
-        // Fungsi untuk menyalin teks ke clipboard
+
         function copyToClipboard(text) {
             var dummy = document.createElement("textarea");
             document.body.appendChild(dummy);
@@ -292,7 +284,75 @@ $level = $session->get('level');
     });
 </script>
 
+<script>
+    $('.editBtn').click(function() {
+        var id = $(this).data('id');
 
+
+        $.ajax({
+            url: '/ambil_tanggal/' + id,
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+
+                $('#editId').val(response.id);
+                $('#editTanggalKembali').val(response.tanggal_pengembalian);
+
+
+                $('#editTanggalKembali').datetimepicker('minDate', moment(response.tanggal_pengembalian).add(1, 'days'));
+            },
+            error: function(xhr, status, error) {
+
+            }
+        });
+    });
+
+
+    function updateTanggalKembali() {
+
+        Swal.fire({
+            title: 'Mohon tunggu...',
+            onBeforeOpen: () => {
+                Swal.showLoading();
+            },
+            allowOutsideClick: false,
+            showConfirmButton: false
+        });
+
+        var id = $('#editId').val();
+        var tanggalKembali = $('#editTanggalKembali').val();
+
+        $.ajax({
+            url: '/update_tanggal_kembali/' + id,
+            method: 'POST',
+            data: {
+                tanggalKembali: tanggalKembali
+            },
+            success: function(response) {
+
+                $('#editModal').modal('hide');
+
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Peminjaman berhasil diperpanjang.',
+                }).then((result) => {
+
+                    location.reload();
+                });
+            },
+            error: function(xhr, status, error) {
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Gagal memperbarui tanggal kembali.',
+                });
+            }
+        });
+    }
+</script>
 
 <script>
     function showLoading() {
@@ -342,15 +402,15 @@ $level = $session->get('level');
                             kodePinjam = kodePinjam ? kodePinjam[1] : '';
 
                             if (kodePinjam) {
-                                // Jika pesan error mengandung Kode Pinjam, tampilkan tombol Copy
+
                                 Swal.fire({
                                     title: 'Gagal!',
                                     html: errorMessage + '<br><br><button id="copyErrorMessage" class="btn btn-primary">Copy Kode Pinjam</button>',
                                     icon: 'error',
-                                    showConfirmButton: false // Sembunyikan tombol OK
+                                    showConfirmButton: false
                                 });
 
-                                // Event listener untuk tombol Copy
+
                                 $(document).on('click', '#copyErrorMessage', function() {
                                     navigator.clipboard.writeText(kodePinjam)
                                         .then(() => {
@@ -361,7 +421,7 @@ $level = $session->get('level');
                                                 timer: 2000,
                                                 showConfirmButton: false
                                             }).then(() => {
-                                                Swal.close(); // Menutup SweetAlert setelah pesan berhasil disalin
+                                                Swal.close();
                                             });
                                         })
                                         .catch((err) => {
@@ -370,16 +430,16 @@ $level = $session->get('level');
                                                 text: 'Gagal menyalin Kode Pinjam.',
                                                 icon: 'error'
                                             });
-                                            console.error('Could not copy text: ', err);
+
                                         });
                                 });
                             } else {
-                                // Jika tidak ada Kode Pinjam, tampilkan tombol OK
+
                                 Swal.fire({
                                     title: 'Gagal!',
                                     text: errorMessage,
                                     icon: 'error',
-                                    showConfirmButton: true // Tampilkan tombol OK
+                                    showConfirmButton: true
                                 });
                             }
                         } else {
@@ -401,20 +461,20 @@ $level = $session->get('level');
 
                         let errorMessage = xhr.responseJSON.message || 'Terjadi kesalahan saat menghapus data.';
 
-                        // Ekstraksi kode_pinjam dari pesan kesalahan
+
                         let kodePinjam = errorMessage.match(/Kode Pinjam: ([\w-]+)/);
                         kodePinjam = kodePinjam ? kodePinjam[1] : '';
 
                         if (kodePinjam) {
-                            // Jika pesan error mengandung Kode Pinjam, tampilkan tombol Copy
+
                             Swal.fire({
                                 title: 'Gagal!',
                                 html: errorMessage + '<br><br><button id="copyErrorMessage" class="btn btn-primary">Copy Kode Pinjam</button>',
                                 icon: 'error',
-                                showConfirmButton: false // Sembunyikan tombol OK
+                                showConfirmButton: false
                             });
 
-                            // Event listener untuk tombol Copy
+
                             $(document).on('click', '#copyErrorMessage', function() {
                                 navigator.clipboard.writeText(kodePinjam)
                                     .then(() => {
@@ -425,7 +485,7 @@ $level = $session->get('level');
                                             timer: 2000,
                                             showConfirmButton: false
                                         }).then(() => {
-                                            Swal.close(); // Menutup SweetAlert setelah pesan berhasil disalin
+                                            Swal.close();
                                         });
                                     })
                                     .catch((err) => {
@@ -434,16 +494,16 @@ $level = $session->get('level');
                                             text: 'Gagal menyalin Kode Pinjam.',
                                             icon: 'error'
                                         });
-                                        console.error('Could not copy text: ', err);
+
                                     });
                             });
                         } else {
-                            // Jika tidak ada Kode Pinjam, tampilkan tombol OK
+
                             Swal.fire({
                                 title: 'Gagal!',
                                 text: errorMessage,
                                 icon: 'error',
-                                showConfirmButton: true // Tampilkan tombol OK
+                                showConfirmButton: true
                             });
                         }
                     }
@@ -452,7 +512,7 @@ $level = $session->get('level');
         });
     }
 
-    // Fungsi untuk menampilkan pesan loading
+
     function showLoading() {
         Swal.fire({
             title: 'Sedang memproses data ....',
@@ -463,7 +523,7 @@ $level = $session->get('level');
         });
     }
 
-    // Fungsi untuk menyembunyikan pesan loading
+
     function hideLoading() {
         Swal.close();
     }
@@ -474,22 +534,22 @@ $level = $session->get('level');
     function logPeminjamanId(peminjamanId) {
 
 
-        // Mengambil elemen tabel di dalam modal
+
         var tabelDetail = document.getElementById('tabelDetail');
 
-        // Membersihkan isi tabel (jika ada)
+
         tabelDetail.innerHTML = '';
 
-        // Mengambil detail dari server menggunakan AJAX
+
         fetch('/pengeluaran/get_detail/' + peminjamanId)
             .then(response => response.json())
             .then(data => {
-                // Iterasi melalui setiap objek dalam array detail dan menambahkannya ke dalam tabel
+
                 data.detail.forEach(function(detail) {
-                    // Membuat baris baru di dalam tabel
+
                     var newRow = tabelDetail.insertRow();
 
-                    // Menambahkan sel-sel ke dalam baris
+
                     newRow.insertCell().textContent = detail.id;
                     newRow.insertCell().textContent = detail.nama_barang;
                     newRow.insertCell().textContent = detail.ambil_barang;
@@ -503,86 +563,12 @@ $level = $session->get('level');
 
 <?php if (session()->getFlashData('success')) : ?>
     <script>
-        // Tampilkan SweetAlert berdasarkan flash data success
         Swal.fire({
             icon: 'success',
             title: '<?= session()->getFlashData('success') ?>',
             showConfirmButton: false,
-            timer: 1500 // Atur waktu tampil SweetAlert (ms)
+            timer: 1500
         });
     </script>
 <?php endif; ?>
-
-<script>
-    // Fungsi yang dipicu saat tombol edit ditekan
-    $('.editBtn').click(function() {
-        var id = $(this).data('id');
-
-        // Menggunakan AJAX untuk memuat data dari server
-        $.ajax({
-            url: '/ambil_tanggal/' + id, // Ganti dengan URL yang sesuai
-            method: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                // Memasukkan data ke dalam input modal
-                $('#editId').val(response.id);
-                $('#editTanggalKembali').val(response.tanggal_pengembalian);
-
-                // Set minDate for the datepicker
-                $('#editTanggalKembali').datetimepicker('minDate', moment(response.tanggal_pengembalian).add(1, 'days'));
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    });
-
-    // Fungsi untuk menyimpan perubahan
-    function updateTanggalKembali() {
-        // Tampilkan pesan loading sementara
-        Swal.fire({
-            title: 'Mohon tunggu...',
-            onBeforeOpen: () => {
-                Swal.showLoading();
-            },
-            allowOutsideClick: false,
-            showConfirmButton: false
-        });
-
-        var id = $('#editId').val();
-        var tanggalKembali = $('#editTanggalKembali').val();
-
-        $.ajax({
-            url: '/update_tanggal_kembali/' + id,
-            method: 'POST',
-            data: {
-                tanggalKembali: tanggalKembali
-            },
-            success: function(response) {
-                // Tutup modal setelah berhasil disimpan
-                $('#editModal').modal('hide');
-
-                // Tampilkan SweetAlert berhasil
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: 'Peminjaman berhasil diperpanjang.',
-                }).then((result) => {
-                    // Lakukan reload halaman setelah SweetAlert ditutup
-                    location.reload();
-                });
-            },
-            error: function(xhr, status, error) {
-                // Tampilkan SweetAlert gagal jika terjadi error
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: 'Gagal memperbarui tanggal kembali.',
-                });
-            }
-        });
-    }
-</script>
-
-
 <?php echo view('tema/footer.php'); ?>

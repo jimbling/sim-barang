@@ -206,13 +206,7 @@ $nama = $session->get('full_nama');
     </div>
 </div>
 
-<aside class="control-sidebar control-sidebar-dark">
 
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
 
 <?php echo view('tema/footer.php'); ?>
 
@@ -306,7 +300,7 @@ $nama = $session->get('full_nama');
         $(".btn-detail").on("click", function() {
             var penerimaanId = $(this).data("penerimaan-id");
 
-            showLoading(); // Tampilkan loading sebelum mengirim permintaan AJAX
+            showLoading();
 
             $.ajax({
                 url: "<?php echo base_url('/pengeluaran_bhp/get_detail'); ?>/" + penerimaanId,
@@ -315,12 +309,12 @@ $nama = $session->get('full_nama');
                 success: function(data) {
                     var tableHtml = buildTable(data);
                     $("#detailContentPengeluaranMurni").html(tableHtml);
-                    hideLoading(); // Sembunyikan loading setelah data selesai dimuat
+                    hideLoading();
                     $("#detailMurni").modal("show");
                 },
                 error: function() {
                     alert("Error fetching details");
-                    hideLoading(); // Sembunyikan loading jika terjadi kesalahan
+                    hideLoading();
                 }
             });
         });
@@ -349,7 +343,7 @@ $nama = $session->get('full_nama');
     }
 
     function hapus_data(data_id) {
-
+        console.log('Data ID yang akan dihapus:', data_id);
         Swal.fire({
             title: 'HAPUS?',
             text: "Yakin akan menghapus data ini?",
@@ -360,48 +354,48 @@ $nama = $session->get('full_nama');
             confirmButtonText: 'Ya, Hapus!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Tampilkan pesan loading saat permintaan sedang dijalankan
+
 
                 showLoading();
 
                 $.ajax({
                     type: 'POST',
-                    url: '/pengeluaran/bhp/hapus/' + data_id, // Ganti URL sesuai dengan URL yang benar
+                    url: '/pengeluaran/bhp/hapus/' + data_id,
                     success: function(response) {
-                        // Sembunyikan pesan loading saat permintaan selesai
+
                         hideLoading();
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Data berhasil dihapus.',
                             icon: 'success',
-                            timer: 2000, // Durasi tampilan dalam milidetik (misalnya, 5000 milidetik = 5 detik)
-                            showConfirmButton: false, // Sembunyikan tombol OK (jika tidak diinginkan)
+                            timer: 2000,
+                            showConfirmButton: false,
                         }).then(() => {
-                            // Arahkan pengguna ke halaman baru setelah SweetAlert ditutup
+
                             window.location.replace("/pengeluaran/bhp");
                         });
                     },
                     error: function(xhr, status, error) {
-                        // Sembunyikan pesan loading saat ada kesalahan dalam penghapusan
+
                         hideLoading();
 
-                        // Tambahkan pesan error di sini
+
                         var errorMessage = '<div style="text-align: center;">' +
                             '<p style="margin-bottom: 5px;">Masih ada barang pada data Permintaan.</p>' +
                             '<p style="margin-bottom: 5px;">Harap hapus data barang terlebih dahulu.</p>' +
                             '</div>';
 
-                        // Jika status 403, berarti pengguna tidak diizinkan menghapus data
+
                         if (xhr.status === 403) {
                             errorMessage = 'Anda tidak diizinkan untuk menghapus data.';
                         }
 
-                        // Jika status 404, berarti data yang akan dihapus tidak ditemukan
+
                         if (xhr.status === 404) {
                             errorMessage = 'Data tidak ditemukan.';
                         }
 
-                        // Tampilkan pesan error menggunakan SweetAlert
+
                         Swal.fire({
                             title: 'Gagal!',
                             html: errorMessage,
@@ -410,6 +404,7 @@ $nama = $session->get('full_nama');
                         });
 
 
+                        console.log(error);
                     }
                 });
             }
@@ -419,18 +414,15 @@ $nama = $session->get('full_nama');
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Ambil elemen dengan kelas 'flash-data'
-        var flashDataElement = document.querySelector('.flash-data');
 
-        // Ambil data flash dari elemen tersebut
+        var flashDataElement = document.querySelector('.flash-data');
         var flashData = flashDataElement.dataset.flashdata;
 
-        // Periksa apakah ada data flash
         if (flashData) {
-            // Parse JSON dari data flash
+
             var flashMessage = JSON.parse(flashData);
 
-            // Tampilkan pesan dengan ikon error
+
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',

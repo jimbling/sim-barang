@@ -212,26 +212,26 @@
             const selectedValue = $(this).val();
             if (selectedValue === 'Praktek Pembelajaran') {
                 formPembelajaran.show();
-                pembelajaranSelect.prop('disabled', false); // Aktifkan form pembelajaran
+                pembelajaranSelect.prop('disabled', false);
                 formMateriPembelajaran.show();
-                materiPembelajaranTextarea.prop('disabled', false); // Aktifkan form textarea
-                // Menonaktifkan form tanggal pengembalian
+                materiPembelajaranTextarea.prop('disabled', false);
+
                 tanggalPengembalianInput.prop('disabled', true);
             } else {
                 formPembelajaran.hide();
-                pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran
+                pembelajaranSelect.prop('disabled', true);
                 formMateriPembelajaran.hide();
-                materiPembelajaranTextarea.prop('disabled', true); // Nonaktifkan form textarea
-                // Mengaktifkan form tanggal pengembalian
+                materiPembelajaranTextarea.prop('disabled', true);
+
                 tanggalPengembalianInput.prop('disabled', false);
             }
         });
 
-        // Inisialisasi form select kedua dan textarea
+
         formPembelajaran.hide();
-        pembelajaranSelect.prop('disabled', true); // Nonaktifkan form pembelajaran awal
+        pembelajaranSelect.prop('disabled', true);
         formMateriPembelajaran.hide();
-        materiPembelajaranTextarea.prop('disabled', true); // Nonaktifkan form textarea awal
+        materiPembelajaranTextarea.prop('disabled', true);
     });
 </script>
 
@@ -258,75 +258,73 @@
     }
 
     $(document).ready(function() {
-        // Menangani tombol submit pada formulir
-        $("form").submit(function(event) {
-            event.preventDefault(); // Mencegah formulir untuk dikirim secara default
 
-            // Validasi pinjam_nama_peminjam
+        $("form").submit(function(event) {
+            event.preventDefault();
+
+
             var namaPeminjam = $("#pinjam_nama_peminjam").val();
             if (namaPeminjam === '') {
                 toastr.error('Nama Peminjam harus diisi!');
-                return; // Berhenti jika validasi gagal
+                return;
             }
 
-            // Validasi pinjam_nama_ruangan
+
             var namaRuangan = $("#pinjam_nama_ruangan").val();
             if (namaRuangan === '') {
                 toastr.error('Nama Ruangan harus diisi!');
-                return; // Berhenti jika validasi gagal
+                return;
             }
 
-            // Validasi pinjam_keperluan
+
             var keperluan = $("#pinjam_keperluan").val();
             if (keperluan === '') {
                 toastr.error('Penggunaan/Keperluan harus diisi!');
-                return; // Berhenti jika validasi gagal
+                return;
             }
 
-            // Validasi pinjam_keperluan
+
             var tanggal_penggunaan = $("#reservationdatetime").val();
             if (keperluan === '') {
                 toastr.error('Tanggal Penggunaan harus diisi!');
-                return; // Berhenti jika validasi gagal
+                return;
             }
 
 
 
-            // Validasi barang[]
+
             var selectedBarang = $("select[name='barang[]']").val();
             if (selectedBarang === null || selectedBarang.length === 0) {
                 toastr.error('Tambahkan minimal satu barang!');
-                return; // Berhenti jika validasi gagal
+                return;
             }
 
-            showLoading(); // Menampilkan SweetAlert saat formulir dikirim
+            showLoading();
 
-            // Setelah SweetAlert ditampilkan, izinkan formulir dikirim secara default
-            // Anda bisa menambahkan proses penyimpanan ke database di sini
-            // Contoh AJAX untuk proses penyimpanan
+
             $.ajax({
                 type: "POST",
                 url: $(this).attr("action"),
                 data: $(this).serialize(),
                 success: function(response) {
-                    // Proses penyimpanan selesai, sembunyikan SweetAlert
+
                     hideLoading();
 
-                    // Tampilkan SweetAlert berhasil
+
                     Swal.fire({
                         icon: 'success',
                         title: 'Booking Alat berhasil diajukan, tunggu diterima Laboran!',
                         showConfirmButton: false,
-                        timer: 1500, // Atur waktu tampil SweetAlert (ms)
+                        timer: 1500,
                         willClose: () => {
-                            // Redirect ke halaman 'pinjam/daftar' setelah SweetAlert ditutup
+
                             window.location.href = "/reservasi";
                         }
                     });
                 },
                 error: function(error) {
                     hideLoading();
-                    // Handle error
+
                 }
             });
         });

@@ -109,6 +109,7 @@ $routes->post('/data/dosen_tendik/copy', 'DosenTendik::buatAkun');
 $routes->post('/data/dosen_tendik/update/(:num)', 'DosenTendik::edit/$1');
 $routes->get('/dosen_tendik/get_detail/(:num)', 'DosenTendik::get_detail/$1');
 $routes->post('/data/akun/update', 'Pengaturan::update');
+$routes->post('/data/admin/update', 'Pengaturan::updateAdmin');
 
 
 $routes->get('/pengeluaran/daftar', 'Pengeluaran::daftarPengeluaran');

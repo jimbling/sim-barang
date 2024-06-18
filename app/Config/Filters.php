@@ -76,7 +76,7 @@ class Filters extends BaseConfig
             '/ambil_tanggal/*', '/form_kembali/*', '/kembali/hapus_kode/*', '/backup/all', '/backup/latest',
             '/alert/getNotificationsToShow', '/upload/*', '/peminjaman/get_detail/*', '/backup/unduh/*',
             '/backup', '/get-user-by-id/*', '/profile', '/dosen_tendik/get_detail/*', '/persediaan/opname/export',
-            '/kode_kembali/*', 'api/*', '/stock/daftar'
+            '/kode_kembali/*', 'api/*', '/stock/daftar', '/pengeluaran_bhp/*'
 
         ]],
     ];

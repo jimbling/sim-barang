@@ -75,7 +75,7 @@
 
                                                 $bulan = $nama_bulan[$tanggal_pinjam->format('F')];
 
-                                                // Format the date without using Carbon
+
                                                 $formattedDate = $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y - H:i') . ' WIB';
 
                                                 echo $formattedDate;

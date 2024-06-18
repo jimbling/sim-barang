@@ -194,37 +194,64 @@ class Pengaturan extends BaseController
 
     public function update()
     {
-        // Mengambil data yang dikirimkan melalui POST
+        // Mengambil data yang dikirimkan melalui POST dengan alias
         $id = $this->request->getPost('id');
-        $full_nama = $this->request->getPost('full_nama');
-        $user_nama = $this->request->getPost('user_nama');
-        $user_password = $this->request->getPost('user_password');
+        $fullName = $this->request->getPost('fullName'); // Alias untuk full_nama
+        $username = $this->request->getPost('username'); // Alias untuk user_nama
+        $password = $this->request->getPost('password'); // Alias untuk user_password
 
-        // Validasi data jika diperlukan
+        // Pemetaan alias ke kolom database asli
+        $data = [
+            'full_nama' => $fullName,
+            'user_nama' => $username,
+            'user_password' => password_hash($password, PASSWORD_DEFAULT), // Hashing password
+        ];
 
         // Lakukan pembaruan data ke database menggunakan model UserModel
         $userModel = new \App\Models\UserModel();
-
-        // Lakukan hashing password di dalam model
-        $data = [
-            'full_nama' => $full_nama,
-            'user_nama' => $user_nama,
-            'user_password' => password_hash($user_password, PASSWORD_DEFAULT), // Gunakan password_hash
-        ];
-
-        // Memperbarui data pengguna
         $userModel->updateUser($id, $data);
 
         // Pesan respons
         $response = [
             'status' => 'success',
             'message' => 'Data berhasil diperbarui',
-            'redirect' => '/data/pengaturan', // Tambahkan informasi pengalihan
+            'redirect' => '/data/pengaturan',
         ];
 
         // Kirim respons JSON ke JavaScript
         session()->setFlashData('pesanAkun', 'Data berhasil diperbaharui');
-        return redirect()->to('/data/pengaturan')->with('success', 'Data siswa berhasil diubah.');
+        return redirect()->to('/data/pengguna')->with('success', 'Data pengguna berhasil diubah.');
+    }
+
+    public function updateAdmin()
+    {
+        // Mengambil data yang dikirimkan melalui POST dengan alias
+        $id = $this->request->getPost('id');
+        $fullName = $this->request->getPost('fullName'); // Alias untuk full_nama
+        $username = $this->request->getPost('username'); // Alias untuk user_nama
+        $password = $this->request->getPost('password'); // Alias untuk user_password
+
+        // Pemetaan alias ke kolom database asli
+        $data = [
+            'full_nama' => $fullName,
+            'user_nama' => $username,
+            'user_password' => password_hash($password, PASSWORD_DEFAULT), // Hashing password
+        ];
+
+        // Lakukan pembaruan data ke database menggunakan model UserModel
+        $userModel = new \App\Models\UserModel();
+        $userModel->updateUser($id, $data);
+
+        // Pesan respons
+        $response = [
+            'status' => 'success',
+            'message' => 'Data berhasil diperbarui',
+            'redirect' => '/data/pengaturan',
+        ];
+
+        // Kirim respons JSON ke JavaScript
+        session()->setFlashData('pesanAkun', 'Data berhasil diperbaharui');
+        return redirect()->to('/data/pengaturan')->with('success', 'Data pengguna berhasil diubah.');
     }
 
 

@@ -64,6 +64,7 @@ class Pihakluar extends BaseController
             'tanggal_pinjam' => 'required|valid_date',
             'tanggal_kembali' => 'required|valid_date',
             'barang' => 'required',
+            'surat_permohonan_alat' => 'uploaded[surat_permohonan_alat]|mime_in[surat_permohonan_alat,application/pdf,image/jpg,image/jpeg,image/png]|max_size[surat_permohonan_alat,5120]',
         ];
 
         $validationMessages = [
@@ -96,6 +97,11 @@ class Pihakluar extends BaseController
             ],
             'barang' => [
                 'required' => 'Pilih minimal satu barang.',
+            ],
+            'surat_permohonan_alat' => [
+                'uploaded' => 'File surat permohonan harus diunggah.',
+                'mime_in' => 'Jenis file tidak diperbolehkan. Hanya file PDF, JPG, JPEG, atau PNG yang diperbolehkan.',
+                'max_size' => 'Ukuran file maksimum adalah 5MB.',
             ],
         ];
 
@@ -190,6 +196,7 @@ class Pihakluar extends BaseController
         // Redirect ke halaman invoice dengan nomor peminjaman_id
         return redirect()->to(base_url("pihakluar/invoice/{$peminjamanId}"))->with('success', 'Peminjaman berhasil!');
     }
+
 
 
     public function invoice($peminjaman_id)

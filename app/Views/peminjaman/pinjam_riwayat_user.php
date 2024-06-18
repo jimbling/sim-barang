@@ -127,12 +127,6 @@
 </div>
 
 
-
-
-
-
 <script src="../../assets/dist/js/jquery-3.6.4.min.js"></script>
-
-
 
 <?php echo view('tema/footer.php'); ?>

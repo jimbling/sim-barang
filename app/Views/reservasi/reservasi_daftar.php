@@ -26,7 +26,7 @@
                 <div class="col-md-12 col-12">
                     <div class="card card-primary card-outline shadow-lg">
                         <?php
-                        // Di bagian atas file atau tempat yang sesuai
+
                         $level = session()->get('level');
                         ?>
                         <?php if ($level === 'Admin') : ?>
@@ -69,7 +69,7 @@
                                 </thead>
                                 <div id="alertContainer" class="mt-3"></div>
                                 <tbody>
-                                    <?php $i = 1; // Deklarasi di luar loop foreach 
+                                    <?php $i = 1;
                                     ?>
                                     <?php foreach ($data_reservasi as $dataReservasi) : ?>
                                         <tr class="searchable-row">
@@ -79,7 +79,7 @@
                                             <td style="text-align: left; vertical-align: middle; font-size: 13px;">
                                                 <?php
                                                 $data = explode('-', $dataReservasi['nama_peminjam']);
-                                                echo isset($data[1]) ? $data[1] : ''; // Menampilkan bagian nama dari array hasil explode
+                                                echo isset($data[1]) ? $data[1] : '';
                                                 ?>
                                             </td>
                                             <td width='20%' style="text-align: left; vertical-align: middle; font-size: 13px;">
@@ -195,9 +195,9 @@
     }
 
     function hapus_data(data_id) {
+        console.log('Data ID yang akan dihapus:', data_id);
 
 
-        // Mendapatkan token CSRF dari cookie
         const csrfName = '<?= csrf_token() ?>';
         const csrfHash = '<?= csrf_hash() ?>';
 
@@ -224,13 +224,13 @@
                     showLoaderOnConfirm: true,
                     allowOutsideClick: false,
                     preConfirm: (message) => {
-                        // Mengirim permintaan AJAX dengan menyertakan token CSRF
+
                         return $.ajax({
                             type: 'POST',
                             url: '/reservasi/hapus/' + data_id,
                             data: {
                                 message: message,
-                                [csrfName]: csrfHash // Menyertakan token CSRF dalam data
+                                [csrfName]: csrfHash
                             },
                             dataType: 'json'
                         }).catch(error => {
@@ -258,24 +258,24 @@
 
 <script>
     function logPeminjamanId(peminjamanId) {
+        console.log('Peminjaman ID:', peminjamanId);
 
 
-        // Mengambil elemen tabel di dalam modal
         var tabelDetail = document.getElementById('tabelDetail');
 
-        // Membersihkan isi tabel (jika ada)
+
         tabelDetail.innerHTML = '';
 
-        // Mengambil detail dari server menggunakan AJAX
+
         fetch('/pengeluaran/get_detail/' + peminjamanId)
             .then(response => response.json())
             .then(data => {
-                // Iterasi melalui setiap objek dalam array detail dan menambahkannya ke dalam tabel
+
                 data.detail.forEach(function(detail) {
-                    // Membuat baris baru di dalam tabel
+
                     var newRow = tabelDetail.insertRow();
 
-                    // Menambahkan sel-sel ke dalam baris
+
                     newRow.insertCell().textContent = detail.id;
                     newRow.insertCell().textContent = detail.nama_barang;
                     newRow.insertCell().textContent = detail.ambil_barang;
@@ -308,7 +308,7 @@
     }
 
     function proses_pinjam(data_id) {
-
+        console.log('Data ID yang akan dihapus:', data_id);
 
         Swal.fire({
             title: 'Konfirmasi',
@@ -320,7 +320,7 @@
             allowOutsideClick: false,
         }).then((result) => {
             if (result.isConfirmed) {
-                // Check if $dataReservasi is set
+
                 <?php if (isset($dataReservasi) && $dataReservasi !== null) : ?>
                     let userLevel = "<?= session()->get('level') ?>";
 
@@ -361,10 +361,12 @@
                         },
                         error: function(xhr, status, error) {
                             hideLoading();
-
+                            console.log(error);
                         }
                     });
                 <?php else : ?>
+
+                    console.log('No data available for dataReservasi');
 
                 <?php endif; ?>
             }
@@ -374,12 +376,11 @@
 
 <?php if (session()->getFlashData('success')) : ?>
     <script>
-        // Tampilkan SweetAlert berdasarkan flash data success
         Swal.fire({
             icon: 'success',
             title: '<?= session()->getFlashData('success') ?>',
             showConfirmButton: false,
-            timer: 1500 // Atur waktu tampil SweetAlert (ms)
+            timer: 1500
         });
     </script>
 <?php endif; ?>

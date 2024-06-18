@@ -23,14 +23,13 @@
     <link rel="stylesheet" href="../../assets/plugins/bs-stepper/css/bs-stepper.min.css">
 
 
-
 </head>
 <?php
 
 use App\Services\PengaturanService;
 
 $pengaturanService = new PengaturanService();
-// Mendapatkan nama kampus dan website
+
 $data_pengaturan = $pengaturanService->getNamaKampus();
 $nama_kampus = $data_pengaturan['nama_kampus'];
 $logo = $data_pengaturan['logo'];
@@ -126,21 +125,19 @@ $logo = $data_pengaturan['logo'];
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                                 <div class="invalid-feedback">
-                                    Tanggal kembali harus diisi.
+                                    Pilih minimal satu barang.
                                 </div>
                             </div>
                         </div>
 
                     </div>
                     <div class="col mt-4">
-                        <!-- Pilihan Barang -->
                         <label for="barang">Pilih Barang:</label>
                         <select name="barang[]" class="duallistbox" multiple="multiple" required>
                             <?php foreach ($data_barang as $barang) : ?>
                                 <option value="<?= $barang['id'] ?>"><?= $barang['nama_barang'] ?> - <?= 'Rp. ' . number_format($barang['harga_sewa'], 0, ',', '.') ?></option>
                             <?php endforeach; ?>
                         </select>
-
                     </div>
                     <br>
                     <div class="col">
@@ -162,8 +159,6 @@ $logo = $data_pengaturan['logo'];
                                 <div class="container-fluid mb-3">
                                     <img id="previewImage" src="#" alt="Preview Image" style="max-width: 500px; max-height: 500px; display: none;">
                                 </div>
-
-
 
                             </div>
                         </div>
@@ -193,107 +188,7 @@ $logo = $data_pengaturan['logo'];
     <script src="../../assets/plugins/moment/moment.min.js"></script>
     <script src="../../assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
     <script src="../../assets/dist/sweet/sweetalert2.all.min.js"></script>
-    <script>
-        //Bootstrap Duallistbox
-        $('.duallistbox').bootstrapDualListbox()
-    </script>
-    <script>
-        $(function() {
-            //Date picker
-            $('#tanggalPinjam').datetimepicker({
-                format: 'L'
-            });
-            $('#tanggalKembali').datetimepicker({
-                format: 'L'
-            });
-
-        })
-    </script>
-    <script>
-        function showLoading() {
-            let timerInterval
-            Swal.fire({
-                title: 'Sedang memproses data ....',
-                timerProgressBar: true,
-                didOpen: () => {
-                    Swal.showLoading()
-                    const b = Swal.getHtmlContainer().querySelector('b')
-                    timerInterval = setInterval(() => {
-                        b.textContent = Swal.getTimerLeft()
-                    }, 100)
-                }
-            });
-        }
-
-        function hideLoading() {
-            Swal.close();
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const fileInput = document.querySelector("input[name='surat_permohonan_alat']");
-            const submitButton = document.querySelector("button[type='submit']");
-            const selectedFileName = document.querySelector("#selectedFileName");
-            const previewImage = document.querySelector("#previewImage");
-
-            fileInput.addEventListener("change", function() {
-                const allowedExtensions = ['pdf', 'jpg', 'png', 'jpeg'];
-                const maxSize = 5 * 1024 * 1024; // 5MB
-                const file = this.files[0];
-                const fileName = file.name;
-                const fileSize = file.size;
-                const fileExtension = fileName.split('.').pop().toLowerCase();
-
-                if (allowedExtensions.includes(fileExtension) && fileSize <= maxSize) {
-                    selectedFileName.textContent = fileName;
-                    previewImage.style.display = "block";
-                    previewImage.src = URL.createObjectURL(this.files[0]);
-                    submitButton.disabled = false;
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Jenis File atau Ukuran Tidak Diijinkan!",
-                        text: "Anda hanya dapat mengimpor file dengan ekstensi .pdf, .jpg, .png, .jpeg dan ukuran maksimum 5MB"
-                    });
-                    this.value = ''; // Clear the file input
-                    selectedFileName.textContent = "Pilih File Surat Permohonan Alat (.pdf, .jpg, .png, .jpeg)";
-                    previewImage.style.display = "none";
-                    submitButton.disabled = true;
-                }
-            });
-        });
-
-        function submitForm() {
-            // Validasi formulir menggunakan HTML5 Constraint Validation API
-            var form = document.getElementById('tambahPinjamPihakLuar');
-            if (!form.checkValidity()) {
-                // Jika formulir tidak valid, hentikan proses dan tampilkan pesan kesalahan
-                hideLoading();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Mohon lengkapi formulir dengan benar!',
-                    showConfirmButton: false,
-                    timer: 1500 // Hide after 1.5 seconds
-                });
-                return;
-            }
-
-            // Jika formulir valid, lanjutkan dengan proses loading
-            showLoading();
-
-            // Simulasi pengiriman data atau proses async
-            setTimeout(() => {
-                // Proses berhasil
-                hideLoading();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Peminjaman berhasil diajukan!',
-                    showConfirmButton: false,
-                    timer: 1500 // Hide after 1.5 seconds
-                });
-            }, 2000); // Simulasi waktu proses (2 detik)
-        }
-    </script>
-
+    <script src="../../assets/dist/js/frontend-js/pihakLuar.js"></script>
 
 </body>
 

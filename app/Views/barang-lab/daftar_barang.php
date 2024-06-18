@@ -171,12 +171,12 @@
         var input, filter, table, tr, td, i, txtValue, found;
         input = document.getElementById("searchInput");
         filter = input.value.toUpperCase();
-        table = document.getElementById("daftarBarangTable"); // Gantilah dengan ID tabel sebenarnya Anda
+        table = document.getElementById("daftarBarangTable");
         tr = table.getElementsByClassName("searchable-row");
         found = false;
 
         for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[1]; // Mengambil kolom ke-3 (indeks 2) untuk mencari nama_barang
+            td = tr[i].getElementsByTagName("td")[1];
             if (td) {
                 txtValue = td.textContent || td.innerText;
                 if (txtValue.toUpperCase().indexOf(filter) > -1) {
@@ -188,12 +188,12 @@
             }
         }
 
-        // Menampilkan notifikasi dalam alert danger di bawah head table
+
         var alertContainer = document.getElementById("alertContainer");
         if (!found) {
             alertContainer.innerHTML = '<div class="alert alert-danger" role="alert">Barang yang dicari tidak ditemukan.</div>';
         } else {
-            alertContainer.innerHTML = ''; // Menghapus alert jika data ditemukan
+            alertContainer.innerHTML = '';
         }
     }
 </script>
