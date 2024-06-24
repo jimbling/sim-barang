@@ -61,6 +61,7 @@
                                         <label for="jenis_perolehan">Jenis Penerimaan</label>
                                         <div class="col-12">
                                             <select id="jenis_perolehan" name="jenis_perolehan" class="custom-select">
+                                                <option value="-">Pilih penerimaan ...</option>
                                                 <option value="Pembelian">Pembelian</option>
                                                 <option value="Hibah">Hibah</option>
                                                 <option value="Migrasi Data">Migrasi Data</option>
@@ -79,7 +80,13 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <!-- Form baru yang hanya muncul saat 'Pembelian' dipilih -->
+                                <div id="formPembelian" class="form-row" style="display: none;">
+                                    <div class="form-group col-md-12">
+                                        <label for="detail_pembelian">Detail Pembelian</label>
+                                        <textarea id="detail_pembelian" name="detail_pembelian" class="form-control" rows="4"></textarea>
+                                    </div>
+                                </div>
                                 <!-- Formulir untuk banyak barang -->
                                 <div class="form-row barang-item" id="barang-container">
                                     <div class="form-group col-md-6">
@@ -252,6 +259,22 @@
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ambil elemen select dan div yang akan ditampilkan
+        var jenisPerolehanSelect = document.getElementById('jenis_perolehan');
+        var formPembelian = document.getElementById('formPembelian');
 
+        // Tambahkan event listener untuk perubahan pada select
+        jenisPerolehanSelect.addEventListener('change', function() {
+            // Tampilkan form jika nilai yang dipilih adalah 'Pembelian'
+            if (jenisPerolehanSelect.value === 'Pembelian') {
+                formPembelian.style.display = 'flex'; // 'flex' karena form-row biasanya menggunakan flexbox
+            } else {
+                formPembelian.style.display = 'none';
+            }
+        });
+    });
+</script>
 
 <?php echo view('tema/footer.php'); ?>

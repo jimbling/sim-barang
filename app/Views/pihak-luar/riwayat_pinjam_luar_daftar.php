@@ -117,7 +117,9 @@
                                             <td width='10%' class="text-center" style="text-align: center; vertical-align: middle;">
                                                 <a onclick=" hapus_data('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button"><i class="fas fa-print "></i>Hapus</a>
                                                 <a href=" <?= ('/cetak/invoice/' . $dataKembali['peminjaman_id']); ?>" class="btn btn-success btn-xs " target="_blank"><i class="fas fa-print "></i><b> Invoice</b></a>
-                                                <a href="../../assets/dist/img/pihakluar/<?= $dataKembali['file_surat']; ?>" class="btn btn-primary btn-xs" download><i class="fas fa-download"></i><b> Surat</b></a>
+                                                <button onclick="downloadSurat('<?= $dataKembali['file_surat']; ?>')" class="btn btn-primary btn-xs" data-file="<?= $dataKembali['file_surat']; ?>">
+                                                    <i class="fas fa-download"></i><b> Surat</b>
+                                                </button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -212,3 +214,43 @@
 </script>
 
 <?php echo view('tema/footer.php'); ?>
+
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    function downloadSurat(fileSurat) {
+
+        var filePath = '/uploads/pihak_luar/' + fileSurat;
+
+
+        $.ajax({
+            url: filePath,
+            type: 'HEAD',
+            success: function() {
+
+                window.location.href = filePath;
+                toastr.success('File surat sedang diunduh.');
+            },
+            error: function() {
+
+                toastr.error('File surat tidak ditemukan atau tidak tersedia.');
+            }
+        });
+    }
+</script>

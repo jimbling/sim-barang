@@ -335,7 +335,7 @@
 
     function downloadSurat(fileSurat) {
         // Tentukan URL lengkap untuk file
-        var filePath = '../../assets/dist/img/pihakluar/' + fileSurat;
+        var filePath = '/uploads/pihak_luar/' + fileSurat;
 
         // Periksa apakah file surat ada atau tidak
         $.ajax({

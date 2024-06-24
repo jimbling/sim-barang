@@ -125,7 +125,7 @@ class Pihakluar extends BaseController
             $newFileName = 'surat_permohonan_' . $namaInstansi . '_' . date('Ymd', strtotime($tanggalPinjam)) . '.' . $fileSurat->getExtension();
 
             // Simpan file ke direktori yang baru
-            $fileSurat->move(ROOTPATH . 'public/assets/dist/img/pihakluar', $newFileName);
+            $fileSurat->move(FCPATH . 'uploads/pihak_luar', $newFileName);
         } else {
             // Jika ada kesalahan dalam proses unggah
             return redirect()->back()->withInput()->with('errorMessages', ['File Surat Permohonan Alat gagal diunggah.']);
