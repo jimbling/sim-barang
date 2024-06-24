@@ -261,15 +261,15 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Ambil elemen select dan div yang akan ditampilkan
+
         var jenisPerolehanSelect = document.getElementById('jenis_perolehan');
         var formPembelian = document.getElementById('formPembelian');
 
-        // Tambahkan event listener untuk perubahan pada select
+
         jenisPerolehanSelect.addEventListener('change', function() {
-            // Tampilkan form jika nilai yang dipilih adalah 'Pembelian'
+
             if (jenisPerolehanSelect.value === 'Pembelian') {
-                formPembelian.style.display = 'flex'; // 'flex' karena form-row biasanya menggunakan flexbox
+                formPembelian.style.display = 'flex';
             } else {
                 formPembelian.style.display = 'none';
             }

@@ -107,9 +107,18 @@ class Penerimaan extends BaseController
             return redirect()->to(base_url('penerimaan/tambahBaru'))->withInput()->with('errorMessages', 'Format tanggal tidak valid.');
         }
 
+        // Ambil nilai jenis_perolehan
+        $jenisPerolehan = $this->request->getPost('jenis_perolehan');
+
+        // Jika jenis_perolehan adalah "Pembelian", tambahkan detail_pembelian
+        if ($jenisPerolehan === 'Pembelian') {
+            $detailPembelian = $this->request->getPost('detail_pembelian');
+            $jenisPerolehan .= ' - ' . $detailPembelian;
+        }
+
         $penerimaanData = [
             'tanggal_penerimaan' => $tanggalPenerimaan->format('Y-m-d H:i:s'), // Sesuaikan format yang sesuai dengan basis data
-            'jenis_perolehan' => $this->request->getPost('jenis_perolehan'),
+            'jenis_perolehan' => $jenisPerolehan,
             'petugas' => $this->request->getPost('petugas'),
         ];
 
@@ -158,7 +167,6 @@ class Penerimaan extends BaseController
             $errorMessage = 'Harga satuan untuk barang : ' . implode(', ', $failedBarangs) . ' sudah ada, namun berbeda. Silahkan tambahkan data barang baru dengan nama yang sama. Pada pilihan akan ditandai dengan (Barang Baru).';
             return redirect()->to(base_url('penerimaan/tambahBaru'))->withInput()->with('errorMessages', $errorMessage);
         }
-
 
         // Redirect ke halaman daftar penerimaan
         session()->setFlashData('pesanAddBarangSatuan', 'Kategori berhasil diubah');
