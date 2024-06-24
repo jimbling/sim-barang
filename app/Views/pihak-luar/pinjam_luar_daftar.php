@@ -52,8 +52,7 @@
                                         <th style="text-align: center; font-size: 14px; vertical-align: middle;">Kode</th>
                                         <th style="text-align: center; font-size: 14px; vertical-align: middle;">Nama Peminjam</th>
                                         <th style="text-align: center; font-size: 14px; vertical-align: middle;">Nama Instansi</th>
-                                        <th style="text-align: center; font-size: 14px; vertical-align: middle;">Tanggal Pinjam</th>
-                                        <th style="text-align: center; font-size: 14px; vertical-align: middle;">Tanggal Kembali</th>
+                                        <th style="text-align: center; font-size: 14px; vertical-align: middle;">Tanggal</th>
                                         <th style="text-align: center; font-size: 14px; vertical-align: middle;">Nama Barang</th>
                                         <th style="text-align: center; font-size: 14px; vertical-align: middle;">AKSI</th>
                                     </tr>
@@ -71,54 +70,58 @@
                                             <td style="text-align: left; vertical-align: middle; font-size: 14px;"><?= $dataKembali['nama_peminjam']; ?></td>
                                             <td style="text-align: left; vertical-align: middle; font-size: 14px;"><?= $dataKembali['nama_instansi']; ?></td>
                                             <td width='11%' style="text-align: left; vertical-align: middle; font-size: 14px;">
-                                                <?php
-                                                $tanggal_pinjam = \CodeIgniter\I18n\Time::parse($dataKembali['tanggal_pinjam'])
-                                                    ->setTimezone('Asia/Jakarta');
 
-                                                $nama_bulan = [
-                                                    'January' => 'Januari',
-                                                    'February' => 'Februari',
-                                                    'March' => 'Maret',
-                                                    'April' => 'April',
-                                                    'May' => 'Mei',
-                                                    'June' => 'Juni',
-                                                    'July' => 'Juli',
-                                                    'August' => 'Agustus',
-                                                    'September' => 'September',
-                                                    'October' => 'Oktober',
-                                                    'November' => 'November',
-                                                    'December' => 'Desember',
-                                                ];
+                                                <div class="badge bg-olive">Pinjam:<br>
 
-                                                $bulan = $nama_bulan[$tanggal_pinjam->format('F')];
+                                                    <?php
+                                                    $tanggal_pinjam = \CodeIgniter\I18n\Time::parse($dataKembali['tanggal_pinjam'])
+                                                        ->setTimezone('Asia/Jakarta');
 
-                                                echo $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y');
-                                                ?>
-                                            </td>
-                                            <td width='11%' style="text-align: left; vertical-align: middle; font-size: 14px;">
-                                                <?php
-                                                $tanggal_kembali = \CodeIgniter\I18n\Time::parse($dataKembali['tanggal_kembali'])
-                                                    ->setTimezone('Asia/Jakarta');
+                                                    $nama_bulan = [
+                                                        'January' => 'Januari',
+                                                        'February' => 'Februari',
+                                                        'March' => 'Maret',
+                                                        'April' => 'April',
+                                                        'May' => 'Mei',
+                                                        'June' => 'Juni',
+                                                        'July' => 'Juli',
+                                                        'August' => 'Agustus',
+                                                        'September' => 'September',
+                                                        'October' => 'Oktober',
+                                                        'November' => 'November',
+                                                        'December' => 'Desember',
+                                                    ];
 
-                                                $nama_bulan = [
-                                                    'January' => 'Januari',
-                                                    'February' => 'Februari',
-                                                    'March' => 'Maret',
-                                                    'April' => 'April',
-                                                    'May' => 'Mei',
-                                                    'June' => 'Juni',
-                                                    'July' => 'Juli',
-                                                    'August' => 'Agustus',
-                                                    'September' => 'September',
-                                                    'October' => 'Oktober',
-                                                    'November' => 'November',
-                                                    'December' => 'Desember',
-                                                ];
+                                                    $bulan = $nama_bulan[$tanggal_pinjam->format('F')];
 
-                                                $bulan = $nama_bulan[$tanggal_kembali->format('F')];
+                                                    echo $tanggal_pinjam->format('d ') . $bulan . $tanggal_pinjam->format(' Y');
+                                                    ?>
+                                                </div><br>
+                                                <div class="badge bg-orange">Kembali:<br>
+                                                    <?php
+                                                    $tanggal_kembali = \CodeIgniter\I18n\Time::parse($dataKembali['tanggal_kembali'])
+                                                        ->setTimezone('Asia/Jakarta');
 
-                                                echo $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y');
-                                                ?>
+                                                    $nama_bulan = [
+                                                        'January' => 'Januari',
+                                                        'February' => 'Februari',
+                                                        'March' => 'Maret',
+                                                        'April' => 'April',
+                                                        'May' => 'Mei',
+                                                        'June' => 'Juni',
+                                                        'July' => 'Juli',
+                                                        'August' => 'Agustus',
+                                                        'September' => 'September',
+                                                        'October' => 'Oktober',
+                                                        'November' => 'November',
+                                                        'December' => 'Desember',
+                                                    ];
+
+                                                    $bulan = $nama_bulan[$tanggal_kembali->format('F')];
+
+                                                    echo $tanggal_kembali->format('d ') . $bulan . $tanggal_kembali->format(' Y');
+                                                    ?>
+                                                </div><br>
                                             </td>
                                             <td style="text-align: left; vertical-align: middle; font-size: 13px;">
                                                 <?php
@@ -131,14 +134,31 @@
                                                 }
                                                 ?>
                                             </td>
-                                            <td width='10%' class="text-center" style="text-align: center; vertical-align: middle;">
-                                                <a onclick=" hapus_data('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button">Hapus</a>
-                                                <a onclick=" kembali('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-info mx-auto text-white" id="button">Kembali</a>
-                                                <a href=" <?= ('/pihakluar/invoice/' . $dataKembali['peminjaman_id']); ?>" class="btn btn-success btn-xs " target="_blank"><i class="fas fa-print "></i><b> Invoice</b></a>
+                                            <td width='20%' class="text-center" style="text-align: center; vertical-align: middle;">
+                                                <a onclick="kembali('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-info mx-auto text-white" id="button">
+                                                    <i class="fas fa-sync-alt "></i><b> Kembali</b>
+                                                </a>
+                                                <a href="<?= ('/pihakluar/invoice/' . $dataKembali['peminjaman_id']); ?>" class="btn btn-success btn-xs" target="_blank">
+                                                    <i class="fas fa-print "></i><b> Invoice</b>
+                                                </a>
                                                 <button onclick="downloadSurat('<?= $dataKembali['file_surat']; ?>')" class="btn btn-primary btn-xs" data-file="<?= $dataKembali['file_surat']; ?>">
                                                     <i class="fas fa-download"></i><b> Surat</b>
                                                 </button>
+                                                <?php if ($dataKembali['is_biaya_perawatan'] == 1) : ?>
+                                                    <a onclick="updateBiayaPerawatan('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-warning mx-auto" id="button">
+                                                        <i class="fas fa-times" style='color:red'></i><b> Hapus Biaya Perawatan</b>
+                                                    </a>
+                                                <?php else : ?>
+                                                    <a class="btn btn-xs btn-warning mx-auto" id="button" disabled>
+                                                        <i class="fas fa-times" style='color:red'></i><b> Hapus Biaya Perawatan</b>
+                                                    </a>
+                                                <?php endif; ?>
+                                                <a onclick="hapus_data('<?= $dataKembali['peminjaman_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button">
+                                                    <i class='fas fa-trash-alt'></i><b> Hapus Data</b>
+                                                </a>
                                             </td>
+
+
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -349,6 +369,57 @@
             error: function() {
                 // Jika file tidak ada, tampilkan toastr error
                 toastr.error('File surat tidak ditemukan atau tidak tersedia.');
+            }
+        });
+    }
+</script>
+
+<script>
+    // Fungsi untuk memanggil AJAX dan mengupdate biaya perawatan
+    function updateBiayaPerawatan(peminjaman_id) {
+        // Tampilkan SweetAlert2 konfirmasi sebelum melakukan update
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda akan menghapus biaya perawatan untuk peminjaman ini.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus biaya perawatan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Jika pengguna mengonfirmasi, lakukan permintaan AJAX
+                $.ajax({
+                    url: '/update_biaya_perawatan/' + peminjaman_id,
+                    type: 'POST', // Gunakan metode POST
+                    success: function(response) {
+                        // Tampilkan notifikasi hasil menggunakan SweetAlert2
+                        if (response.status === 'success') {
+                            Swal.fire(
+                                'Berhasil!',
+                                response.message,
+                                'success'
+                            ).then(() => {
+                                // Segarkan halaman setelah menampilkan pesan berhasil
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Gagal!',
+                                'Gagal menghapus biaya perawatan: ' + response.message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        Swal.fire(
+                            'Error!',
+                            'Gagal melakukan permintaan: ' + textStatus + ' - ' + errorThrown,
+                            'error'
+                        );
+                    }
+                });
             }
         });
     }

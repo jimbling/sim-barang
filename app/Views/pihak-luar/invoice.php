@@ -167,6 +167,16 @@
                                         <?php
                                         $totalSemuaHarga = 0; // Inisialisasi variabel totalSemuaHarga sebelum loop
 
+                                        $biayaPerawatan = 0; // Atur biaya perawatan secara default ke 0
+
+                                        // Ambil nilai is_biaya_perawatan dari data, pastikan isset untuk menghindari undefined index
+                                        $isBiayaPerawatan = isset($data_pinjamLuar[0]['is_biaya_perawatan']) ? $data_pinjamLuar[0]['is_biaya_perawatan'] : 0;
+
+                                        // Sesuaikan nilai biaya perawatan berdasarkan is_biaya_perawatan
+                                        if ($isBiayaPerawatan == 1) {
+                                            $biayaPerawatan = 20000; // Set biaya perawatan jika is_biaya_perawatan = 1
+                                        }
+
                                         foreach ($data_pinjamLuar as $PinjamLuar) :
                                         ?>
                                             <tr>
@@ -194,10 +204,11 @@
                                         <?php
                                         endforeach;
 
-                                        // Menambahkan biaya perawatan ke dalam totalSemuaHarga di luar loop
-                                        $biayaPerawatan = 20000;
+                                        // Tambahkan biaya perawatan ke totalSemuaHarga di luar loop
                                         $totalSemuaHarga += $biayaPerawatan;
                                         ?>
+
+
                                     </tbody>
                                 </table>
                             </div>
@@ -246,6 +257,7 @@
                                 </a>
                             </div>
                         </div>
+
                     </div>
 
                 </div>

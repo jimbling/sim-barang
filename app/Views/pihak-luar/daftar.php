@@ -166,6 +166,9 @@ $logo = $data_pengaturan['logo'];
 
                     </div>
 
+
+
+
                     <hr class="mb-4">
                     <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="submitForm()">Ajukan Peminjaman Barang</button>
                 </form>

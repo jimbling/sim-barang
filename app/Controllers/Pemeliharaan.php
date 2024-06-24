@@ -167,7 +167,7 @@ class Pemeliharaan extends BaseController
         try {
             // Generate unique identifier (timestamp)
             $tglSekarang = date('Y-m-dHis');
-            $folderToZip = FCPATH . 'assets/dist/img'; // Path folder yang ingin Anda backup
+            $folderToZip = FCPATH . 'uploads/pihak_luar/'; // Path folder yang ingin Anda backup
             // Generate random UUID
             $uuid = uniqid();
 

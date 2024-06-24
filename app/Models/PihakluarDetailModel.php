@@ -11,6 +11,8 @@ class PihakluarDetailModel extends Model
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $allowedFields = ['id', 'peminjaman_id', 'barang_id', 'lama_pinjam'];
 
+
+
     public function getGroupedData($peminjaman_id)
     {
         return $this->db->table($this->table)

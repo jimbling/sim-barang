@@ -539,7 +539,7 @@ class Pengaturan extends BaseController
                 $zipFilePath = $temporaryPath . $uploadedFile->getClientName();
 
                 // Lokasi tujuan untuk ekstraksi
-                $extractTo = FCPATH . 'assets/dist/';
+                $extractTo = FCPATH . 'uploads/';
 
                 // Membuka dan mengekstrak file ZIP
                 $zip = new ZipArchive();

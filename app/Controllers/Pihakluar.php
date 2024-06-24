@@ -65,6 +65,7 @@ class Pihakluar extends BaseController
             'tanggal_kembali' => 'required|valid_date',
             'barang' => 'required',
             'surat_permohonan_alat' => 'uploaded[surat_permohonan_alat]|mime_in[surat_permohonan_alat,application/pdf,image/jpg,image/jpeg,image/png]|max_size[surat_permohonan_alat,5120]',
+
         ];
 
         $validationMessages = [
@@ -103,6 +104,7 @@ class Pihakluar extends BaseController
                 'mime_in' => 'Jenis file tidak diperbolehkan. Hanya file PDF, JPG, JPEG, atau PNG yang diperbolehkan.',
                 'max_size' => 'Ukuran file maksimum adalah 5MB.',
             ],
+
         ];
 
         // Terapkan validasi untuk unggahan file
@@ -156,6 +158,7 @@ class Pihakluar extends BaseController
         // Set ID baru dengan menambahkan 1
         $newId = $lastId + 1;
 
+
         // Ambil data dari formulir
         $dataPeminjaman = [
             'kode_pinjam' => $this->request->getPost('kode_pinjam'),
@@ -168,6 +171,7 @@ class Pihakluar extends BaseController
             'tanggal_kembali' => $tanggalKembali->format('Y-m-d'),
             'lama_pinjam' => $lamaPinjam,
             'file_surat' => $newFileName, // Simpan nama file di database
+
         ];
 
         // Masukkan ID baru ke dalam data peminjaman
@@ -196,6 +200,7 @@ class Pihakluar extends BaseController
         // Redirect ke halaman invoice dengan nomor peminjaman_id
         return redirect()->to(base_url("pihakluar/invoice/{$peminjamanId}"))->with('success', 'Peminjaman berhasil!');
     }
+
 
 
 
@@ -279,6 +284,32 @@ class Pihakluar extends BaseController
         ];
 
         return view('pihak-luar/pinjam_luar_daftar', $data);
+    }
+
+    public function updateBiayaPerawatan($peminjaman_id)
+    {
+        $pihakluarPeminjamanModel = new PihakluarPeminjamanModel();
+
+        // Validasi bahwa peminjaman_id adalah angka
+        if (!is_numeric($peminjaman_id)) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'ID peminjaman tidak valid.']);
+        }
+
+        // Cari peminjaman berdasarkan peminjaman_id
+        $peminjaman = $pihakluarPeminjamanModel->find($peminjaman_id);
+
+        if (!$peminjaman) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Peminjaman tidak ditemukan.']);
+        }
+
+        // Update is_biaya_perawatan menjadi 0
+        $result = $pihakluarPeminjamanModel->updateBiayaPerawatanByPeminjamanId($peminjaman_id, 0);
+
+        if ($result !== false) {
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Biaya perawatan berhasil dihapus.']);
+        } else {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menghapus biaya perawatan.']);
+        }
     }
 
     public function kembalikan($peminjamanId)
