@@ -167,9 +167,16 @@ $logo = $data_pengaturan['logo'];
                     </div>
 
 
-
-
                     <hr class="mb-4">
+                    <div class="form-check mb-4">
+                        <input type="checkbox" class="form-check-input" id="persetujuanBiaya" required>
+                        <label class="form-check-label" for="persetujuanBiaya">
+                            Saya menyetujui bahwa peminjaman ini akan dikenakan biaya perawatan sebesar Rp. 20.000.
+                        </label>
+                        <div class="invalid-feedback">
+                            Anda harus menyetujui biaya perawatan sebelum mengajukan peminjaman.
+                        </div>
+                    </div>
                     <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="submitForm()">Ajukan Peminjaman Barang</button>
                 </form>
             </div>
