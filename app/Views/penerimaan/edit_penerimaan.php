@@ -7,7 +7,7 @@
 
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h5 class="m-0">Form Penerimaan Barang</h5>
+                    <h5 class="m-0">Form Edit Penerimaan Barang</h5>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -16,18 +16,7 @@
                     </ol>
                 </div>
             </div>
-            <div class="alert alert-danger" style="font-size: 14px;" role="alert">
-                <strong> Informasi!</strong>
-                <p>Harap perhatikan harga satuan pada nama barang yang akan dimasukkan, jika nama barang sama namun harga satuan berbeda, harap tambahkan dahulu data barang baru tersebut.
-                    Data barang yang baru dimasukkan, akan memiliki keterangan (Barang Baru), yang tampil selama kurang lebih 5 menit.
-                    <a class="btn btn-info btn-sm" href="/barang/persediaan/master" role="button" style="text-decoration: none;">
-                        <i class='fas fa-external-link-alt spaced-icon'></i>Input Barang Persediaan
-                    </a>
-                <p> Jika dari beberapa barang yang dimasukkan lalu ada <strong>Alert Gagal</strong>, maka periksa daftar penerimaan, karena data barang lain yang valid sudah tersimpan. Hapus saja daftar tersebut, kemudian entrikan ulang, dengan catatan data barang baru untuk harga satuan baru sudah dibuat.
-                    <a class="btn btn-success btn-sm" href="/penerimaan/daftar" role="button" style="text-decoration: none;">
-                        <i class='fas fa-external-link-alt spaced-icon'></i>Daftar Penerimaan Persediaan
-                    </a>
-            </div>
+
 
         </div>
     </div>
@@ -39,18 +28,29 @@
             <div class="row">
                 <div class="col-md-12 col-12">
                     <div class="card card-primary card-outline shadow-lg">
-                        <form action="/penerimaan/simpan" method="post" id="formTambahPeneriman">
-                            <div class="card-body">
-                                <input type="hidden" name="<?= csrf_token() ?>" value="<?= $csrfToken ?>">
 
-                                <!-- Form Tambah Penerimaan -->
+                        <?php
+                        $prevPenerimaanId = null; // Untuk melacak ID penerimaan sebelumnya
+                        foreach ($dataPenerimaan as $penerimaan) : ?>
+                            <?php if ($prevPenerimaanId !== $penerimaan['penerimaan_id']) : ?>
+
+                                <?php $prevPenerimaanId = $penerimaan['penerimaan_id']; ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+
+                        <form action="/penerimaan/update" method="post" id="formEditPenerimaan">
+                            <div class="card-body">
+
+                                <input type="hidden" name="<?= csrf_token() ?>" value="<?= $csrfToken ?>">
+                                <input type="hidden" name="id_penerimaan" value="<?php echo $penerimaan['penerimaan_id']; ?>">
+                                <input type="hidden" id="barang_dihapus" name="barang_dihapus" value="">
 
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
                                         <label for="tanggal_penerimaan">Tanggal Penerimaan</label>
                                         <div class="col-12">
                                             <div class="input-group date" id="tanggalPenerimaan" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#tanggalPenerimaan" name="tanggal_penerimaan" required />
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#tanggalPenerimaan" name="tanggal_penerimaan" value="<?= date('m-d-Y', strtotime($penerimaan['tanggal_penerimaan'])) ?>" required />
                                                 <div class="input-group-append" data-target="#tanggalPenerimaan" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -59,35 +59,83 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label for="jenis_perolehan">Jenis Penerimaan</label>
-                                        <div class="col-12">
-                                            <select id="jenis_perolehan" name="jenis_perolehan" class="custom-select">
-                                                <option value="-">Pilih penerimaan ...</option>
-                                                <option value="Pembelian">Pembelian</option>
-                                                <option value="Hibah">Hibah</option>
-                                                <option value="Migrasi Data">Migrasi Data</option>
-                                                <option value="Lainnya">Lainnya</option>
-                                            </select>
-                                        </div>
+                                        <select id="jenis_perolehan" name="jenis_perolehan" class="custom-select">
+                                            <!-- Menambahkan nilai dari database sebagai opsi default -->
+                                            <?php if (!empty($penerimaan['jenis_perolehan'])) : ?>
+                                                <option value="<?= htmlspecialchars($penerimaan['jenis_perolehan'], ENT_QUOTES, 'UTF-8'); ?>" selected>
+                                                    <?= htmlspecialchars($penerimaan['jenis_perolehan'], ENT_QUOTES, 'UTF-8'); ?>
+                                                </option>
+                                            <?php endif; ?>
+
+                                            <!-- Opsi lainnya yang tersedia -->
+                                            <option value="-">Pilih penerimaan ...</option>
+                                            <option value="Pembelian">Pembelian</option>
+                                            <option value="Hibah">Hibah</option>
+                                            <option value="Migrasi Data">Migrasi Data</option>
+                                            <option value="Lainnya">Lainnya</option>
+                                        </select>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label for="petugas">Nama Petugas</label>
-                                        <div class="col-12">
-                                            <select class="form-control select2bs4" name="petugas" required>
-                                                <?php foreach ($dosen_tendik as $dataDosenTendik) : ?>
-                                                    <option value="<?= $dataDosenTendik['nama_lengkap'] ?>"><?= $dataDosenTendik['nama_lengkap'] ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
+                                        <select class="form-control select2bs4" name="petugas" required>
+                                            <?php foreach ($dosen_tendik as $dataDosenTendik) : ?>
+                                                <option value="<?= $dataDosenTendik['nama_lengkap'] ?>" <?= ($penerimaan['petugas'] == $dataDosenTendik['nama_lengkap']) ? 'selected' : '' ?>>
+                                                    <?= $dataDosenTendik['nama_lengkap'] ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
+
                                 </div>
-                                <!-- Form baru yang hanya muncul saat 'Pembelian' dipilih -->
+
+
                                 <div id="formPembelian" class="form-row" style="display: none;">
                                     <div class="form-group col-md-12">
                                         <label for="detail_pembelian">Detail Pembelian</label>
                                         <textarea id="detail_pembelian" name="detail_pembelian" class="form-control" rows="4"></textarea>
                                     </div>
                                 </div>
-                                <!-- Formulir untuk banyak barang -->
+
+
+                                <?php foreach ($daftar_barang as $index => $barang) : ?>
+                                    <div class="form-row barang-item">
+                                        <div class="form-group col-md-6">
+                                            <label for="barang_id[]">Barang:</label>
+                                            <select class="form-control select2bs4" name="barang_id[]" required>
+                                                <?php foreach ($barang_persediaan as $item) : ?>
+                                                    <option value="<?= $item['id'] ?>" <?= $barang['barang_id'] == $item['id'] ? 'selected' : '' ?>>
+                                                        <?= $item['nama_barang'] ?>
+                                                        <?php if ($item['harga_satuan'] != 0) : ?>
+                                                            - Harga Satuan: <?= $item['harga_satuan'] ?>
+                                                        <?php endif; ?>
+                                                        <?php
+                                                        $createdTime = strtotime($item['created_at']);
+                                                        $currentTime = time();
+                                                        $timeDifference = $currentTime - $createdTime;
+                                                        if ($timeDifference <= 300) {
+                                                            echo " - (Barang Baru)";
+                                                        }
+                                                        ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="jumlah_barang[]">Jumlah Barang:</label>
+                                            <input type="number" class="form-control jumlah_barang" name="jumlah_barang[]" value="<?= $barang['jumlah_barang'] ?>" required>
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="harga_satuan[]">Harga Satuan:</label>
+                                            <input type="number" class="form-control harga_satuan" name="harga_satuan[]" value="<?= $barang['harga_satuan'] ?>" required>
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="jumlah_harga[]">Jumlah Harga:</label>
+                                            <input type="number" class="form-control jumlah_harga" name="jumlah_harga[]" value="<?= $barang['jumlah_harga'] ?>" readonly>
+                                        </div>
+                                        <button type="button" class="btn btn-danger btn-sm ml-2" onclick="hapusBarang(this.parentNode, <?= $barang['id'] ?>)">Hapus</button>
+                                    </div>
+                                <?php endforeach; ?>
+
                                 <div class="form-row barang-item" id="barang-container">
                                     <div class="form-group col-md-6">
                                         <label for="barang_id[]">Barang:</label>
@@ -130,16 +178,16 @@
                                         <label for="jumlah_harga[]">Jumlah Harga:</label>
                                         <input type="number" class="form-control jumlah_harga" name="jumlah_harga[]" readonly>
                                     </div>
-
+                                    <button type="button" class="btn btn-danger btn-sm ml-2" onclick="hapusBarang(this.parentNode, <?= $barang['id'] ?>)">Hapus</button>
                                 </div>
 
-
                                 <button type="button" class="btn btn-danger btn-sm mt-4" onclick="tambahBarang()"><i class='fas fa-caret-square-down spaced-icon'></i>Tambah Barang</button>
-                                <button type="submit" class="btn btn-success btn-sm mt-4">Simpan</button>
+                                <button type="submit" class="btn btn-success btn-sm mt-4">Simpan Perubahan</button>
 
                             </div>
-
+                            <input type="hidden" id="barang_dihapus" name="barang_dihapus" value='[]'>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -153,7 +201,6 @@
     </div>
 
 </div>
-
 
 <div id="template-barang" style="display: none;">
     <div class="form-group col-md-6">
@@ -277,4 +324,43 @@
     });
 </script>
 
+<script>
+    function hapusBarang(button) {
+        // Cari elemen barang-item terdekat dari tombol yang diklik
+        var barangItem = button.closest('.barang-item');
+        if (!barangItem) {
+            console.log("Tidak dapat menemukan elemen barang-item.");
+            return;
+        }
+
+        // Ambil ID barang dari elemen <select> atau input yang menyimpan ID barang
+        var barangSelect = barangItem.querySelector('select[name="barang_id[]"]');
+        var idBarang = barangSelect ? barangSelect.value : null;
+
+        // Ambil nilai jumlah_barang dari elemen input di dalam barang-item
+        var jumlahBarangInput = barangItem.querySelector('.jumlah_barang');
+        var jumlahBarang = jumlahBarangInput ? jumlahBarangInput.value : null;
+
+        if (idBarang) {
+            // Tambahkan ID barang dan jumlah barang ke input hidden "barang_dihapus"
+            var barangDihapusInput = document.getElementById('barang_dihapus');
+            var barangDihapus = JSON.parse(barangDihapusInput.value || '[]');
+
+            // Tambahkan objek dengan id dan jumlah ke array barangDihapus
+            barangDihapus.push({
+                id: idBarang,
+                jumlah: jumlahBarang
+            });
+
+            // Simpan array sebagai string JSON ke input hidden
+            barangDihapusInput.value = JSON.stringify(barangDihapus);
+
+            // Log ID barang dan jumlah_barang yang akan dihapus ke console
+            console.log("Barang dengan ID:", idBarang, "dan Jumlah:", jumlahBarang, "akan dihapus.");
+        }
+
+        // Hapus elemen barang-item dari form
+        barangItem.remove();
+    }
+</script>
 <?php echo view('tema/footer.php'); ?>

@@ -266,6 +266,18 @@ class PeminjamanbarangModel extends Model
 
     public function deleteByPeminjamanId($peminjamanId)
     {
+        // Mengambil semua barang_id yang terkait dengan peminjaman_id
+        $barangIds = $this->select('barang_id')->where('peminjaman_id', $peminjamanId)->findAll();
+
+        // Ubah status_barang menjadi 0 pada tabel tbl_barang untuk setiap barang_id
+        foreach ($barangIds as $barangId) {
+            $this->db->table('tbl_barang')
+                ->set('status_barang', 0)
+                ->where('id', $barangId['barang_id'])
+                ->update();
+        }
+
+        // Hapus data pada tabel tbl_peminjaman_barang berdasarkan peminjaman_id
         return $this->where('peminjaman_id', $peminjamanId)->delete();
     }
 }

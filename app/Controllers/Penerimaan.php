@@ -209,4 +209,136 @@ class Penerimaan extends BaseController
 
         // Tambahkan logika atau tindakan lain yang sesuai dengan kebutuhan Anda
     }
+
+    public function edit($id)
+    {
+        $currentYear = date('Y');
+        $namaKampus = $this->settingsService->getNamaKampus();
+
+        $penerimaanModel = new PenerimaanModel();
+        $penerimaanPersediaanModel = new PenerimaanPersediaanModel();
+        $barangModel = new BarangPersediaanModel(); // Tambahkan model barang
+
+        $dataPenerimaan = $penerimaanPersediaanModel->getDetailPenerimaanById($id);
+
+        $barangList = $penerimaanPersediaanModel->where('penerimaan_id', $id)->findAll();
+
+        // Ambil informasi nama_barang dari model BarangPersediaanModel
+        foreach ($barangList as &$barang) {
+            $barangInfo = $barangModel->find($barang['barang_id']); // Ambil data barang berdasarkan barang_id
+            if ($barangInfo) {
+                $barang['nama_barang'] = $barangInfo['nama_barang']; // Tambahkan nama_barang ke dalam array $barang
+            }
+        }
+        $dosentendikModel = new DosenTendikModel();
+        $dataDosenTendik = $dosentendikModel->getDosenTendik();
+        $barangpersediaanModel = new BarangPersediaanModel();
+        $dataBarang = $barangpersediaanModel->getBarangPersediaan();
+        $data = [
+            'dataPenerimaan' => $dataPenerimaan,
+            'daftar_barang' => $barangList,
+            'csrfToken' => csrf_hash(),
+            'judul' => "Penerimaan Persediaan | $namaKampus",
+            'currentYear' => $currentYear,
+            'barang_persediaan' => $dataBarang,
+            'dosen_tendik' => $dataDosenTendik,
+        ];
+
+        return view('penerimaan/edit_penerimaan', $data);
+    }
+
+    public function update($id = null)
+    {
+        // Mulai session untuk flashdata
+        session();
+
+        // Menginisialisasi model yang diperlukan
+        $penerimaanModel = new PenerimaanModel();
+        $persediaanDetailModel = new PenerimaanPersediaanModel();
+        $barangPersediaanModel = new BarangPersediaanModel();
+
+        // Mendapatkan ID penerimaan dari form
+        $penerimaanId = $this->request->getPost('id_penerimaan');
+
+        // Proses update penerimaan
+        try {
+            $tanggalPenerimaan = new \DateTime($this->request->getPost('tanggal_penerimaan'));
+        } catch (\Exception $e) {
+            // Tanggal tidak valid, tampilkan pesan kesalahan
+            return redirect()->to(base_url('penerimaan/edit/' . $penerimaanId))->withInput()->with('errorMessages', 'Format tanggal tidak valid.');
+        }
+
+        // Ambil nilai jenis_perolehan
+        $jenisPerolehan = $this->request->getPost('jenis_perolehan');
+
+        // Jika jenis_perolehan adalah "Pembelian", tambahkan detail_pembelian
+        if ($jenisPerolehan === 'Pembelian') {
+            $detailPembelian = $this->request->getPost('detail_pembelian');
+            $jenisPerolehan .= ' - ' . $detailPembelian;
+        }
+
+        // Data penerimaan yang akan diupdate
+        $penerimaanData = [
+            'tanggal_penerimaan' => $tanggalPenerimaan->format('Y-m-d H:i:s'),
+            'jenis_perolehan' => $jenisPerolehan,
+            'petugas' => $this->request->getPost('petugas'),
+        ];
+
+        // Lakukan update data penerimaan berdasarkan ID
+        $penerimaanModel->update($penerimaanId, $penerimaanData);
+
+        // Ambil daftar barang yang akan dihapus dari input hidden
+        $barangDihapus = $this->request->getPost('barang_dihapus');
+        if ($barangDihapus) {
+            $barangIds = explode(',', $barangDihapus);
+            // Hapus barang-barang ini dari database
+            $persediaanDetailModel->whereIn('id', $barangIds)->delete();
+        }
+
+        // Proses update atau insert penerimaan persediaan detail
+        $barangIds = $this->request->getPost('barang_id');
+        $jumlahBarangs = $this->request->getPost('jumlah_barang');
+        $hargaSatuans = $this->request->getPost('harga_satuan');
+        $jumlahHargas = $this->request->getPost('jumlah_harga');
+
+        foreach ($barangIds as $key => $barangId) {
+            // Cek apakah data sudah ada berdasarkan penerimaan_id dan barang_id
+            $existingDetail = $persediaanDetailModel->where('penerimaan_id', $penerimaanId)
+                ->where('barang_id', $barangId)
+                ->first();
+
+            if ($existingDetail) {
+                // Jika data sudah ada, lakukan update
+                $persediaanDetailData = [
+                    'jumlah_barang' => $jumlahBarangs[$key],
+                    'harga_satuan' => $hargaSatuans[$key],
+                    'jumlah_harga' => $jumlahHargas[$key],
+                ];
+
+                // Lakukan update
+                $persediaanDetailModel->update($existingDetail['id'], $persediaanDetailData);
+            } else {
+                // Jika data belum ada, lakukan insert
+                $persediaanDetailData = [
+                    'penerimaan_id' => $penerimaanId,
+                    'barang_id' => $barangId,
+                    'jumlah_barang' => $jumlahBarangs[$key],
+                    'harga_satuan' => $hargaSatuans[$key],
+                    'jumlah_harga' => $jumlahHargas[$key],
+                ];
+
+                // Lakukan insert
+                $persediaanDetailModel->insert($persediaanDetailData);
+            }
+
+            // Update stok di tbl_persediaan_barang
+            $persediaanDetailModel->updateStokBarang($barangId, $jumlahBarangs[$key]);
+
+            // Tambahkan nilai harga_satuan ke dalam tabel tbl_persediaan_barang
+            $barangPersediaanModel->tambahHargaSatuan($barangId, $hargaSatuans[$key]);
+        }
+
+        // Redirect ke halaman daftar penerimaan atau halaman lain yang sesuai
+        return redirect()->to('/penerimaan/daftar')->with('success', 'Data penerimaan berhasil diupdate.');
+    }
 }

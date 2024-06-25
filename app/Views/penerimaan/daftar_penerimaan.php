@@ -95,10 +95,13 @@
 
                                             <td width='15%' style="text-align: center; vertical-align: middle; font-size: 14px;"><?= $dataPenerimaan['petugas']; ?></td>
                                             <td width='10%' style="text-align: center; vertical-align: middle; font-size: 14px;">
+
                                                 <button type="button" class="btn btn-warning btn-xs btn-detail" data-toggle="tooltip" data-placement="left" title="Detail" data-toggle="modal" data-penerimaan-id="<?= $dataPenerimaan['penerimaan_id']; ?>">
                                                     <i class='fas fa-eye'></i>
                                                 </button>
-
+                                                <button type="button" class="btn btn-info btn-xs btn-edit" data-toggle="tooltip" data-placement="top" title="Edit" data-penerimaan-id="<?= $dataPenerimaan['penerimaan_id']; ?>" onclick="editPenerimaan(this)">
+                                                    <i class='fas fa-edit'></i>
+                                                </button>
                                                 <a onclick=" hapus_data('<?= $dataPenerimaan['penerimaan_id']; ?>')" class="btn btn-xs btn-danger mx-auto text-white" id="button" data-toggle="tooltip" data-placement="top" title="Hapus"> <i class='fas fa-trash'></i></a>
                                             </td>
 
@@ -154,7 +157,16 @@
 </script>
 <script src="<?= base_url('assets/dist/js/frontend-js/daftarPenerimaan.js') ?>"></script>
 
-
+<script>
+    function editPenerimaan(button) {
+        // Dapatkan ID penerimaan dari atribut data-penerimaan-id
+        var penerimaanId = button.getAttribute('data-penerimaan-id');
+        // Buat URL tujuan
+        var url = '<?= base_url('penerimaan/edit'); ?>/' + penerimaanId;
+        // Arahkan ke URL tersebut
+        window.location.href = url;
+    }
+</script>
 
 
 <?php echo view('tema/footer.php'); ?>
