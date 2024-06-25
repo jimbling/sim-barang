@@ -99,7 +99,7 @@
 
                                 <?php foreach ($daftar_barang as $index => $barang) : ?>
                                     <div class="form-row barang-item">
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-5">
                                             <label for="barang_id[]">Barang:</label>
                                             <select class="form-control select2bs4" name="barang_id[]" required>
                                                 <?php foreach ($barang_persediaan as $item) : ?>
@@ -132,14 +132,20 @@
                                             <label for="jumlah_harga[]">Jumlah Harga:</label>
                                             <input type="number" class="form-control jumlah_harga" name="jumlah_harga[]" value="<?= $barang['jumlah_harga'] ?>" readonly>
                                         </div>
-                                        <button type="button" class="btn btn-danger btn-sm ml-2" onclick="hapusBarang(this.parentNode, <?= $barang['id'] ?>)">Hapus</button>
+                                        <div class="form-group col-md-1 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger btn-sm ml-1" onclick="hapusBarang(this.parentNode, <?= $barang['id'] ?>)">
+                                                <i class="fas fa-times spaced-icon"></i>
+                                            </button>
+                                        </div>
+
                                     </div>
                                 <?php endforeach; ?>
 
                                 <div class="form-row barang-item" id="barang-container">
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-5">
                                         <label for="barang_id[]">Barang:</label>
                                         <select class="form-control select2bs4" name="barang_id[]" required>
+                                            <option value="-" selected>Pilih penerimaan ...</option>
                                             <?php foreach ($barang_persediaan as $item) : ?>
                                                 <option value="<?= $item['id'] ?>">
                                                     <?= $item['nama_barang'] ?>
@@ -178,14 +184,30 @@
                                         <label for="jumlah_harga[]">Jumlah Harga:</label>
                                         <input type="number" class="form-control jumlah_harga" name="jumlah_harga[]" readonly>
                                     </div>
-                                    <button type="button" class="btn btn-danger btn-sm ml-2" onclick="hapusBarang(this.parentNode, <?= $barang['id'] ?>)">Hapus</button>
+                                    <div class="form-group col-md-1 d-flex align-items-end">
+                                        <button type="button" class="btn btn-danger btn-sm ml-1" onclick="hapusBarang(this.parentNode, <?= $barang['id'] ?>)">
+                                            <i class="	fas fa-times spaced-icon"></i>
+                                        </button>
+                                    </div>
                                 </div>
-
-                                <button type="button" class="btn btn-danger btn-sm mt-4" onclick="tambahBarang()"><i class='fas fa-caret-square-down spaced-icon'></i>Tambah Barang</button>
-                                <button type="submit" class="btn btn-success btn-sm mt-4">Simpan Perubahan</button>
-
                             </div>
-                            <input type="hidden" id="barang_dihapus" name="barang_dihapus" value='[]'>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-primary btn-sm mt-4" onclick="tambahBarang()">
+                                            <i class="fas fa-plus spaced-icon"></i>Tambah Barang
+                                        </button>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <button type="button" class="btn btn-danger btn-sm mt-4" onclick="window.location.href='/penerimaan/daftar'">
+                                            <i class="fas fa-reply spaced-icon"></i>Batal
+                                        </button>
+                                        <button type="submit" class="btn btn-success btn-sm mt-4 ml-2">
+                                            <i class="fas fa-save spaced-icon"></i>Simpan Perubahan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
 
                     </div>
@@ -203,9 +225,10 @@
 </div>
 
 <div id="template-barang" style="display: none;">
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-5">
         <label for="barang_id[]">Barang:</label>
         <select class="form-control penerimaan" name="barang_id[]" required>
+            <option value="-" selected>Pilih penerimaan ...</option>
             <?php foreach ($barang_persediaan as $item) : ?>
                 <option value="<?= $item['id'] ?>">
                     <?= $item['nama_barang'] ?>
@@ -261,15 +284,18 @@
 
 
         var deleteButton = document.createElement('button');
-        deleteButton.innerHTML = 'Hapus';
-        deleteButton.className = 'btn btn-danger btn-sm ml-2';
+        deleteButton.innerHTML = '<i class="fas fa-times spaced-icon"></i>';
+        deleteButton.className = 'btn btn-danger btn-sm ml-1';
         deleteButton.onclick = function() {
             hapusBarang(newItem);
         };
         newItem.appendChild(deleteButton);
 
         container.appendChild(newItem);
-
+        var buttonContainer = document.createElement('div');
+        buttonContainer.className = 'form-group col-md-1 d-flex align-items-end';
+        buttonContainer.appendChild(deleteButton);
+        newItem.appendChild(buttonContainer);
 
         $(newItem).find('.penerimaan').select2({
             theme: 'bootstrap4'

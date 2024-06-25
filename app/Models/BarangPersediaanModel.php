@@ -12,7 +12,23 @@ class BarangPersediaanModel extends Model
     protected $useTimestamps = true; // Sesuaikan dengan kebutuhan Anda
     protected $allowedFields = ['id', 'kode_barang', 'nama_barang', 'harga_satuan', 'satuan', 'prodi', 'kelompok_barang', 'stok', 'created_at', 'updated_at'];
 
-    // Define the relationship with tbl_peminjaman
+    public function kurangiStok($barangId, $jumlah)
+    {
+        $barang = $this->find($barangId);
+
+        if ($barang) {
+            $stokBaru = $barang['stok'] - $jumlah;
+
+            if ($stokBaru < 0) {
+                // Anda bisa menambahkan logika untuk menangani stok negatif, misalnya, set ke 0 atau error handling
+                $stokBaru = 0;
+            }
+
+            $this->update($barangId, ['stok' => $stokBaru]);
+        }
+    }
+
+
     public function getNamaBarangById($barangId)
     {
         return $this->select('nama_barang')->where('id', $barangId)->first();

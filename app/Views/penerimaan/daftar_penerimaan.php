@@ -170,3 +170,16 @@
 
 
 <?php echo view('tema/footer.php'); ?>
+
+<script>
+    // Fungsi untuk menampilkan pesan toast
+    $(document).ready(function() {
+        <?php if (session()->getFlashdata('success')) : ?>
+            toastr.success("<?= session()->getFlashdata('success') ?>");
+        <?php endif; ?>
+
+        <?php if (session()->getFlashdata('errorMessages')) : ?>
+            toastr.error("<?= session()->getFlashdata('errorMessages') ?>");
+        <?php endif; ?>
+    });
+</script>

@@ -170,7 +170,7 @@ class Penerimaan extends BaseController
 
         // Redirect ke halaman daftar penerimaan
         session()->setFlashData('pesanAddBarangSatuan', 'Kategori berhasil diubah');
-        return redirect()->to('/penerimaan/daftar')->with('success', 'Data siswa berhasil diubah.');
+        return redirect()->to('/penerimaan/daftar')->with('success', 'Data penerimaan berhasil disimpan.');
     }
 
 
@@ -238,7 +238,7 @@ class Penerimaan extends BaseController
             'dataPenerimaan' => $dataPenerimaan,
             'daftar_barang' => $barangList,
             'csrfToken' => csrf_hash(),
-            'judul' => "Penerimaan Persediaan | $namaKampus",
+            'judul' => "Edit Penerimaan | $namaKampus",
             'currentYear' => $currentYear,
             'barang_persediaan' => $dataBarang,
             'dosen_tendik' => $dataDosenTendik,
@@ -290,11 +290,21 @@ class Penerimaan extends BaseController
         // Ambil daftar barang yang akan dihapus dari input hidden
         $barangDihapus = $this->request->getPost('barang_dihapus');
         if ($barangDihapus) {
-            $barangIds = explode(',', $barangDihapus);
-            // Hapus barang-barang ini dari database
-            $persediaanDetailModel->whereIn('id', $barangIds)->delete();
-        }
+            $barangDihapus = json_decode($barangDihapus, true); // Decode JSON menjadi array asosiatif
 
+            foreach ($barangDihapus as $barang) {
+                $barangId = $barang['id'];
+                $jumlahBarangDihapus = $barang['jumlah']; // Ambil jumlah barang yang dihapus
+
+                // Kurangi stok barang di tabel tbl_persediaan_barang
+                $barangPersediaanModel->kurangiStok($barangId, $jumlahBarangDihapus);
+
+                // Hapus barang dari database berdasarkan ID di PenerimaanPersediaanModel
+                $persediaanDetailModel->where('penerimaan_id', $penerimaanId)
+                    ->where('barang_id', $barangId)
+                    ->delete();
+            }
+        }
         // Proses update atau insert penerimaan persediaan detail
         $barangIds = $this->request->getPost('barang_id');
         $jumlahBarangs = $this->request->getPost('jumlah_barang');
@@ -307,38 +317,74 @@ class Penerimaan extends BaseController
                 ->where('barang_id', $barangId)
                 ->first();
 
+            // Data baru untuk disimpan
+            $persediaanDetailData = [
+                'penerimaan_id' => $penerimaanId,
+                'barang_id' => $barangId,
+                'jumlah_barang' => $jumlahBarangs[$key],
+                'harga_satuan' => $hargaSatuans[$key],
+                'jumlah_harga' => $jumlahHargas[$key],
+            ];
+
+            // Jika data sudah ada, periksa perbedaan dengan data baru
             if ($existingDetail) {
-                // Jika data sudah ada, lakukan update
-                $persediaanDetailData = [
-                    'jumlah_barang' => $jumlahBarangs[$key],
-                    'harga_satuan' => $hargaSatuans[$key],
-                    'jumlah_harga' => $jumlahHargas[$key],
+                // Bandingkan nilai yang ada dengan nilai yang baru
+                $existingData = [
+                    'jumlah_barang' => $existingDetail['jumlah_barang'],
+                    'harga_satuan' => $existingDetail['harga_satuan'],
+                    'jumlah_harga' => $existingDetail['jumlah_harga'],
                 ];
 
-                // Lakukan update
-                $persediaanDetailModel->update($existingDetail['id'], $persediaanDetailData);
+                // Periksa perubahan menggunakan array_diff_assoc
+                $diff = array_diff_assoc($persediaanDetailData, $existingData);
+
+                if (!empty($diff)) {
+                    // Jika ada perubahan, lakukan update
+                    $persediaanDetailModel->update($existingDetail['id'], $persediaanDetailData);
+
+                    // Update stok di tbl_persediaan_barang
+                    $barangPersediaanModel->updateStok($barangId, $jumlahBarangs[$key]);
+
+                    // Tambahkan nilai harga_satuan ke dalam tabel tbl_persediaan_barang
+                    $barangPersediaanModel->tambahHargaSatuan($barangId, $hargaSatuans[$key]);
+                }
             } else {
                 // Jika data belum ada, lakukan insert
-                $persediaanDetailData = [
-                    'penerimaan_id' => $penerimaanId,
-                    'barang_id' => $barangId,
-                    'jumlah_barang' => $jumlahBarangs[$key],
-                    'harga_satuan' => $hargaSatuans[$key],
-                    'jumlah_harga' => $jumlahHargas[$key],
-                ];
-
-                // Lakukan insert
                 $persediaanDetailModel->insert($persediaanDetailData);
+
+                // Update stok di tbl_persediaan_barang
+                $barangPersediaanModel->updateStok($barangId, $jumlahBarangs[$key]);
+
+                // Tambahkan nilai harga_satuan ke dalam tabel tbl_persediaan_barang
+                $barangPersediaanModel->tambahHargaSatuan($barangId, $hargaSatuans[$key]);
             }
-
-            // Update stok di tbl_persediaan_barang
-            $persediaanDetailModel->updateStokBarang($barangId, $jumlahBarangs[$key]);
-
-            // Tambahkan nilai harga_satuan ke dalam tabel tbl_persediaan_barang
-            $barangPersediaanModel->tambahHargaSatuan($barangId, $hargaSatuans[$key]);
         }
 
         // Redirect ke halaman daftar penerimaan atau halaman lain yang sesuai
         return redirect()->to('/penerimaan/daftar')->with('success', 'Data penerimaan berhasil diupdate.');
+    }
+
+
+    public function updateStok($barangId, $jumlahBarangDihapus)
+    {
+        // Ambil data barang berdasarkan ID
+        $barang = $this->find($barangId);
+
+        if ($barang) {
+            // Hitung stok baru
+            $stokBaru = $barang['stok'] - $jumlahBarangDihapus;
+
+            // Pastikan stok tidak negatif
+            if ($stokBaru < 0) {
+                $stokBaru = 0; // Atur stok menjadi 0 jika hasilnya negatif
+            }
+
+            // Simpan stok baru ke dalam database
+            $this->update($barangId, ['stok' => $stokBaru]);
+
+            // Jika Anda ingin mengembalikan stok awal jika belum ada penerimaan, tambahkan logika di sini
+        } else {
+            // Barang tidak ditemukan, lakukan sesuai kebutuhan aplikasi Anda
+        }
     }
 }
