@@ -337,32 +337,15 @@ $level = $session->get('level');
                                         </a>
                                     </li>
 
-
-
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/barang/persediaan/master') !== false || $_SERVER['REQUEST_URI'] == '/barang/satuan' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
-                                            <i class="fas fa-info-circle nav-icon"></i>
+                                        <a href="/barang/persediaan/master" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/barang/persediaan/master') !== false || $_SERVER['REQUEST_URI'] == '/tulisan/tambah' || $_SERVER['REQUEST_URI'] == '/tulisan/kategori') ? 'active' : '' ?>">
+                                            <i class="far fa-list-alt nav-icon"></i>
                                             <p>
-                                                Referensi
-                                                <i class="right fas fa-angle-left"></i>
+                                                Input BHP
                                             </p>
                                         </a>
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="/barang/persediaan/master" class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/barang/persediaan/master') ? 'active' : '' ?>">
-                                                    <i class="far fa-dot-circle sub-item spaced-icon"></i>
-                                                    <p>Input Barang</p>
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a href="/barang/satuan" class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/barang/satuan') ? 'active' : '' ?>">
-                                                    <i class="far fa-dot-circle sub-item spaced-icon"></i>
-                                                    <p>Satuan Barang</p>
-                                                </a>
-                                            </li>
-
-                                        </ul>
                                     </li>
+
 
                                 </ul>
                             </li>
@@ -452,6 +435,32 @@ $level = $session->get('level');
 
                                 </ul>
                             </li>
+
+                            <li class="nav-item">
+                                <a href="#" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/data/satuan') !== false || $_SERVER['REQUEST_URI'] == '/data/pembelajaran') ? 'active' : '' ?>">
+                                    <i class="fas fa-info-circle nav-icon"></i>
+                                    <p>
+                                        Referensi
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/data/satuan" class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/data/satuan') ? 'active' : '' ?>">
+                                            <i class="far fa-dot-circle sub-item spaced-icon"></i>
+                                            <p>Input Satuan</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/data/pembelajaran" class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/data/pembelajaran') ? 'active' : '' ?>">
+                                            <i class="far fa-dot-circle sub-item spaced-icon"></i>
+                                            <p>Input Pembelajaran</p>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+
                             <li class="nav-item">
                                 <a href="/pemeliharaan" class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/pemeliharaan') ? 'active' : '' ?>">
                                     <i class="nav-icon fas fa-fire" style='color:red'></i>

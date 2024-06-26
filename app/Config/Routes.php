@@ -94,7 +94,7 @@ $routes->post('/barang/persediaan/hapus', 'BarangPersediaan::delete');
 $routes->post('/barang/persediaan/tambah', 'BarangPersediaan::addBarang');
 
 
-$routes->get('/barang/satuan', 'Satuan::index');
+$routes->get('/data/satuan', 'Satuan::index');
 $routes->post('/barang/satuan/hapus', 'Satuan::delete');
 $routes->post('/barang/satuan/tambah', 'Satuan::addSatuan');
 
@@ -237,6 +237,10 @@ $routes->get('/stock/daftar', 'Laporan::lihatStock');
 $routes->post('/update_biaya_perawatan/(:num)', 'Pihakluar::updateBiayaPerawatan/$1');
 $routes->get('penerimaan/edit/(:num)', 'Penerimaan::edit/$1');
 $routes->post('penerimaan/update', 'Penerimaan::update');
+
+$routes->get('/data/pembelajaran', 'Pembelajaran::index');
+$routes->post('/data/pembelajaran/hapus', 'Pembelajaran::delete');
+$routes->post('/data/pembelajaran/tambah', 'Pembelajaran::addPembelajaran');
 
 
 
