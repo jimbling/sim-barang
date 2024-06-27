@@ -242,6 +242,11 @@ $routes->get('/data/pembelajaran', 'Pembelajaran::index');
 $routes->post('/data/pembelajaran/hapus', 'Pembelajaran::delete');
 $routes->post('/data/pembelajaran/tambah', 'Pembelajaran::addPembelajaran');
 
+$routes->get('/lupa-password', 'Auth::forgotPasswordForm');
+$routes->post('/sendResetLink', 'Auth::sendResetLink');
+$routes->get('/lupa-password/reset/(:segment)', 'Auth::resetPassword/$1');
+$routes->post('/lupa-password/atur-ulang', 'Auth::processResetPassword');
+
 
 
 

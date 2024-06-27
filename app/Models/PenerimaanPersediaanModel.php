@@ -28,6 +28,7 @@ class PenerimaanPersediaanModel extends Model
 
     public function getPenerimaanPersediaan()
     {
+        // Menyusun query dengan select, join, dan groupBy
         $this->select('
         tbl_persediaan_penerimaan_detail.penerimaan_id,
         tbl_persediaan_penerimaan_detail.barang_id,
@@ -45,18 +46,27 @@ class PenerimaanPersediaanModel extends Model
         SUM(tbl_persediaan_penerimaan_detail.jumlah_harga) as total_jumlah_harga
     ');
 
+        // Melakukan join dengan tabel tbl_persediaan_penerimaan dan tbl_persediaan_barang
         $this->join('tbl_persediaan_penerimaan', 'tbl_persediaan_penerimaan.id = tbl_persediaan_penerimaan_detail.penerimaan_id');
         $this->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_persediaan_penerimaan_detail.barang_id');
 
+        // Mengelompokkan berdasarkan penerimaan_id
         $this->groupBy('tbl_persediaan_penerimaan_detail.penerimaan_id');
 
+        // Mengurutkan berdasarkan tanggal_penerimaan secara descending (terbaru)
+        $this->orderBy('tbl_persediaan_penerimaan.tanggal_penerimaan', 'DESC');
+
+        // Mengambil semua data yang ditemukan
         return $this->findAll();
     }
+
 
     public function insertPenerimaanPersed($data)
     {
         return $this->db->table('tbl_persediaan_penerimaan_detail')->insert($data);
     }
+
+
 
 
 

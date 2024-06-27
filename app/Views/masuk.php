@@ -16,6 +16,7 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="../../assets/dist/css/adminlte.min.css?v=3.2.0">
   <link href="../../assets/dist/login/css/login.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="../../assets/plugins/toastr/toastr.min.css">
 
   <!-- SweetAlert2 -->
   <style type="text/css">
@@ -82,7 +83,9 @@ $logo = $data_pengaturan['logo'];
               <span id="spinner" class="loader" style="display:none;"></span>
             </button>
           </form>
-
+          <p class="mt-3 mb-1">
+            <a href="/lupa-password"><b></b>Lupa Password</b></a>
+          </p>
         </div>
 
       </div>
@@ -122,6 +125,7 @@ $logo = $data_pengaturan['logo'];
       }
     });
   </script>
+
   <script>
     $(document).ready(function() {
       $('#togglePassword').on('click', function() {
@@ -140,6 +144,8 @@ $logo = $data_pengaturan['logo'];
   </script>
   <!-- Main Footer -->
 
+
+
   <!-- jQuery -->
   <script src="../../assets/plugins/jquery/jquery.min.js"></script>
   <!-- Bootstrap 4 -->
@@ -149,8 +155,19 @@ $logo = $data_pengaturan['logo'];
   <!-- SweetAlert2 -->
   <script src="../../assets/dist/sweet/sweetalert2.all.min.js"></script>
   <script src="../../assets/dist/sweet/myscript.js"></script>
+  <script src="../../assets/plugins/toastr/toastr.min.js"></script>
 
+  <script>
+    $(document).ready(function() {
+      <?php if (session()->getFlashdata('success')) : ?>
+        toastr.success('<?= session()->getFlashdata('success') ?>');
+      <?php endif; ?>
 
+      <?php if (session()->getFlashdata('error')) : ?>
+        toastr.error('<?= session()->getFlashdata('error') ?>');
+      <?php endif; ?>
+    });
+  </script>
 
 
 </html>

@@ -10,7 +10,10 @@ class UserModel extends Model
     protected $useAutoIncrement = true; // Pastikan ini true
     protected $useTimestamps = true; // Sesuaikan dengan kebutuhan Anda
     protected $primaryKey = 'id';
-    protected $allowedFields = ['id', 'user_nama', 'user_password', 'level', 'full_nama', 'type', 'created_at', 'updated_at'];
+    protected $allowedFields = [
+        'id', 'user_nama', 'user_password', 'email', 'level', 'full_nama', 'type',
+        'created_at', 'updated_at', 'reset_token', 'reset_token_expiry'
+    ];
 
     public function getUserById($userId)
     {

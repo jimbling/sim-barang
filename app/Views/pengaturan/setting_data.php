@@ -455,6 +455,12 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="editUserNama" class="col-sm-4 col-form-label">Email</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="editUserEmail" name="userEmail" value="<?= $akun['email']; ?>"> <!-- Menggunakan alias username -->
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="editUserPass" class="col-sm-4 col-form-label">Password</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" id="editUserPass" name="password"> <!-- Menggunakan alias password -->
@@ -503,46 +509,61 @@
         var id = document.getElementById('akunId').value;
         var fullName = document.getElementById('editNama').value;
         var username = document.getElementById('editUserNama').value;
+        var userEmail = document.getElementById('editUserEmail').value;
         var password = document.getElementById('editUserPass').value;
         showLoading();
 
+        var data = {
+            id: id,
+            fullName: fullName,
+            username: username,
+            userEmail: userEmail
+        };
+
+        // Hanya tambahkan password jika tidak kosong
+        if (password.trim() !== "") {
+            data.password = password;
+        }
+
         $.ajax({
             type: "POST",
-            url: baseURL + '/data/admin/update',
-            data: {
-                id: id,
-                full_nama: full_nama,
-                user_nama: user_nama,
-                user_password: user_password
-            },
+            url: baseUrl + '/data/admin/update',
+            data: data,
             success: function(response) {
                 hideLoading();
-                if (response.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sukses',
-                        text: response.message,
-                    }).then(() => {
-                        window.location.href = '/data/pengaturan';
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal',
-                        text: response.message,
-                    });
-                }
+
             },
-            error: function(xhr, textStatus, errorThrown) {
-                hideLoading();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Terjadi kesalahan saat mengirim permintaan.',
-                });
-            }
+
         });
 
         return false;
     }
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Tampilkan pesan sukses jika ada
+        <?php if (session()->getFlashdata('success')) : ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '<?= session()->getFlashdata('success') ?>',
+                timer: 3000, // Notifikasi akan hilang otomatis setelah 3 detik
+                showConfirmButton: false
+            });
+        <?php endif; ?>
+
+        // Tampilkan pesan error jika ada
+        <?php if (session()->getFlashdata('errors')) : ?>
+            <?php foreach (session()->getFlashdata('errors') as $error) : ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '<?= $error ?>',
+                    timer: 10000, // Notifikasi akan hilang otomatis setelah 5 detik
+                    showConfirmButton: false
+                });
+            <?php endforeach; ?>
+        <?php endif; ?>
+    });
 </script>

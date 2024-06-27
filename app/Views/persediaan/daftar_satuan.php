@@ -107,10 +107,9 @@
 
 
 
-<!-- Akhir edit Barang -->
+
 
 <script>
-    // JavaScript untuk mengontrol checkbox master
     document.getElementById('select-all-checkbox').addEventListener('change', function() {
         var checkboxes = document.querySelectorAll('.checkbox-item');
         checkboxes.forEach(function(checkbox) {
@@ -121,19 +120,19 @@
 
 
 
-<!-- Fungsi Hapus Barang -->
+
 <script>
     function deleteSelectedItems() {
         var selectedIds = [];
 
-        // Get all selected checkboxes
+
         $('.checkbox-item:checked').each(function() {
             selectedIds.push($(this).data('id'));
         });
 
-        // Check if any checkbox is selected
+
         if (selectedIds.length > 0) {
-            // Use SweetAlert for confirmation
+
             Swal.fire({
                 title: 'Anda yakin?',
                 text: 'Data yang dipilih akan dihapus!',
@@ -145,30 +144,30 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    showLoading(); // Show loading indicator
-                    // Send AJAX request to delete the items
+                    showLoading();
+
                     $.ajax({
-                        url: '/barang/satuan/hapus', // Update with your actual controller and method
+                        url: '/barang/satuan/hapus',
                         method: 'POST',
                         data: {
                             ids: selectedIds
                         },
                         success: function(response) {
-                            hideLoading(); // Hide loading indicator
+                            hideLoading();
 
                             Swal.fire({
                                 title: 'Berhasil!',
                                 text: 'Data berhasil dihapus.',
                                 icon: 'success',
-                                timer: 2000, // Durasi tampilan dalam milidetik (misalnya, 5000 milidetik = 5 detik)
-                                showConfirmButton: false, // Sembunyikan tombol OK (jika tidak diinginkan)
+                                timer: 2000,
+                                showConfirmButton: false,
                             }).then(() => {
-                                // Arahkan pengguna ke halaman baru setelah SweetAlert ditutup
+
                                 window.location.replace("/barang/satuan");
                             });
                         },
                         error: function(error) {
-                            hideLoading(); // Hide loading indicator
+                            hideLoading();
 
                             console.error('Error:', error);
                             Swal.fire({
@@ -184,15 +183,11 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan',
-                text: 'Pilih setidaknya satu data mahasiswa untuk dihapus.'
+                text: 'Pilih setidaknya satu data satuan untuk dihapus.'
             });
         }
     }
 </script>
-
-<!-- Akhir fungsi hapus barang -->
-
-
 
 
 <?php echo view('tema/footer.php'); ?>

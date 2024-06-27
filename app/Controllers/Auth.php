@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\UserModel;
 use App\Models\MahasiswaModel;
 use App\Models\DosenTendikModel;
+use CodeIgniter\I18n\Time;
+use Config\Services;
 
 
 class Auth extends BaseController
@@ -94,5 +96,138 @@ class Auth extends BaseController
     {
         session()->destroy();
         return redirect()->to('/');
+    }
+
+    public function forgotPasswordForm()
+    {
+        return view('lupa_password'); // Nama file view untuk form lupa password
+    }
+
+    public function sendResetLink()
+    {
+        // Validasi input email
+        if (!$this->validate(['email' => 'required|valid_email'])) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $email = $this->request->getPost('email');
+        $userModel = new UserModel();
+        $user = $userModel->where('email', $email)->first();
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'Email tidak ditemukan.');
+        }
+
+        // Generate token reset dan simpan ke database
+        $token = bin2hex(random_bytes(32));
+        $userModel->update($user['id'], [
+            'reset_token' => $token,
+            'reset_token_expiry' => Time::now()->addMinutes(5)->toDateTimeString() // Token expires in 2 minutes
+        ]);
+
+        // Kirim email reset password
+        $resetLink = base_url("lupa-password/reset/{$token}");
+        $message = "
+    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>
+        <h2 style='color: #333;'>Reset Password Anda</h2>
+        <p>Anda telah meminta untuk mereset password akun Anda di SIM Laboratorium Akper YKY. Klik tombol di bawah ini untuk melanjutkan proses reset password:</p>
+        <p style='text-align: center;'>
+            <a href='{$resetLink}' style='display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; border-radius: 5px; text-decoration: none;'>Reset Password</a>
+        </p>
+        <p>Jika Anda tidak meminta reset password ini, Anda dapat mengabaikan email ini.</p>
+        <p>Terima kasih,</p>
+        <p>Tim SIM Lab YKY</p>
+    </div>";
+
+        // Gunakan layanan email dari CodeIgniter
+        $emailService = Services::email();
+        $emailService->setTo($email);
+        $emailService->setFrom('notifikasi@jimbling.my.id', 'Reset Password SIM Lab YKY');
+        $emailService->setSubject('Reset Password');
+        $emailService->setMessage($message);
+        $emailService->setMailType('html'); // Set tipe pesan ke HTML
+
+        if ($emailService->send()) {
+            return redirect()->back()->with('success', 'Email reset password telah dikirim.');
+        } else {
+            return redirect()->back()->with('error', 'Gagal mengirim email. Silakan coba lagi.');
+        }
+    }
+
+
+
+    // Menampilkan form untuk memasukkan password baru
+    public function resetPassword($token)
+    {
+        $userModel = new UserModel();
+        $user = $userModel->where('reset_token', $token)
+            ->where('reset_token_expiry >', Time::now()->toDateTimeString())
+            ->first();
+
+        if (!$user) {
+            return redirect()->to('/lupa-password')->with('error', 'Token tidak valid atau telah kedaluwarsa.');
+        }
+
+        return view('recovery_password', ['token' => $token]);
+    }
+
+    // Memproses dan menyimpan password baru
+    public function processResetPassword()
+    {
+        // Definisikan aturan validasi
+        $validationRules = [
+            'password' => [
+                'label' => 'Password',
+                'rules' => 'required|min_length[8]|max_length[20]|regex_match[/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,20}$/]',
+                'errors' => [
+                    'required' => 'Password wajib diisi.',
+                    'min_length' => 'Password minimal terdiri dari 8 karakter.',
+                    'max_length' => 'Password maksimal terdiri dari 20 karakter.',
+                    'regex_match' => 'Password harus mengandung setidaknya satu huruf besar, satu huruf kecil, dan satu angka.'
+                ]
+            ],
+            'confirm_password' => [
+                'label' => 'Konfirmasi Password',
+                'rules' => 'required|matches[password]',
+                'errors' => [
+                    'required' => 'Konfirmasi password wajib diisi.',
+                    'matches' => 'Konfirmasi password tidak cocok dengan password.'
+                ]
+            ],
+            'token' => [
+                'label' => 'Token',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Token reset password tidak valid atau telah kedaluwarsa.'
+                ]
+            ]
+        ];
+
+        // Lakukan validasi
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Ambil data dari form
+        $password = $this->request->getPost('password');
+        $token = $this->request->getPost('token');
+
+        $userModel = new UserModel();
+        $user = $userModel->where('reset_token', $token)
+            ->where('reset_token_expiry >', Time::now()->toDateTimeString())
+            ->first();
+
+        if (!$user) {
+            return redirect()->to('/user/forgotPassword')->with('error', 'Token tidak valid atau telah kedaluwarsa.');
+        }
+
+        // Perbarui password pengguna
+        $userModel->update($user['id'], [
+            'user_password' => password_hash($password, PASSWORD_DEFAULT),
+            'reset_token' => null,
+            'reset_token_expiry' => null
+        ]);
+
+        return redirect()->to('/')->with('success', 'Password Anda telah berhasil direset. Silakan login dengan password baru Anda.');
     }
 }

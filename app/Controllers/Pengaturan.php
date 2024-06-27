@@ -225,34 +225,90 @@ class Pengaturan extends BaseController
 
     public function updateAdmin()
     {
+        // Validasi input
+        $validation = $this->validate([
+            'fullName' => 'required',
+            'username' => 'required',
+            'password' => [
+                'rules' => 'permit_empty|min_length[8]|regex_match[/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$/]',
+                'errors' => [
+                    'min_length' => 'Password harus memiliki setidaknya 8 karakter.',
+                    'regex_match' => 'Password harus mengandung setidaknya satu huruf besar, satu huruf kecil, dan satu angka.'
+                ]
+            ],
+        ]);
+
+        // Jika validasi gagal, kirimkan pesan error menggunakan session flashdata
+        if (!$validation) {
+            $errors = $this->validator->getErrors();
+            $errorMessage = '';
+
+            // Buat pesan error yang lebih spesifik
+            foreach ($errors as $field => $error) {
+                $errorMessage .= $error . ' '; // Gabungkan pesan error
+            }
+
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => trim($errorMessage) // Hapus spasi di awal dan akhir pesan
+                ]);
+            } else {
+                return redirect()->back()->withInput()->with('errors', $errors);
+            }
+        }
+
         // Mengambil data yang dikirimkan melalui POST dengan alias
         $id = $this->request->getPost('id');
         $fullName = $this->request->getPost('fullName'); // Alias untuk full_nama
         $username = $this->request->getPost('username'); // Alias untuk user_nama
+        $userEmail = $this->request->getPost('userEmail'); // Alias untuk user_nama
         $password = $this->request->getPost('password'); // Alias untuk user_password
 
         // Pemetaan alias ke kolom database asli
         $data = [
             'full_nama' => $fullName,
             'user_nama' => $username,
-            'user_password' => password_hash($password, PASSWORD_DEFAULT), // Hashing password
+            'email' => $userEmail,
         ];
+
+        // Jika password tidak kosong, tambahkan ke data
+        if (!empty($password)) {
+            $data['user_password'] = password_hash($password, PASSWORD_DEFAULT); // Hashing password
+        }
 
         // Lakukan pembaruan data ke database menggunakan model UserModel
         $userModel = new \App\Models\UserModel();
-        $userModel->updateUser($id, $data);
+        $updateStatus = $userModel->update($id, $data);
 
-        // Pesan respons
-        $response = [
-            'status' => 'success',
-            'message' => 'Data berhasil diperbarui',
-            'redirect' => '/data/pengaturan',
-        ];
+        // Periksa apakah pembaruan berhasil
+        if ($updateStatus) {
+            $successMessage = 'Data pengguna berhasil diperbaharui';
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON(['status' => 'success', 'message' => $successMessage]);
+            } else {
+                session()->setFlashData('success', $successMessage);
+            }
+        } else {
+            $errorMessage = 'Data pengguna gagal diperbaharui';
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON(['status' => 'error', 'message' => $errorMessage]);
+            } else {
+                session()->setFlashData('errors', [$errorMessage]);
+            }
+        }
 
-        // Kirim respons JSON ke JavaScript
-        session()->setFlashData('pesanAkun', 'Data berhasil diperbaharui');
-        return redirect()->to('/data/pengaturan')->with('success', 'Data pengguna berhasil diubah.');
+        // Redirect ke halaman pengaturan
+        return redirect()->to('/data/pengaturan');
     }
+
+
+
+
+
+
+
+
 
 
     public function updateData()
