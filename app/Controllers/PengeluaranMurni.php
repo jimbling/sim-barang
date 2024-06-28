@@ -221,7 +221,7 @@ class PengeluaranMurni extends BaseController
                 return redirect()->to(base_url('pengeluaran/bhp'));
             }
         }
-
+        dd($data);
         return view('pengeluaran/minta_barang', $data);
     }
 

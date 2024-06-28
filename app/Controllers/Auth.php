@@ -134,6 +134,7 @@ class Auth extends BaseController
         <p style='text-align: center;'>
             <a href='{$resetLink}' style='display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; border-radius: 5px; text-decoration: none;'>Reset Password</a>
         </p>
+         <p>Token diatas .</p>
         <p>Jika Anda tidak meminta reset password ini, Anda dapat mengabaikan email ini.</p>
         <p>Terima kasih,</p>
         <p>Tim SIM Lab YKY</p>
