@@ -15,6 +15,7 @@ use App\Models\PengeluaranmurniModel;
 use App\Models\PengeluaranmurniDetailModel;
 use App\Models\MahasiswaModel;
 use App\Models\PengaturanModel;
+use App\Models\StokBulananModel;
 
 
 
@@ -162,7 +163,6 @@ class PengeluaranMurni extends BaseController
         $pengeluaranmurniModel = new PengeluaranmurniModel();
         $dataPengeluaranMurni = $pengeluaranmurniModel->getdetail($id);
 
-
         $penerimaanpersediaanModel = new PenerimaanPersediaanModel();
         $dataBarang = $penerimaanpersediaanModel->tampilkanData();
 
@@ -171,57 +171,55 @@ class PengeluaranMurni extends BaseController
         $dosentendikModel = new DosenTendikModel();
         $dataDosenTendik = $dosentendikModel->getDosenTendik();
 
-        // Mendapatkan level pengguna dari sesi
         $userLevel = session('level');
-        // Pada kontroller
         $pengeluaranmurnidetailModel = new PengeluaranmurniDetailModel();
         $detailPengeluaranMurni = $pengeluaranmurnidetailModel->getDetailWithNamaBarang($id);
 
         $dataBarangTerpilih = [];
-
         foreach ($detailPengeluaranMurni as $detail) {
             $dataBarangTerpilih[] = [
                 'id' => $detail->id,
                 'barang_id' => $detail->barang_id,
-                'nama_barang' => $detail->nama_barang, // Nama barang diambil dari tbl_persediaan_barang
+                'nama_barang' => $detail->nama_barang,
                 'jumlah_barang' => $detail->ambil_barang_murni,
-                // Tambahkan detail lain sesuai kebutuhan
             ];
         }
 
-        // Menyiapkan data untuk disimpan
+        // Mendapatkan bulan dan tahun dari tanggal_penggunaan
+        $tanggalPenggunaan = $dataPengeluaranMurni['tanggal_penggunaan'];
+        $timestamp = strtotime($tanggalPenggunaan);
+        $bulan = date('m', $timestamp);
+        $tahun = date('Y', $timestamp);
+
+        // Mengambil data dari StokBulananModel berdasarkan bulan dan tahun
+        $stokBulananModel = new StokBulananModel();
+        $dataStokBulanan = $stokBulananModel->tampilkanDataStokBulanan($bulan, $tahun);
+
         $data = [
             'judul' => "Tambah Pengeluaran Tanpa Peminjaman | $namaKampus",
             'currentYear' => $currentYear,
-            'data_satuan' =>  $dataSatuan,
-            'barang_persediaan' => $dataBarang,
+            'data_satuan' => $dataSatuan,
+            'barang_persediaan' => $dataStokBulanan,
             'data_mahasiswa' => $dataMahasiswa,
             'data_dosen_tendik' => $dataDosenTendik,
             'data_pengeluaran_murni' => $dataPengeluaranMurni,
             'detail_pengeluaran_murni' => $detailPengeluaranMurni,
-            'id' => $id, // Menambahkan ID pengeluaran ke data
+            'data_barang_terpilih' => $dataBarangTerpilih,
+            'id' => $id,
         ];
-
-        $data['data_barang_terpilih'] = $dataBarangTerpilih;
 
         // Pemeriksaan waktu created_at hanya untuk level 'user'
         if ($userLevel == 'User') {
-            $waktuPembuatan = strtotime($dataPengeluaranMurni['created_at']); // Ubah string menjadi timestamp
-            $waktuSekarang = time(); // Timestamp saat ini
-
-            // Hitung selisih waktu dalam detik
+            $waktuPembuatan = strtotime($dataPengeluaranMurni['created_at']);
+            $waktuSekarang = time();
             $selisihWaktu = $waktuSekarang - $waktuPembuatan;
 
-            // Jika sudah lebih dari 24 jam, tampilkan SweetAlert
             if ($selisihWaktu > (24 * 60 * 60)) {
-                // Simpan pesan error dalam sesi flash-data
                 session()->setFlashData('custom_error_message', 'Maaf, Anda tidak dapat mengakses halaman ini karena sudah melebihi 24 jam.');
-
-                // Redirect ke halaman tertentu atau menggunakan return redirect()->to(base_url('halaman_tujuan'));
                 return redirect()->to(base_url('pengeluaran/bhp'));
             }
         }
-        dd($data);
+
         return view('pengeluaran/minta_barang', $data);
     }
 

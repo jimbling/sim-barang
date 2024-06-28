@@ -48,6 +48,19 @@ class StokBulananModel extends Model
             ->findAll();
     }
 
+    public function tampilkanDataStokBulanan($bulan, $tahun)
+    {
+        // Membangun query dengan join ke tabel tbl_persediaan_barang untuk mendapatkan nama_barang
+        $builder = $this->db->table($this->table);
+        $builder->select('tbl_stok_bulanan.*, tbl_persediaan_barang.nama_barang');
+        $builder->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_stok_bulanan.barang_id');
+        $builder->where('bulan', $bulan);
+        $builder->where('tahun', $tahun);
+
+        $query = $builder->get();
+        return $query->getResult();
+    }
+
     public function getDataBulanTahunSebelumnya($bulan, $tahun)
     {
         // Menghitung bulan dan tahun sebelumnya

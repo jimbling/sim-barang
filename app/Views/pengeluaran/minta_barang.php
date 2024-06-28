@@ -192,16 +192,23 @@
 
                 <input type="text" class="form-control mb-2" id="inputPencarianBarang" placeholder="Cari Barang">
 
+                <?php if (empty($barang_persediaan)) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        Data Barang Belum Ada Karena Belum Tutup Buku, Silahkan lakukan tutup buku terlebih dahulu.
+                    </div>
+                <?php else : ?>
+                    <?php foreach ($barang_persediaan as $barang) : ?>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="pilihBarang('<?= $barang->barang_id ?>', '<?= $barang->nama_barang ?>', '<?= $barang->harga_satuan ?>', '<?= $barang->sisa_stok ?>')">
+                            <?= $barang->nama_barang ?>
+                        </button>
+                    <?php endforeach; ?>
+                <?php endif; ?>
 
-                <?php foreach ($barang_persediaan as $barang) : ?>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="pilihBarang('<?= $barang->barang_id ?>', '<?= $barang->nama_barang ?>', '<?= $barang->harga_satuan ?>', '<?= $barang->stok ?>')">
-                        <?= $barang->nama_barang ?>
-                    </button>
-                <?php endforeach; ?>
             </div>
         </div>
     </div>
 </div>
+
 
 
 <script>

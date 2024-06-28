@@ -22,17 +22,17 @@ class PengeluaranmurniModel extends Model
 
     public function getPengeluaranMurni()
     {
-        // Dapatkan user_id dari sesi
+        // Dapatkan user_id dan level dari sesi
         $session = session();
         $user_id = $session->get('id');
         $user_level = $session->get('level');
 
-        // Jika pengguna adalah admin, tampilkan semua data
+        // Jika pengguna adalah admin, tampilkan semua data diurutkan berdasarkan tanggal_penggunaan
         if ($user_level == 'Admin') {
-            return $this->orderBy('created_at', 'DESC')->findAll();
+            return $this->orderBy('tanggal_penggunaan', 'DESC')->findAll();
         } else {
-            // Filter berdasarkan user_id dari sesi
-            return $this->orderBy('created_at', 'DESC')
+            // Filter berdasarkan user_id dari sesi, dan urutkan berdasarkan tanggal_penggunaan
+            return $this->orderBy('tanggal_penggunaan', 'DESC')
                 ->where('user_id', $user_id)
                 ->findAll();
         }
