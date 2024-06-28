@@ -35,6 +35,7 @@ class PengeluaranMurni extends BaseController
     protected $mahasiswaModel;
     protected $pengaturanModel;
     protected $settingsService;
+    protected $stokBulananModel;
 
     public function __construct()
     {
@@ -49,6 +50,7 @@ class PengeluaranMurni extends BaseController
         $this->pengeluaranmurnidetailModel = new PengeluaranmurniDetailModel();
         $this->mahasiswaModel = new MahasiswaModel();
         $this->pengaturanModel = new PengaturanModel();
+        $this->stokBulananModel = new StokBulananModel();
         $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 

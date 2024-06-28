@@ -14,6 +14,7 @@ use App\Models\PengeluaranModel;
 use App\Models\PengeluaranmurniModel;
 use App\Models\PengeluaranmurniDetailModel;
 use App\Models\MahasiswaModel;
+use App\Models\StokBulananModel;
 
 
 
@@ -32,6 +33,7 @@ class Pengeluaran extends BaseController
     protected $pengeluaranmurnidetailModel;
     protected $mahasiswaModel;
     protected $settingsService;
+    protected $stokBulananModel;
 
     public function __construct()
     {
@@ -45,6 +47,7 @@ class Pengeluaran extends BaseController
         $this->pengeluaranmurniModel = new PengeluaranmurniModel();
         $this->pengeluaranmurnidetailModel = new PengeluaranmurniDetailModel();
         $this->mahasiswaModel = new MahasiswaModel();
+        $this->stokBulananModel = new StokBulananModel();
         $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 
@@ -89,28 +92,42 @@ class Pengeluaran extends BaseController
 
     public function addPengeluaran()
     {
-
         $currentYear = date('Y');
         $namaKampus = $this->settingsService->getNamaKampus();
 
         $satuanModel = new SatuanModel();
         $dataSatuan = $satuanModel->getSatuan();
 
-        $penerimaanpersediaanModel = new PenerimaanPersediaanModel();
-        $dataBarang = $penerimaanpersediaanModel->tampilkanData();
-
         $peminjamanbarangModel = new PeminjamanbarangModel();
         $dataPeminjaman = $peminjamanbarangModel->getPeminjamanBarang24Jam();
 
+        // Pastikan ada data peminjaman yang diambil
+        if (!empty($dataPeminjaman)) {
+            // Misalnya kita ambil tanggal pinjam dari data peminjaman pertama
+            $tanggalPeminjaman = $dataPeminjaman[0]['tanggal_pinjam']; // Akses sebagai array
+
+            // Mendapatkan bulan dan tahun dari tanggal_pinjam
+            $timestamp = strtotime($tanggalPeminjaman);
+            $bulan = date('m', $timestamp);
+            $tahun = date('Y', $timestamp);
+
+            // Mengambil data dari StokBulananModel berdasarkan bulan dan tahun
+            $stokBulananModel = new StokBulananModel();
+            $dataStokBulanan = $stokBulananModel->tampilkanDataStokBulanan($bulan, $tahun);
+        } else {
+            // Jika tidak ada data peminjaman dalam 24 jam terakhir, setel dataStokBulanan sebagai array kosong
+            $dataStokBulanan = [];
+        }
 
         // Menyiapkan data untuk disimpan
         $data = [
             'judul' => "Tambah Pengeluaran | $namaKampus",
             'currentYear' => $currentYear,
-            'data_satuan' =>  $dataSatuan,
-            'barang_persediaan' => $dataBarang,
+            'data_satuan' => $dataSatuan,
+            'barang_persediaan' => $dataStokBulanan,
             'data_peminjaman' => $dataPeminjaman,
         ];
+
 
         return view('pengeluaran/tambah_pengeluaran', $data);
     }
