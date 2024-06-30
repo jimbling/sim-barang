@@ -190,7 +190,7 @@
 
 <!-- Modal Pilih Barang -->
 <div class="modal fade" id="modalPilihBarang" tabindex="-1" role="dialog" aria-labelledby="modalPilihBarangLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalPilihBarangLabel">Pilih Barang</h5>
@@ -202,11 +202,36 @@
 
                 <input type="text" class="form-control mb-2" id="inputPencarianBarang" placeholder="Cari Barang">
 
-                <?php foreach ($barang_persediaan as $barang) : ?>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="pilihBarang('<?= $barang->barang_id ?>', '<?= $barang->nama_barang ?>', '<?= $barang->harga_satuan ?>', '<?= $barang->stok ?>')">
-                        <?= $barang->nama_barang ?>
-                    </button>
-                <?php endforeach; ?>
+                <?php if (empty($saldo_bulan_sebelumnya) && empty($penerimaan_bulan_berjalan)) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        Data Barang Belum Ada Karena Belum Tutup Buku, Silahkan lakukan tutup buku terlebih dahulu.
+                    </div>
+                <?php else : ?>
+                    <!-- Menampilkan Saldo dari Bulan Sebelumnya -->
+                    <?php if (!empty($saldo_bulan_sebelumnya)) : ?>
+                        <h6>Saldo Bulan Sebelumnya</h6>
+                        <?php foreach ($saldo_bulan_sebelumnya as $barang) : ?>
+                            <?php if ($barang->sisa_stok > 0) : ?>
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="pilihBarang('<?= $barang->barang_id ?>', '<?= $barang->nama_barang ?>', '<?= $barang->harga_satuan ?>', '<?= $barang->sisa_stok ?>')">
+                                    <?= $barang->nama_barang ?> (Sisa Stok: <?= $barang->sisa_stok ?>)
+                                </button>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+
+                    <!-- Menampilkan Penerimaan dari Bulan Berjalan -->
+                    <?php if (!empty($penerimaan_bulan_berjalan)) : ?>
+                        <h6>Penerimaan Bulan Berjalan</h6>
+                        <?php foreach ($penerimaan_bulan_berjalan as $barang) : ?>
+                            <?php if ($barang->jumlah_barang > 0) : ?>
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="pilihBarang('<?= $barang->barang_id ?>', '<?= $barang->nama_barang ?>', '<?= $barang->harga_satuan ?>', '<?= $barang->jumlah_barang ?>')">
+                                    <?= $barang->nama_barang ?> (Stok: <?= $barang->jumlah_barang ?>)
+                                </button>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                <?php endif; ?>
+
             </div>
         </div>
     </div>

@@ -15,6 +15,7 @@ use App\Models\PengeluaranmurniModel;
 use App\Models\PengeluaranmurniDetailModel;
 use App\Models\MahasiswaModel;
 use App\Models\PengaturanModel;
+use App\Models\StokBulananModel;
 
 
 
@@ -34,6 +35,7 @@ class PengeluaranMurni extends BaseController
     protected $mahasiswaModel;
     protected $pengaturanModel;
     protected $settingsService;
+    protected $stokBulananModel;
 
     public function __construct()
     {
@@ -48,6 +50,7 @@ class PengeluaranMurni extends BaseController
         $this->pengeluaranmurnidetailModel = new PengeluaranmurniDetailModel();
         $this->mahasiswaModel = new MahasiswaModel();
         $this->pengaturanModel = new PengaturanModel();
+        $this->stokBulananModel = new StokBulananModel();
         $this->settingsService = ServiceInjector::getSettingsService(); // Menggunakan ServiceInjector
     }
 
@@ -162,72 +165,90 @@ class PengeluaranMurni extends BaseController
         $pengeluaranmurniModel = new PengeluaranmurniModel();
         $dataPengeluaranMurni = $pengeluaranmurniModel->getdetail($id);
 
-
-        // Ambil tanggal penggunaan dari dataPengeluaranMurni
-        $tanggal = $dataPengeluaranMurni['tanggal_penggunaan'];
-
-        $penerimaanpersediaanModel = new PenerimaanPersediaanModel();
-        $dataBarang = $penerimaanpersediaanModel->tampilkanDatabyTanggal($tanggal);
-
         $mahasiswaModel = new MahasiswaModel();
         $dataMahasiswa = $mahasiswaModel->getMahasiswa();
         $dosentendikModel = new DosenTendikModel();
         $dataDosenTendik = $dosentendikModel->getDosenTendik();
 
-        // Mendapatkan level pengguna dari sesi
         $userLevel = session('level');
-        // Pada kontroller
         $pengeluaranmurnidetailModel = new PengeluaranmurniDetailModel();
         $detailPengeluaranMurni = $pengeluaranmurnidetailModel->getDetailWithNamaBarang($id);
 
         $dataBarangTerpilih = [];
-
         foreach ($detailPengeluaranMurni as $detail) {
             $dataBarangTerpilih[] = [
                 'id' => $detail->id,
                 'barang_id' => $detail->barang_id,
-                'nama_barang' => $detail->nama_barang, // Nama barang diambil dari tbl_persediaan_barang
+                'nama_barang' => $detail->nama_barang,
                 'jumlah_barang' => $detail->ambil_barang_murni,
-                // Tambahkan detail lain sesuai kebutuhan
             ];
         }
 
-        // Menyiapkan data untuk disimpan
+        // Mendapatkan bulan dan tahun dari tanggal_penggunaan
+        $tanggalPenggunaan = $dataPengeluaranMurni['tanggal_penggunaan'];
+        $timestamp = strtotime($tanggalPenggunaan);
+        $bulan = date('m', $timestamp);
+        $tahun = date('Y', $timestamp);
+
+        // Mengambil data saldo dari bulan sebelumnya
+        $saldoBulanSebelumnya = $bulan - 1;
+        $saldoTahunSebelumnya = $tahun;
+
+        // Jika bulan adalah Januari, maka bulan sebelumnya adalah Desember dari tahun sebelumnya
+        if ($bulan == 1) {
+            $saldoBulanSebelumnya = 12;
+            $saldoTahunSebelumnya = $tahun - 1;
+        }
+
+        // Mengambil data saldo dari bulan sebelumnya
+        $stokBulananModel = new StokBulananModel();
+        $dataSaldoBulanSebelumnya = $stokBulananModel->tampilkanDataStokBulanan($saldoBulanSebelumnya, $saldoTahunSebelumnya);
+
+        // Mengambil data penerimaan dari bulan berjalan
+        $penerimaanpersediaanModel = new PenerimaanPersediaanModel();
+        $dataPenerimaanBulanBerjalan = $penerimaanpersediaanModel->tampilkanData($bulan, $tahun);
+
+        // Filter untuk hanya menampilkan barang dengan stok lebih dari 0
+        $filteredSaldoBulanSebelumnya = array_filter($dataSaldoBulanSebelumnya, function ($barang) {
+            return $barang->sisa_stok > 0;
+        });
+
+        $filteredPenerimaanBulanBerjalan = array_filter($dataPenerimaanBulanBerjalan, function ($barang) {
+            // Asumsi bahwa barang penerimaan bulan berjalan memiliki properti `stok` untuk mengecek stok
+            return isset($barang->stok) && $barang->stok > 0;
+        });
+
         $data = [
             'judul' => "Tambah Pengeluaran Tanpa Peminjaman | $namaKampus",
             'currentYear' => $currentYear,
-            'data_satuan' =>  $dataSatuan,
-            'barang_persediaan' => $dataBarang,
+            'data_satuan' => $dataSatuan,
+            'saldo_bulan_sebelumnya' => $filteredSaldoBulanSebelumnya,
+            'penerimaan_bulan_berjalan' => $filteredPenerimaanBulanBerjalan,
             'data_mahasiswa' => $dataMahasiswa,
             'data_dosen_tendik' => $dataDosenTendik,
             'data_pengeluaran_murni' => $dataPengeluaranMurni,
             'detail_pengeluaran_murni' => $detailPengeluaranMurni,
-            'id' => $id, // Menambahkan ID pengeluaran ke data
-
+            'data_barang_terpilih' => $dataBarangTerpilih,
+            'id' => $id,
         ];
-
-        $data['data_barang_terpilih'] = $dataBarangTerpilih;
 
         // Pemeriksaan waktu created_at hanya untuk level 'user'
         if ($userLevel == 'User') {
-            $waktuPembuatan = strtotime($dataPengeluaranMurni['created_at']); // Ubah string menjadi timestamp
-            $waktuSekarang = time(); // Timestamp saat ini
-
-            // Hitung selisih waktu dalam detik
+            $waktuPembuatan = strtotime($dataPengeluaranMurni['created_at']);
+            $waktuSekarang = time();
             $selisihWaktu = $waktuSekarang - $waktuPembuatan;
 
-            // Jika sudah lebih dari 24 jam, tampilkan SweetAlert
             if ($selisihWaktu > (24 * 60 * 60)) {
-                // Simpan pesan error dalam sesi flash-data
                 session()->setFlashData('custom_error_message', 'Maaf, Anda tidak dapat mengakses halaman ini karena sudah melebihi 24 jam.');
-
-                // Redirect ke halaman tertentu atau menggunakan return redirect()->to(base_url('halaman_tujuan'));
                 return redirect()->to(base_url('pengeluaran/bhp'));
             }
         }
 
         return view('pengeluaran/minta_barang', $data);
     }
+
+
+
 
 
 
@@ -261,9 +282,6 @@ class PengeluaranMurni extends BaseController
         }
 
         $pengeluaranmurnidetailModel = new PengeluaranmurniDetailModel();
-
-        // Mendapatkan data dari formulir
-        // Proses penyimpanan data ke database
 
         $penggunaId = $this->request->getPost('id');
         $barangIds = $this->request->getPost('barang_id');
@@ -356,9 +374,6 @@ class PengeluaranMurni extends BaseController
 
                 // Hitung stok setelah dikembalikan
                 $stokBaru = $stokSekarang + $ambilBarang;
-
-
-
 
                 // Update stok menggunakan metode update
                 $barangModel->updateStok($dataHapus['barang_id'], ['stok' => $stokBaru]);

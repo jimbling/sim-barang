@@ -175,6 +175,9 @@ $level = $session->get('level');
                                                 <a class="btn btn-xs btn-info mx-auto text-white" href="<?= base_url('cetak_pinjam/' . $dataPinjam['peminjaman_id']); ?>" target="_blank" data-toggle="tooltip" data-placement="left" title="Form Pinjam">
                                                     <i class='far fa-file-alt'></i>
                                                 </a>
+                                                <a href="<?= base_url('pengeluaran/tambahBaru') . '/' . $dataPinjam['peminjaman_id']; ?>" class="btn btn-xs btn-success mx-auto text-white" data-toggle="tooltip" data-placement="left" title="Tambah BHP">
+                                                    <i class='fas fa-dolly-flatbed'></i>
+                                                </a>
 
                                                 <!-- Tombol Perpanjang jika tanggal pengembalian sudah habis atau hari ini -->
                                                 <?php

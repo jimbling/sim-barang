@@ -139,6 +139,20 @@ class PenerimaanPersediaanModel extends Model
         return $result;
     }
 
+    public function tampilkanDatabyTanggal($tanggal)
+    {
+        $builder = $this->db->table('tbl_persediaan_penerimaan_detail');
+        $builder->select('tbl_persediaan_penerimaan_detail.*, tbl_persediaan_barang.nama_barang, tbl_persediaan_barang.stok');
+        $builder->join('tbl_persediaan_barang', 'tbl_persediaan_barang.id = tbl_persediaan_penerimaan_detail.barang_id');
+        $builder->join('tbl_persediaan_penerimaan', 'tbl_persediaan_penerimaan.id = tbl_persediaan_penerimaan_detail.penerimaan_id');
+        $builder->where('DATE(tbl_persediaan_penerimaan.tanggal_penerimaan) <=', $tanggal);
+        $builder->where('tbl_persediaan_barang.stok >', 0); // Hanya tampilkan barang dengan stok lebih dari 0
+
+        $query = $builder->get();
+        $result = $query->getResult();
+
+        return $result;
+    }
     public function updateStokAndInsertDetail($barangId, $jumlahDiambil)
     {
         // Ambil data persediaan berdasarkan barang_id

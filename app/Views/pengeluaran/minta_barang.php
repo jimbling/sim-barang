@@ -180,7 +180,7 @@
 
 <!-- Modal Pilih Barang -->
 <div class="modal fade" id="modalPilihBarang" tabindex="-1" role="dialog" aria-labelledby="modalPilihBarangLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalPilihBarangLabel">Pilih Barang</h5>
@@ -192,23 +192,16 @@
 
                 <input type="text" class="form-control mb-2" id="inputPencarianBarang" placeholder="Cari Barang">
 
-                <?php if (empty($barang_persediaan)) : ?>
-                    <div class="alert alert-danger" role="alert">
-                        Data Barang Belum Ada Karena Belum Tutup Buku, Silahkan lakukan tutup buku terlebih dahulu.
-                    </div>
-                <?php else : ?>
-                    <?php foreach ($barang_persediaan as $barang) : ?>
-                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="pilihBarang('<?= $barang->barang_id ?>', '<?= $barang->nama_barang ?>', '<?= $barang->harga_satuan ?>', '<?= $barang->sisa_stok ?>')">
-                            <?= $barang->nama_barang ?>
-                        </button>
-                    <?php endforeach; ?>
-                <?php endif; ?>
 
+                <?php foreach ($barang_persediaan as $barang) : ?>
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="pilihBarang('<?= $barang->barang_id ?>', '<?= $barang->nama_barang ?>', '<?= $barang->harga_satuan ?>', '<?= $barang->stok ?>')">
+                        <?= $barang->nama_barang ?>
+                    </button>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
 </div>
-
 
 
 <script>

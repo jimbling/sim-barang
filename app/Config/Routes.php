@@ -113,7 +113,7 @@ $routes->post('/data/admin/update', 'Pengaturan::updateAdmin');
 
 
 $routes->get('/pengeluaran/daftar', 'Pengeluaran::daftarPengeluaran');
-$routes->get('/pengeluaran/tambahBaru', 'Pengeluaran::addPengeluaran');
+$routes->get('/pengeluaran/tambahBaru/(:num)', 'Pengeluaran::addPengeluaran/$1');
 $routes->get('/pengeluaran/getDataPeminjaman/(:segment)', 'Pengeluaran::getDataPeminjaman/$1');
 $routes->post('/pengeluaran/simpan', 'Pengeluaran::ProsesTambahPengeluaran');
 

@@ -105,10 +105,38 @@ class Pengeluaran extends BaseController
         $dataPeminjaman = $peminjamaModel->getdetail($id);
 
         // Mendapatkan bulan dan tahun dari tanggal_penggunaan
-        $tanggal = $dataPeminjaman['tanggal_pinjam'];
-        // Ambil tanggal penggunaan dari dataPengeluaranMurni
+        $tanggalPinjam = $dataPeminjaman['tanggal_pinjam'];
+        $timestamp = strtotime($tanggalPinjam);
+        $bulan = date('m', $timestamp);
+        $tahun = date('Y', $timestamp);
+
+        // Mengambil data saldo dari bulan sebelumnya
+        $saldoBulanSebelumnya = $bulan - 1;
+        $saldoTahunSebelumnya = $tahun;
+
+        // Jika bulan adalah Januari, maka bulan sebelumnya adalah Desember dari tahun sebelumnya
+        if ($bulan == 1) {
+            $saldoBulanSebelumnya = 12;
+            $saldoTahunSebelumnya = $tahun - 1;
+        }
+
+        // Mengambil data saldo dari bulan sebelumnya
+        $stokBulananModel = new StokBulananModel();
+        $dataSaldoBulanSebelumnya = $stokBulananModel->tampilkanDataStokBulanan($saldoBulanSebelumnya, $saldoTahunSebelumnya);
+
+        // Mengambil data penerimaan dari bulan berjalan
         $penerimaanpersediaanModel = new PenerimaanPersediaanModel();
-        $dataBarang = $penerimaanpersediaanModel->tampilkanDatabyTanggal($tanggal);
+        $dataPenerimaanBulanBerjalan = $penerimaanpersediaanModel->tampilkanData($bulan, $tahun);
+
+        // Filter untuk hanya menampilkan barang dengan stok lebih dari 0
+        $filteredSaldoBulanSebelumnya = array_filter($dataSaldoBulanSebelumnya, function ($barang) {
+            return $barang->sisa_stok > 0;
+        });
+
+        $filteredPenerimaanBulanBerjalan = array_filter($dataPenerimaanBulanBerjalan, function ($barang) {
+            // Asumsi bahwa barang penerimaan bulan berjalan memiliki properti `stok` untuk mengecek stok
+            return isset($barang->stok) && $barang->stok > 0;
+        });
 
         $pengeluaranModel = new PengeluaranModel();
         $detailPengeluaran = $pengeluaranModel->getPengeluaranByPeminjamanId($id);
@@ -127,7 +155,8 @@ class Pengeluaran extends BaseController
             'judul' => "Tambah Pengeluaran | $namaKampus",
             'currentYear' => $currentYear,
             'data_satuan' => $dataSatuan,
-            'barang_persediaan' => $dataBarang,
+            'saldo_bulan_sebelumnya' => $filteredSaldoBulanSebelumnya,
+            'penerimaan_bulan_berjalan' => $filteredPenerimaanBulanBerjalan,
             'data_peminjaman' => $dataPeminjaman,
             'data_barang_terpilih' => $dataBarangTerpilih,
         ];
@@ -230,7 +259,7 @@ class Pengeluaran extends BaseController
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Data tidak ditemukan']);
             }
 
-            $ambilBarang = $dataHapus['ambil_barang_murni'];
+            $ambilBarang = $dataHapus['ambil_barang'];
 
             if ($this->pengeluaranModel->delete($id)) {
                 // Kembalikan stok barang

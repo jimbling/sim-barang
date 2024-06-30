@@ -1,88 +1,57 @@
-
-    var selectedPeminjamanId;
-
-    function pilihData(peminjamanId, barangId, kodePinjam, namaPeminjam, namaRuangan, penggunaan, tanggalPinjam, namaBarang) {
-        document.getElementById('peminjaman_id_hidden').value = peminjamanId;
-        document.getElementById('peminjaman_id_display').value = peminjamanId;
-        document.getElementById('nama_peminjam').value = namaPeminjam;
-        document.getElementById('nama_ruangan').value = namaRuangan;
-        document.getElementById('penggunaan').value = penggunaan;
-        document.getElementById('tanggal_pinjam').value = tanggalPinjam;
-
-
-        selectedPeminjamanId = peminjamanId;
-        $('#pilihKodePinjam').modal('hide');
+var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Atau ambil token dari hidden input
+    $('#tabelBarangBody').on('click', '.btnHapusBarang', function() {
+      var idBarang = $(this).data('id');
+      var deletedRow = $(this).closest('tr');
+      var created_at = $('#id').data('created_at');
+      var currentTime = new Date();
+      var createdAtTime = new Date(created_at);
+      var timeDifference = currentTime - createdAtTime;
+      var hoursDifference = timeDifference / (1000 * 60 * 60);
 
 
-        $.ajax({
-            type: "GET",
-            url: "/pengeluaran/getDataByPeminjamanId/" + peminjamanId,
-            success: function(response) {
+      if (hoursDifference > 24) {
+          toastr.error('Tidak dapat menghapus barang karena sudah melebihi 24 jam.');
+      } else {
 
-                var data = JSON.parse(response);
-                $('#daftarBarangPersediaan tbody').empty();
-                updateTable(data);
-                console.log("Success Response:", data);
-            },
-            error: function(error) {
-                console.error('Error fetching data:', error);
-            }
-        });
-    }
+          $.ajax({
+              type: 'POST',
+              url: '/pengeluaran/hapusData'+'/' + idBarang,
+              success: function(response) {
+                  if (response.status === 'success') {
+
+                      deletedRow.remove();
 
 
-    function hapusData(id) {
+                      toastr.options = {
+                          "closeButton": false,
+                          "debug": false,
+                          "newestOnTop": false,
+                          "progressBar": true,
+                          "positionClass": "toast-bottom-right",
+                          "preventDuplicates": false,
+                          "onclick": null,
+                          "showDuration": "1800",
+                          "hideDuration": "1800",
+                          "timeOut": "5000",
+                          "extendedTimeOut": "1800",
+                          "showEasing": "swing",
+                          "hideEasing": "linear",
+                          "showMethod": "fadeIn",
+                          "hideMethod": "fadeOut"
+                      };
 
-        $.ajax({
-            type: 'POST',
-            url: '/pengeluaran/hapusData/' + id,
-            success: function(response) {
-
-                updateTable(response.data);
-                $('#daftarBarangPersediaan tbody').html(response.html);
-                if (selectedPeminjamanId) {
-
-                    $.ajax({
-                        type: "GET",
-                        url: "/pengeluaran/getDataByPeminjamanId/" + selectedPeminjamanId,
-                        success: function(response) {
-
-                            var data = JSON.parse(response);
-                            $('#daftarBarangPersediaan tbody').empty();
-
-
-                            updateTable(data);
-                            toastr.options = {
-                                "closeButton": false,
-                                "debug": false,
-                                "newestOnTop": false,
-                                "progressBar": true,
-                                "positionClass": "toast-bottom-right",
-                                "preventDuplicates": false,
-                                "onclick": null,
-                                "showDuration": "1800",
-                                "hideDuration": "1800",
-                                "timeOut": "5000",
-                                "extendedTimeOut": "1800",
-                                "showEasing": "swing",
-                                "hideEasing": "linear",
-                                "showMethod": "fadeIn",
-                                "hideMethod": "fadeOut"
-                            };
-
-                            toastr.success('Barang berhasil dihapus dari daftar.');
-                        },
-                        error: function(error) {
-                            console.error('Error fetching data:', error);
-                        }
-                    });
-                }
-            },
-            error: function(error) {
-                console.error('Error deleting data:', error);
-            }
-        });
-    }
+                      toastr.success('Barang berhasil dihapus dari daftar.');
+                  } else {
+                    toastr.error('Gagal menghapus sdasdasdasd barang');
+                  }
+              },
+              error: function(error) {
+                  console.log('Error:', error);
+                  toastr.error('Gagal menghapus barang');
+              }
+          });
+      }
+  });
 
 
     function updateTable(data) {
@@ -145,112 +114,83 @@
     document.getElementById('inputPencarianBarang').addEventListener('input', cariBarang);
 
 
-    $(document).ready(function() {
 
-        $('#peminjaman_id').on('change', function() {
-            var peminjamanId = $(this).val();
-
-            if (peminjamanId !== '') {
-                tampilkanData(peminjamanId);
-            }
-        });
-
-
-        function tampilkanData(peminjamanId) {
-
-            $.ajax({
-                url: '/pengeluaran/getDataByPeminjamanId/' + peminjamanId,
-                method: 'GET',
-                success: function(response) {
-                    console.log('Response from server:', response);
-
-                    $('#tabelBarang').html(response);
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
-        }
-    });
 
 
     $(document).ready(function() {
-        $('#formTambahPeneriman').submit(function(e) {
-            e.preventDefault();
+      $('#formTambahPeneriman').submit(function(e) {
+          e.preventDefault();
 
-            var ambilBarangValues = $('input[name="ambil_barang[]"]').map(function() {
-                return $(this).val();
-            }).get();
+          var ambilBarangValues = $('input[name="ambil_barang[]"]').map(function() {
+              return $(this).val();
+          }).get();
 
-            if (ambilBarangValues.includes("0") || ambilBarangValues.includes("")) {
-                toastr.error('Ambil Barang tidak boleh kosong atau 0. Silakan isi dengan nilai yang valid.');
-                return;
-            }
+          if (ambilBarangValues.includes("0") || ambilBarangValues.includes("")) {
+              toastr.error('Ambil Barang tidak boleh kosong atau 0. Silakan isi dengan nilai yang valid.');
+              return;
+          }
 
+          $('#btnText').hide();
+          $('#btnSpinner').show();
 
-            $('#btnText').hide();
-            $('#btnSpinner').show();
+          $.ajax({
+              type: 'POST',
+              url: '/pengeluaran/simpan',
+              data: $('#formTambahPeneriman').serialize(),
+              dataType: 'json',
+              success: function(response) {
+                  updateTable(response.data);
 
-            $.ajax({
-                type: 'POST',
-                url: '/pengeluaran/simpan',
-                data: $('#formTambahPeneriman').serialize(),
-                dataType: 'json',
-                success: function(response) {
+                  toastr.options = {
+                      "closeButton": false,
+                      "debug": false,
+                      "newestOnTop": false,
+                      "progressBar": true,
+                      "positionClass": "toast-bottom-right",
+                      "preventDuplicates": false,
+                      "onclick": null,
+                      "showDuration": "1800",
+                      "hideDuration": "1800",
+                      "timeOut": "5000",
+                      "extendedTimeOut": "1800",
+                      "showEasing": "swing",
+                      "hideEasing": "linear",
+                      "showMethod": "fadeIn",
+                      "hideMethod": "fadeOut"
+                  };
 
-                    updateTable(response.data);
+                  toastr.success('Berhasil menambahkan barang persediaan.');
 
-                    toastr.options = {
-                        "closeButton": false,
-                        "debug": false,
-                        "newestOnTop": false,
-                        "progressBar": true,
-                        "positionClass": "toast-bottom-right",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "1800",
-                        "hideDuration": "1800",
-                        "timeOut": "5000",
-                        "extendedTimeOut": "1800",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
+                  $('#btnText').show();
+                  $('#btnSpinner').hide();
+              },
+              error: function(error) {
+                  console.error('Error saving data:', error);
 
-                    toastr.success('Berhasil menambahkan barang persediaan.');
+                  $('#btnText').show();
+                  $('#btnSpinner').hide();
+              }
+          });
+      });
 
-                    $('#btnText').show();
-                    $('#btnSpinner').hide();
-                },
-                error: function(error) {
-                    console.error('Error saving data:', error);
+      function updateTable(data) {
+          $('#daftarBarangPersediaan tbody').empty();
 
-                    $('#btnText').show();
-                    $('#btnSpinner').hide();
-                }
-            });
-        });
+          $.each(data, function(index, item) {
+              var row = '<tr>' +
+                  '<td>' + item.barang_id + '</td>' +
+                  '<td>' + item.nama_barang + '</td>' +
+                  '<td>' + item.ambil_barang + '</td>' +
+                  '<td>' +
+                  '<button class="btn btn-danger btn-xs" onclick="hapusData(' + item.id + ')">Hapus</button>' +
+                  '</td>' +
+                  '</tr>';
 
-        function updateTable(data) {
+              $('#daftarBarangPersediaan tbody').append(row);
+          });
+      }
+  });
 
-            $('#daftarBarangPersediaan tbody').empty();
-
-
-            $.each(data, function(index, item) {
-                var row = '<tr>' +
-                    '<td>' + item.barang_id + '</td>' +
-                    '<td>' + item.nama_barang + '</td>' +
-                    '<td>' + item.ambil_barang + '</td>' +
-                    '<td>' +
-                    '<button class="btn btn-danger btn-xs" onclick="hapusData(' + item.id + ')">Hapus</button>' +
-                    '</td>' +
-                    '</tr>';
-
-                $('#daftarBarangPersediaan tbody').append(row);
-            });
-        }
-    });
 
     $(document).ready(function() {
 
@@ -277,7 +217,66 @@
     });
 
 
+    // $(document).ready(function() {
 
+    //     $('#peminjaman_id').on('change', function() {
+    //         var peminjamanId = $(this).val();
+
+    //         if (peminjamanId !== '') {
+    //             tampilkanData(peminjamanId);
+    //         }
+    //     });
+
+
+    //     function tampilkanData(peminjamanId) {
+
+    //         $.ajax({
+    //             url: '/pengeluaran/getDataByPeminjamanId/' + peminjamanId,
+    //             method: 'GET',
+    //             success: function(response) {
+    //                 console.log('Response from server:', response);
+
+    //                 $('#tabelBarang').html(response);
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.error(xhr.responseText);
+    //             }
+    //         });
+    //     }
+    // });
+
+
+
+    // var selectedPeminjamanId;
+
+    // function pilihData(peminjamanId, barangId, kodePinjam, namaPeminjam, namaRuangan, penggunaan, tanggalPinjam, namaBarang) {
+    //     document.getElementById('peminjaman_id_hidden').value = peminjamanId;
+    //     document.getElementById('peminjaman_id_display').value = peminjamanId;
+    //     document.getElementById('nama_peminjam').value = namaPeminjam;
+    //     document.getElementById('nama_ruangan').value = namaRuangan;
+    //     document.getElementById('penggunaan').value = penggunaan;
+    //     document.getElementById('tanggal_pinjam').value = tanggalPinjam;
+
+
+    //     selectedPeminjamanId = peminjamanId;
+    //     $('#pilihKodePinjam').modal('hide');
+
+
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "/pengeluaran/getDataByPeminjamanId/" + peminjamanId,
+    //         success: function(response) {
+
+    //             var data = JSON.parse(response);
+    //             $('#daftarBarangPersediaan tbody').empty();
+    //             updateTable(data);
+    //             console.log("Success Response:", data);
+    //         },
+    //         error: function(error) {
+    //             console.error('Error fetching data:', error);
+    //         }
+    //     });
+    // }
 
 
 

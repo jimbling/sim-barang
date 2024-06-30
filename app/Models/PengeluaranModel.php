@@ -152,6 +152,7 @@ class PengeluaranModel extends Model
         $persediaanModel->updateStok($barangId, $stokTerbaru);
     }
 
+
     public function hapusPeminjaman($peminjaman_id)
     {
         // Ambil data berdasarkan peminjaman_id
