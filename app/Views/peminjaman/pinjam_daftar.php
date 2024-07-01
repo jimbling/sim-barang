@@ -63,9 +63,7 @@ $level = $session->get('level');
                         </div>
                         <div class="card-body">
                             <div class="alert alert-light" style="font-size: 13px;" role="alert">
-                                Setelah Booking Peminjaman Barang disetujui oleh Laboran, jika menginginkan untuk menggunakan barang-barang habis pakai Labaoratorium, silahkan mengisi Form pengeluaran barang persediaan : <a class="btn bg-indigo btn-sm" href="/pengeluaran/tambahBaru" role="button" style="text-decoration: none;">
-                                    <i class='fas fa-external-link-alt spaced-icon'></i>Form Barang Persediaan
-                                </a> Jangan lupa untuk mencatat Kode Pinjam masing-masing.
+                                Setelah Booking Peminjaman Barang disetujui oleh Laboran, jika menginginkan untuk menggunakan barang-barang habis pakai Labaoratorium, silahkan mengisi Form pengeluaran barang persediaan, menggunakan tombol <b>Tambah BHP</b> <button class="btn btn-xs  btn-success mx-auto"> <i class='fas fa-dolly-flatbed'></i></button>
                             </div>
                             <table id="daftarPeminjamanTable" class="table table-striped table-responsive table-sm table-hover">
                                 <thead class="thead bg-success" style="font-size: 13px;">

@@ -4,6 +4,15 @@
         margin: 2px;
     }
 </style>
+<?php
+
+$session = session();
+
+$nama = $session->get('full_nama');
+$username = $session->get('user_nama');
+$password = $session->get('user_password');
+$level = $session->get('level');
+?>
 <div class="content-wrapper">
     <div class="flash-data" data-flashdata="<?= (session()->getFlashData('errorMessages')); ?>"></div>
     <div class="content-header">
@@ -16,7 +25,13 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <div class="col-md-12 col-12">
-                            <a href="/pengeluaran/daftar" class="btn btn-danger btn-sm"> <i class='fas fa-undo-alt spaced-icon'></i>Kembali</a>
+                            <?php
+                            $userLevel = session('level'); // Asumsikan session('level') menyimpan level pengguna
+
+                            $linkUrl = ($userLevel == 'User') ? '/pinjam/daftar' : '/pengeluaran/daftar';
+                            ?>
+                            <a href="<?= $linkUrl ?>" class="btn btn-danger btn-sm">
+                                <i class='fas fa-undo-alt spaced-icon'></i>Kembali
                             </a>
                         </div>
                     </ol>

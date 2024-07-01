@@ -105,14 +105,6 @@
 
 
 
-<aside class="control-sidebar control-sidebar-dark">
-
-    <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
-    </div>
-</aside>
-
 <!-- Modal untuk import data barang -->
 <div class="modal fade" id="importBarangPersediaanModal" tabindex="-1" aria-labelledby="importBarangPersediaanModal" aria-hidden="true">
     <div class="modal-dialog">
@@ -178,15 +170,15 @@
                     <input type="hidden" name="<?= csrf_token() ?>" value="<?= $csrfToken ?>">
                     <div class="form-group">
                         <label for="prodi">Prodi/Jursan</label>
-                        <select class="form-control" id="prodi" name="prodi">
-                            <option>Pilih Prodi/Jurusan ... </option>
+                        <select class="form-control" id="prodi" name="prodi" required>
+                            <option value="">Pilih Prodi/Jurusan ... </option>
                             <option value="AKPER YKY Yogyakarta">Akper YKY Yogyakarta</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="prodi">Kelompok Barang</label>
-                        <select class="form-control" id="kelompok_barang" name="kelompok_barang">
-                            <option>Pilih Kelompok Barang ... </option>
+                        <select class="form-control" id="kelompok_barang" name="kelompok_barang" required>
+                            <option value="">Pilih Kelompok Barang ... </option>
                             <option value="Barang Habis Pakai Lab">Barang Habis Pakai Lab</option>
                         </select>
                     </div>
@@ -425,6 +417,45 @@
             $('#pembelajaran').select2({
                 // Konfigurasi Select2
             });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Menangani submit form
+        $('form').on('submit', function(e) {
+            let isValid = true;
+
+            // Validasi Prodi/Jurusan
+            if ($('#prodi').val() === "") {
+                isValid = false;
+                toastr.error("Silakan pilih Prodi/Jurusan.");
+            }
+
+            // Validasi Kelompok Barang
+            if ($('#kelompok_barang').val() === "") {
+                isValid = false;
+                toastr.error("Silakan pilih Kelompok Barang.");
+            }
+
+            // Validasi Nama Barang
+            if ($('#nama_barang').val().trim() === "") {
+                isValid = false;
+                toastr.error("Silakan masukkan Nama Barang.");
+            }
+
+            // Validasi Satuan
+            if ($('#satuan').val() === "") {
+                isValid = false;
+                toastr.error("Silakan pilih Satuan Barang.");
+            }
+
+            // Cegah pengiriman form jika tidak valid
+            if (!isValid) {
+                e.preventDefault();
+                toastr.error("Formulir tidak lengkap. Silakan periksa kembali.");
+            }
         });
     });
 </script>
