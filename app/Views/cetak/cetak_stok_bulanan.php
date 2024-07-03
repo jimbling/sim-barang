@@ -174,8 +174,8 @@
                                 <div class="form-group mr-2">
                                     <label for="tahun" class="mr-2">Tahun:</label>
                                     <select class="form-control form-control-sm" id="tahun" name="tahun">
-                                        <!-- Tambahkan opsi tahun -->
-                                        <?php foreach (range(date('Y'), date('Y') - 10) as $year) : ?>
+                                        <!-- Tambahkan opsi tahun mulai dari 2023 hingga tahun saat ini -->
+                                        <?php foreach (range(2023, date('Y')) as $year) : ?>
                                             <option value="<?= $year ?>"><?= $year ?></option>
                                         <?php endforeach; ?>
                                     </select>

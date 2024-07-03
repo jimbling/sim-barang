@@ -54,7 +54,7 @@ class PeminjamanbarangModel extends Model
     public function countUniquePeminjamanByDate($userId)
     {
         // Kueri untuk menghitung jumlah peminjaman unik berdasarkan ID dengan kondisi tanggal_pengembalian
-        $query = $this->select('COUNT(*) as jumlah_peminjaman, tbl_peminjaman.kode_pinjam, GROUP_CONCAT(tbl_peminjaman.id) as peminjaman_ids')
+        $query = $this->select('COUNT(DISTINCT tbl_peminjaman.id) as jumlah_peminjaman, tbl_peminjaman.kode_pinjam, GROUP_CONCAT(DISTINCT tbl_peminjaman.id) as peminjaman_ids')
             ->join('tbl_peminjaman', 'tbl_peminjaman.id = tbl_peminjaman_barang.peminjaman_id')
             ->where('tbl_peminjaman.user_id', $userId) // Filter berdasarkan user_id
             ->where("(tbl_peminjaman.tanggal_pengembalian <= NOW())")
