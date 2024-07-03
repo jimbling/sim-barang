@@ -21,7 +21,10 @@
 
     <div class="content">
         <div class="container-fluid">
-
+            <div class="callout callout-info" style="font-size: 13px;">
+                <h5><i class="fas fa-info"></i> Catatan:</h5>
+                <p>Pada halaman ini menampilkan daftar Pengeluaran Barang Habis Pakai baik yang dengan Peminjaman maupun tanpa Peminjaman.
+            </div>
             <div class="row">
                 <div class="col-md-12 col-12">
                     <div class="card card-primary card-outline shadow-lg">
@@ -59,8 +62,8 @@
                                     </tr>
                                     <tr>
                                         <th style="text-align: center;">Kode Pinjam</th>
-                                        <th style="text-align: center;">Nama Peminjam</th>
-                                        <th style="text-align: center;">Tanggal Pinjam</th>
+                                        <th style="text-align: center;">Nama Peminjam/Pengguna</th>
+                                        <th style="text-align: center;">Tanggal Pinjam/Penggunaan</th>
 
 
                                     </tr>

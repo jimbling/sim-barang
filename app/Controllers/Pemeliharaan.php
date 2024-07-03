@@ -127,7 +127,7 @@ class Pemeliharaan extends BaseController
             $tglSekarang = date('Y-m-dHis');
             // Generate random UUID
             $uuid = uniqid();
-            $dump = new Mysqldump('mysql:host=localhost;dbname=yky_pinjam;port=3306', 'root', '');
+            $dump = new Mysqldump('mysql:host=localhost;dbname=h450691_yky_lab;port=3306', 'h450691_ykylab', 'labakperyky');
             $dumpFile = 'database/backup/db-' . $tglSekarang . '-' . $uuid . '.sql';
             $dump->start($dumpFile);
 

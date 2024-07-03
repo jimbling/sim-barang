@@ -67,6 +67,10 @@ class Pengeluaran extends BaseController
         $pengeluaranModel = new PengeluaranModel();
         $dataPengeluaran = $pengeluaranModel->getAllPengeluaran();
 
+        $pengeluaranmurniModel = new PengeluaranmurniModel();
+        $pengeluaranMurni = $pengeluaranmurniModel->getPengeluaranMurni();
+
+
         // Memeriksa izin penghapusan berdasarkan kondisi
         $userLevel = session()->get('level');
         if ($userLevel == 'User') {
@@ -87,6 +91,7 @@ class Pengeluaran extends BaseController
             'csrfToken' => $csrfToken,
             'data_peminjaman' => $dataBarang,
             'data_pengeluaran' => $dataPengeluaran,
+            'data_pengeluaran_murni' => $pengeluaranMurni,
         ];
 
         return view('pengeluaran/daftar_pengeluaran', $data);
